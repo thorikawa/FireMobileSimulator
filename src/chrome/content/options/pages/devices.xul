@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://msim/skin/options.css" type="text/css"?>
+
+<!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
+
+<page onload="parent.msim_initializeOptions()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<groupbox>
+		<caption label="&msim.options.devices.label;"/>
+		<grid>
+			<columns>
+				<column flex="1"/>
+				<column/>
+			</columns>
+			<rows>
+				<row align="top">
+					<listbox flex="1" id="msim-listbox" rows="5" onselect="parent.msim_deviceSelected()">
+						<listhead>
+							<listheader label="&msim.options.devices.label;"/>
+						</listhead>
+					</listbox>
+				</row>
+				<row align="top">
+					<hbox>
+						<button label="&msim.options.add;" oncommand="parent.msim_addDevice()" accesskey="n"/>
+						<button id="msim-edit" label="&msim.options.edit;" oncommand="parent.msim_editDevice()" accesskey="e"/>
+						<button id="msim-delete" label="&msim.options.delete;" oncommand="parent.msim_deleteDevice()" accesskey="d"/>
+						<button id="msim-clearall" label="&msim.options.clearall;" oncommand="parent.clearAllDeviceSettings()" accesskey="c"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+</page>

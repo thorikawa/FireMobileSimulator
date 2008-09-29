@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+
+<project name="FireMobileSimulator" default="dist">
+	<property name="src.dir" value="src"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="app.name" value="FireMobileSimulator"/>
+	<property name="app.code" value="msim"/>
+	<property name="app.id" value="{77cc852e-6b45-11dd-929f-d30256d89593}"/> <!-- extension id like: xxx@xxx.com -->
+	<property name="fx.dir" value="C:\Documents and Settings\horikawa_t\Application Data\Mozilla\Firefox\Profiles\dzneq73f.nms\extensions\"/>
+
+	<condition property="fx.present">
+		<and>
+			<isset property="fx.dir"/>
+			<available file="${fx.dir}" type="dir"/>
+		</and>
+	</condition>
+
+	<target name="chrome">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}/chrome"/>
+		<zip destfile="${dist.dir}/chrome/${app.code}.jar">
+			<fileset dir="${src.dir}/chrome">
+				<include name="content/**"/>
+				<include name="locale/**"/>
+				<include name="skin/**"/>
+				<exclude name="**/Thumbs.db"/>
+				<exclude name="**/.*"/>
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="test.chrome" depends="chrome" if="fx.present">
+		<!-- copy to chrome directory -->
+		<copy file="${dist.dir}/chrome/${app.code}.jar" todir="${fx.dir}/chrome/chrome" overwrite="true"/>
+		<copy file="${src.dir}/chrome.manifest" tofile="${fx.dir}/chrome/${app.name}.manifest" overwrite="true"/>
+	</target>
+
+	<!-- copy to extensions directory -->
+	<!--
+	<target name="test.ext" depends="chrome" if="fx.present">
+		<copy file="${dist.dir}/${app.name}.jar" todir="${fx.dir}/extensions/${app.id}/chrome" overwrite="true"/>
+		<copy file="${src.dir}/chrome.manifest" todir="${fx.dir}/extensions/${app.id}" overwrite="true"/>
+	</target>
+	-->
+
+	<target name="dist" depends="chrome">
+		<zip destfile="${dist.dir}/${app.name}.xpi">
+			<zipfileset file="${dist.dir}/chrome/${app.code}.jar" prefix="chrome"/>
+			<fileset dir="${src.dir}">
+				<include name="chrome.manifest"/>
+				<include name="install.rdf"/>
+				<include name="license.txt"/>
+				<include name="defaults/**"/>
+				<include name="components/**"/>
+				<exclude name="**/.*"/>
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</zip>
+		<copy file="${dist.dir}/chrome/${app.code}.jar" todir="${fx.dir}/${app.id}/chrome"/>
+		<copy todir="${fx.dir}/${app.id}">
+			<fileset dir="${src.dir}">
+				<include name="chrome.manifest"/>
+				<include name="install.rdf"/>
+				<include name="license.txt"/>
+				<include name="defaults/**"/>
+				<include name="components/**"/>
+				<exclude name="**/.*"/>
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.dir}"/>
+	</target>
+
+	<target name="clean.ff" if="fx.present">
+		<delete dir="${fx.dir}/extensions/${app.id}" failonerror="false"/>
+		<delete file="${fx.dir}/chrome/${app.name}.manifest" failonerror="false"/>
+		<delete file="${fx.dir}/chrome/chrome/${app.name}.jar" failonerror="false"/>
+	</target>
+
+</project>

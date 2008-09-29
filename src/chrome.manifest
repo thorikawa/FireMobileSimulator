@@ -1,0 +1,6 @@
+content	msim	jar:chrome/msim.jar!/content/
+content	msim	jar:chrome/msim.jar!/content/ contentaccessible=yes
+locale	msim	ja	jar:chrome/msim.jar!/locale/ja/
+skin	msim	classic/1.0	jar:chrome/msim.jar!/skin/
+overlay	chrome://browser/content/browser.xul	chrome://msim/content/firefoxOverlay.xul
+style	chrome://global/content/customizeToolbar.xul	chrome://msim/skin/overlay.css

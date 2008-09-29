@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ***** BEGIN LICENSE BLOCK Version: GPL 3.0 *****
+ - FireMobileFimulator is a Firefox add-on that simulate web browsers of 
+ - japanese mobile phones.
+ - Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ - ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!DOCTYPE dialog SYSTEM "chrome://msim/locale/about.dtd">
+<dialog title="&about; FireMobileSimulator" orient="vertical" autostretch="always" onload="sizeToContent()" buttons="accept" buttonlabelaccept="OK" buttonlabelcancel="キャンセル" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript" src="chrome://msim/content/common/util.js"/>
+
+<groupbox align="center" orient="horizontal">
+<vbox>
+  <label value="FireMobileSimulator" style="font-weight: bold; font-size: x-large;"/>
+  <label value="&version; 0.1.4"/>
+  <separator class="thin"/>
+  <label value="&createdBy;" style="font-weight: bold;"/>
+  <label value="Takahiro Horikawa &lt;horikawa.takahiro@gmail.com&gt;"/>
+  <separator class="thin"/>
+  <label value="&homepage;" style="font-weight: bold;"/>
+  <label onclick="openURL(this.value)" class="text-link" value="https://addons.mozilla.org/firefox/addon/8519"/>
+  <separator class="thin"/>
+</vbox>
+</groupbox>
+</dialog>

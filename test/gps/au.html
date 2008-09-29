@@ -1,0 +1,24 @@
+<html>
+<head>
+	<title>Au位置情報テスト</title>
+<head>
+<body>
+<div><a href="device:location?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi" title="選択1">簡易位置情報送信テスト</a></div>
+<div><a href="device:gpsone?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&ver=1&datum=0&unit=0&acry=0&number=0" title="選択2">EZナビテスト(wgs&dms)</a></div>
+<div><a href="device:gpsone?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&ver=1&datum=1&unit=0&acry=0&number=0" title="選択2">EZナビテスト(tokyo&dms)</a></div>
+<div><a href="device:gpsone?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&ver=1&datum=0&unit=1&acry=0&number=0" title="選択2">EZナビテスト(wgs&degree)</a></div>
+<div><a href="device:gpsone?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&ver=1&datum=1&unit=1&acry=0&number=0" title="選択2">EZナビテスト(tokyo&degree)</a></div>
+<div><a href="device:locaaddr?url=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi" title="選択3">アドレス帳からEZナビ位置情報送信テスト</a></div>
+
+<form method="POST" action="device:location">
+	<input type="hidden" name="url" value="http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi">
+	<input type="submit" name="ok" value="formタグで簡易位置情報取得(POST)">
+</form>
+
+<form method="POST" action="device:location">
+	<input type="hidden" name="url" value="http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi">
+	<input type="submit" name="ok" value="formタグで簡易位置情報取得(GET)">
+</form>
+
+</body>
+</html>
