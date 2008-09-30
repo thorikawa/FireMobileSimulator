@@ -37,6 +37,14 @@
 				<label control="msim.options.device.useragent" value="&msim.options.device.useragent;"/>
 				<textbox id="msim.options.device.useragent" size="50"/>
 			</row>
+			<row id="msim.options.device.screen-width.row" align="center">
+				<label control="msim.options.device.screen-width" value="&msim.options.device.screen-width;"/>
+				<textbox id="msim.options.device.screen-width" size="50"/>
+			</row>
+			<row id="msim.options.device.screen-height.row" align="center">
+				<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;"/>
+				<textbox id="msim.options.device.screen-height" size="50"/>
+			</row>
 		</rows>
 	</grid>
 </dialog>

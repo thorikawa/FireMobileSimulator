@@ -129,6 +129,7 @@ firemobilesimulator.options.initializeOptions = function(){
 firemobilesimulator.options.initializeGeneral = function()
 {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+	pageDocument.getElementById("msim-checkbox-general-force-screen-width").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.general.force-screen-width");
 	pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
 }
 
@@ -207,6 +208,7 @@ firemobilesimulator.options.storeOptions = function(){
 	// If this is the general page
 	if(iFrameSrc.indexOf("general") != -1){
 		dump("[msim]store general.\n");
+		firemobilesimulator.options.optionsDataBoolean["msim.config.general.force-screen-width"]    = pageDocument.getElementById("msim-checkbox-general-force-screen-width").checked;
 		firemobilesimulator.options.optionsDataBoolean["msim.config.general.reset-device-onquit"]    = pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked;
 		//Nothing to do
 	}else if(iFrameSrc.indexOf("idno") != -1){

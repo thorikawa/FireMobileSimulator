@@ -14,6 +14,8 @@
 <!ENTITY msim.options.pictogram.label "絵文字表示設定">
 <!ENTITY msim.options.general.quit.label "終了">
 <!ENTITY msim.options.general.quit.reset-device-onquit.label "ブラウザ終了時に端末選択を解除する">
+<!ENTITY msim.options.general.display.label "表示">
+<!ENTITY msim.options.general.display.force-screen-width.label "表示領域の横幅を端末に合わせる">
 <!ENTITY msim.options.edit "編集する">
 <!ENTITY msim.options.delete "削除する">
 <!ENTITY msim.options.clearall "初期設定に戻す">
@@ -21,3 +23,5 @@
 <!ENTITY msim.options.device.device "デバイス名(必須)">
 <!ENTITY msim.options.device.carrier "キャリア(必須)">
 <!ENTITY msim.options.device.useragent "User agent(必須)">
+<!ENTITY msim.options.device.screen-width "スクリーン横幅(px)">
+<!ENTITY msim.options.device.screen-height "スクリーン高さ(px)">

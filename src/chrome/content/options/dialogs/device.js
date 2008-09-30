@@ -95,7 +95,17 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 						+ firemobilesimulator.options.dialogs.device.carrier
 						+ "." + firemobilesimulator.options.dialogs.device.id
 						+ ".useragent");
-
+		document.getElementById("msim.options.device.screen-width").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.carrier
+						+ "." + firemobilesimulator.options.dialogs.device.id
+						+ ".screen-width");
+		document.getElementById("msim.options.device.screen-height").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.carrier
+						+ "." + firemobilesimulator.options.dialogs.device.id
+						+ ".screen-height");
+						
 		firemobilesimulator.options.dialogs.device.appendDeviceAttributeRows(
 				document.getElementById("msim.options.device.rows"),
 				firemobilesimulator.options.dialogs.device.carrier,
@@ -155,7 +165,7 @@ firemobilesimulator.options.dialogs.device.appendDeviceAttributeRows = function(
 firemobilesimulator.options.dialogs.device.removeDeviceAttributeRows = function(
 		parentNode) {
 	dump("remove:" + parentNode + "\n");
-	while (parentNode.lastChild.getAttribute("id") != "msim.options.device.useragent.row") {
+	while (parentNode.lastChild.getAttribute("id") != "msim.options.device.screen-height.row") {
 		dump("remove:" + parentNode.lastChild.getAttribute("id") + "\n");
 		parentNode.removeChild(parentNode.lastChild);
 	}
@@ -197,6 +207,8 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		var deviceName = document.getElementById("msim.options.device.device").value;
 		var userAgent = document
 				.getElementById("msim.options.device.useragent").value;
+		var screenWidth  = document.getElementById("msim.options.device.screen-width").value;
+		var screenHeight = document.getElementById("msim.options.device.screen-height").value;
 
 		// 入力チェック
 		if (!deviceName || !firemobilesimulator.options.dialogs.device.carrier
@@ -212,7 +224,13 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.carrier
 						+ "." + saveId + ".useragent", userAgent);
-
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.carrier
+						+ "." + saveId + ".screen-width", screenWidth);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.carrier
+						+ "." + saveId + ".screen-height", screenHeight);
+						
 		firemobilesimulator.options.dialogs.device.retVals.deviceName = deviceName;
 		firemobilesimulator.options.dialogs.device.retVals.id = saveId;
 		firemobilesimulator.options.dialogs.device.retVals.carrier = firemobilesimulator.options.dialogs.device.carrier;

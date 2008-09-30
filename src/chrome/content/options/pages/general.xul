@@ -7,6 +7,17 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<groupbox>
+		<caption label="&msim.options.general.display.label;"/>
+		<grid>
+			<rows id="msim.options.general.quit.rows">
+				<row align="center">
+					<checkbox id="msim-checkbox-general-force-screen-width" label="&msim.options.general.display.force-screen-width.label;"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+	
+	<groupbox>
 		<caption label="&msim.options.general.quit.label;"/>
 		<grid>
 			<rows id="msim.options.general.quit.rows">
