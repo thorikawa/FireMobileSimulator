@@ -301,9 +301,14 @@ function NSGetModule(compMgr, fileSpec) {
 }
 
 function rewriteURI(subject, url) {
-	subject.loadFlags = Ci.nsICachingChannel.LOAD_ONLY_FROM_CACHE;
-	subject.cancel(Cr.NS_ERROR_FAILURE);
-	var webNav = subject.notificationCallbacks
-			.getInterface(Ci.nsIWebNavigation);
-	webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+	var documentLoad = subject.loadFlags & (1<<16);
+	//TODO: <img src="...">の指定などでrewriteする場合に対応要
+	if(documentLoad){
+		subject.loadFlags = subject.loadFlags | Ci.nsICachingChannel.LOAD_ONLY_FROM_CACHE;
+		subject.cancel(Cr.NS_ERROR_FAILURE);
+		var webNav = subject.notificationCallbacks
+				.getInterface(Ci.nsIWebNavigation);					
+		webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+		//webNav.loadURI(url, subject.loadFlags, null, null, null);
+	}
 }
