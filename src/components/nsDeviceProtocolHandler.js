@@ -46,7 +46,7 @@ Protocol.prototype = {
 
 	newURI: function(spec, charset, baseURI){
 		var uri = Cc["@mozilla.org/network/simple-uri;1"].createInstance(Ci.nsIURI);
-		dump("spce:"+spec+"\n");
+		dump("[msim]spec:"+spec+"\n");
 		uri.spec = spec;
 		return uri;
 	},

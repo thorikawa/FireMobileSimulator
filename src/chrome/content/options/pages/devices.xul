@@ -3,7 +3,7 @@
 
 <!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
 
-<page onload="parent.msim_initializeOptions()"
+<page onload="parent.firemobilesimulator.options.initializeOptions()"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<groupbox>
@@ -15,7 +15,7 @@
 			</columns>
 			<rows>
 				<row align="top">
-					<listbox flex="1" id="msim-listbox" rows="5" onselect="parent.msim_deviceSelected()">
+					<listbox flex="1" id="msim-listbox" rows="5" onselect="parent.firemobilesimulator.options.deviceSelected()">
 						<listhead>
 							<listheader label="&msim.options.devices.label;"/>
 						</listhead>
@@ -23,10 +23,10 @@
 				</row>
 				<row align="top">
 					<hbox>
-						<button label="&msim.options.add;" oncommand="parent.msim_addDevice()" accesskey="n"/>
-						<button id="msim-edit" label="&msim.options.edit;" oncommand="parent.msim_editDevice()" accesskey="e"/>
-						<button id="msim-delete" label="&msim.options.delete;" oncommand="parent.msim_deleteDevice()" accesskey="d"/>
-						<button id="msim-clearall" label="&msim.options.clearall;" oncommand="parent.clearAllDeviceSettings()" accesskey="c"/>
+						<button label="&msim.options.add;" oncommand="parent.firemobilesimulator.options.addDevice()" accesskey="n"/>
+						<button id="msim-edit" label="&msim.options.edit;" oncommand="parent.firemobilesimulator.options.editDevice()" accesskey="e"/>
+						<button id="msim-delete" label="&msim.options.delete;" oncommand="parent.firemobilesimulator.options.deleteDevice()" accesskey="d"/>
+						<button id="msim-clearall" label="&msim.options.clearall;" oncommand="parent.firemobilesimulator.options.clearAllDeviceSettings()" accesskey="c"/>
 					</hbox>
 				</row>
 			</rows>

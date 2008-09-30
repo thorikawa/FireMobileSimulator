@@ -1,21 +1,22 @@
-/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 ***** 
- * FireMobileFimulator is a Firefox add-on that simulate web browsers of 
- * japanese mobile phones.
- * Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK ***** */
+/*******************************************************************************
+ * ***** BEGIN LICENSE BLOCK Version: GPL 3.0 FireMobileFimulator is a Firefox
+ * add-on that simulate web browsers of japanese mobile phones. Copyright (C)
+ * 2008 Takahiro Horikawa <horikawa.takahiro@gmail.com>
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>. ***** END LICENSE
+ * BLOCK *****
+ */
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -27,7 +28,7 @@ const kMSIM_CID = Components.ID("{2e9983d0-2c88-11dd-bd0b-0800200c9a66}");
 // Load our component JS file.
 var jsLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
 		.getService(Ci.mozIJSSubScriptLoader);
-jsLoader.loadSubScript("chrome://msim/content/common/preferences.js");
+jsLoader.loadSubScript("chrome://msim/content/common/pref.js");
 jsLoader.loadSubScript("chrome://msim/content/common/carrier.js");
 jsLoader.loadSubScript("chrome://msim/content/common/util.js");
 
@@ -37,15 +38,19 @@ function myHTTPListener() {
 myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
-		var carrier = pref.copyUnicharPref("msim.current.carrier");
+		var carrier = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.current.carrier");
 		if (carrier) {
 
-			var registFlag = pref.getBoolPref("msim.config.regist.enabled");
+			var registFlag = firemobilesimulator.common.pref
+					.getBoolPref("msim.config.regist.enabled");
 
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
-				var device = pref.copyUnicharPref("msim.current.device");
-				var id = pref.copyUnicharPref("msim.current.id");
+				var device = firemobilesimulator.common.pref
+						.copyUnicharPref("msim.current.device");
+				var id = firemobilesimulator.common.pref
+						.copyUnicharPref("msim.current.id");
 
 				httpChannel.setRequestHeader("x-msim-use", "on", false);
 
@@ -56,15 +61,20 @@ myHTTPListener.prototype = {
 					var as = uri.asciiSpec;
 					var qs = "";
 
-					var uid = pref.copyUnicharPref("msim.config.DC.uid");
-					var ser = pref.copyUnicharPref("msim.config.DC.ser");
-					var icc = pref.copyUnicharPref("msim.config.DC.icc");
-					var guid = pref.copyUnicharPref("msim.config.DC.guid");
+					var uid = firemobilesimulator.common.pref
+							.copyUnicharPref("msim.config.DC.uid");
+					var ser = firemobilesimulator.common.pref
+							.copyUnicharPref("msim.config.DC.ser");
+					var icc = firemobilesimulator.common.pref
+							.copyUnicharPref("msim.config.DC.icc");
+					var guid = firemobilesimulator.common.pref
+							.copyUnicharPref("msim.config.DC.guid");
 
 					// UTN
-					var utnFlag = pref.getBoolPref("msim.temp.utnflag");
+					var utnFlag = firemobilesimulator.common.pref
+							.getBoolPref("msim.temp.utnflag");
 					if (true == utnFlag) {
-						var userAgent = pref
+						var userAgent = firemobilesimulator.common.pref
 								.copyUnicharPref("msim.current.useragent");
 
 						// DoCoMo2.0
@@ -91,47 +101,53 @@ myHTTPListener.prototype = {
 					var params = {};
 					if (parts.length == 2) {
 						var values = parts[1].split("&");
-						params = getParamsFromQuery(parts[1]);
+						params = firemobilesimulator.common.util
+								.getParamsFromQuery(parts[1]);
 
 						if (uri.scheme != "https") {
 							// httpsではUID送信とiモードID送信は行わない
-							values.map(function (value) {
-								if (value.toUpperCase() == "UID=NULLGWDOCOMO") {
-									value = value.substr(0, 3) + "="
-											+ uid;
+							
+							for(var i=0; i<values.length; i++) {
+								if (values[i].toUpperCase() == "UID=NULLGWDOCOMO") {
+									dump("[msim]send uid:"+uid+" for DoCoMo.\n")
+									values[i] = values[i].substr(0, 3) + "=" + uid;
 									rewriteFlag = true;
-								} else if (value.toUpperCase() == "GUID=ON") {
-									dump("[msim]set guid.\n");
+								} else if (values[i].toUpperCase() == "GUID=ON") {
+									dump("[msim]send guid:"+guid+" for DoCoMo.\n");
 									httpChannel.setRequestHeader("X-DCMGUID",
 											guid, false);
 								}
-								return value;
-							});
+							}
 						}
 						qs = values.join("&");
 						as = parts[0] + "?" + qs;
 					}
 
-					var lcsFlag = pref.getBoolPref("msim.temp.lcsflag");
+					var lcsFlag = firemobilesimulator.common.pref
+							.getBoolPref("msim.temp.lcsflag");
 					if (true == lcsFlag) {
 						dump("[msim]add GPS info for DoCoMo\n");
-						var lat = pref
+						var lat = firemobilesimulator.common.pref
 								.copyUnicharPref("msim.config.DC.gps.lat");
-						var lon = pref
+						var lon = firemobilesimulator.common.pref
 								.copyUnicharPref("msim.config.DC.gps.lon");
-						var alt = pref
+						var alt = firemobilesimulator.common.pref
 								.copyUnicharPref("msim.config.DC.gps.alt");
 						if (parts.length >= 2) {
 							if (parts[1]) {
-								as += "&lat="+lat+"&lon="+lon+"&geo=wgs84&xacc=3&alt="+alt;
+								as += "&lat=" + lat + "&lon=" + lon
+										+ "&geo=wgs84&xacc=3&alt=" + alt;
 							} else {
-								as += "lat="+lat+"&lon="+lon+"&geo=wgs84&xacc=3&alt="+alt;
+								as += "lat=" + lat + "&lon=" + lon
+										+ "&geo=wgs84&xacc=3&alt=" + alt;
 							}
 						} else {
-							as += "?lat="+lat+"&lon="+lon+"&geo=wgs84&xacc=3&alt="+alt;
+							as += "?lat=" + lat + "&lon=" + lon
+									+ "&geo=wgs84&xacc=3&alt=" + alt;
 						}
 						rewriteFlag = true;
-						pref.setBoolPref("msim.temp.lcsflag", false);
+						firemobilesimulator.common.pref.setBoolPref(
+								"msim.temp.lcsflag", false);
 					}
 
 					// DoCoMo端末はCookie送信を行わない
@@ -152,11 +168,13 @@ myHTTPListener.prototype = {
 						rewriteURI(subject, as);
 					}
 				} else if (carrier == "SB") {
-					httpChannel.setRequestHeader("x-jphone-uid", pref
+					httpChannel.setRequestHeader("x-jphone-uid",
+							firemobilesimulator.common.pref
 									.copyUnicharPref("msim.config.SB.uid"),
 							false);
 				} else if (carrier == "AU") {
-					httpChannel.setRequestHeader("x-up-subno", pref
+					httpChannel.setRequestHeader("x-up-subno",
+							firemobilesimulator.common.pref
 									.copyUnicharPref("msim.config.AU.uid"),
 							false);
 
@@ -178,14 +196,16 @@ myHTTPListener.prototype = {
 				}
 
 				// set extra http headers
-				deviceAttribute[carrier].forEach(function (a) {
-					var value = pref.copyUnicharPref("msim.devicelist."
-							+ carrier + "." + id + "." + a);
-					if (value) {
-						// dump("set http header:"+a+":"+value+"\n");
-						httpChannel.setRequestHeader(a, value, false);
-					}
-				});
+				firemobilesimulator.common.carrier.deviceAttribute[carrier]
+						.forEach(function(a) {
+							var value = firemobilesimulator.common.pref
+									.copyUnicharPref("msim.devicelist."
+											+ carrier + "." + id + "." + a);
+							if (value) {
+								// dump("set http header:"+a+":"+value+"\n");
+								httpChannel.setRequestHeader(a, value, false);
+							}
+						});
 
 				return;
 			} else if (topic == "http-on-examine-response"
@@ -193,7 +213,9 @@ myHTTPListener.prototype = {
 				// cacheから読み込まれるときは、http-on-examine-merged-responseがnotifyされる
 				// dump("msim:topic is "+topic+"\n");
 				var newContentType = "";
-				var pictogramConverterEnabled = pref.getBoolPref("msim.config."+carrier+".pictogram.enabled");
+				var pictogramConverterEnabled = firemobilesimulator.common.pref
+						.getBoolPref("msim.config." + carrier
+								+ ".pictogram.enabled");
 				if (pictogramConverterEnabled) {
 					newContentType = "text/msim.html";
 				} else {
@@ -201,7 +223,8 @@ myHTTPListener.prototype = {
 				}
 
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
-				["application/xhtml+xml", "text/vnd.wap.wml", "text/x-hdml", "text/html"].forEach(function (contentType) {
+				["application/xhtml+xml", "text/vnd.wap.wml", "text/x-hdml",
+						"text/html"].forEach(function(contentType) {
 					if (contentType == subject.contentType) {
 						subject.contentType = newContentType;
 					}

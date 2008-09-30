@@ -5,12 +5,13 @@
 
 <dialog buttons="accept, cancel"
 		id="msim-user-agent-dialog"
-		ondialogaccept="return msim_saveDevice()"
+		ondialogaccept="firemobilesimulator.options.dialogs.device.saveDevice()"
 		ondialogcancel="javascript:false;"
-		onload="msim_initializeDevice()"
+		onload="firemobilesimulator.options.dialogs.device.initializeDevice()"
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script type="application/x-javascript" src="chrome://msim/content/common/preferences.js"/>
+	<script type="application/x-javascript" src="chrome://msim/content/core.js"/>
+	<script type="application/x-javascript" src="chrome://msim/content/common/pref.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/common/carrier.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/options/options.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/options/dialogs/device.js"/>
@@ -30,7 +31,7 @@
 			</row>
 			<row id="msim.options.device.carrier.row" align="center">
 				<label control="msim.options.device.carrier" value="&msim.options.device.carrier;"/>
-				<textbox id="msim.options.device.carrier" size="50" disabled="true"/>
+				<!--<textbox id="msim.options.device.carrier" size="50" disabled="true"/>-->
 			</row>
 			<row id="msim.options.device.useragent.row" align="center">
 				<label control="msim.options.device.useragent" value="&msim.options.device.useragent;"/>

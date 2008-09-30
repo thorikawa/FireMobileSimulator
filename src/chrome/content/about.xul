@@ -27,13 +27,13 @@
 <groupbox align="center" orient="horizontal">
 <vbox>
   <label value="FireMobileSimulator" style="font-weight: bold; font-size: x-large;"/>
-  <label value="&version; 0.1.4"/>
+  <label value="&version; 0.1.5pre"/>
   <separator class="thin"/>
   <label value="&createdBy;" style="font-weight: bold;"/>
   <label value="Takahiro Horikawa &lt;horikawa.takahiro@gmail.com&gt;"/>
   <separator class="thin"/>
   <label value="&homepage;" style="font-weight: bold;"/>
-  <label onclick="openURL(this.value)" class="text-link" value="https://addons.mozilla.org/firefox/addon/8519"/>
+  <label onclick="firemobilesimulator.common.util.openURL(this.value)" class="text-link" value="https://addons.mozilla.org/firefox/addon/8519"/>
   <separator class="thin"/>
 </vbox>
 </groupbox>

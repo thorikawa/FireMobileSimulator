@@ -22,15 +22,17 @@
 <!DOCTYPE overlay SYSTEM "chrome://msim/locale/msim.dtd">
 <overlay id="msim-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript" src="common/preferences.js"></script>
+	<script type="application/x-javascript" src="core.js"></script>
+	<script type="application/x-javascript" src="common/pref.js"></script>
 	<script type="application/x-javascript" src="common/carrier.js"></script>
 	<script type="application/x-javascript" src="common/util.js"></script>
 	<script type="application/x-javascript" src="overlay.js"></script>
+	<script type="application/x-javascript" src="core.js"></script>
+	<script type="application/x-javascript" src="mpc/common.js"></script>
+	<script type="application/x-javascript" src="mpc/docomo.js"></script>
+	<script type="application/x-javascript" src="mpc/ezweb.js"></script>
+	<script type="application/x-javascript" src="mpc/softbank.js"></script>
 	<script type="application/x-javascript" src="mpc.js"></script>
-	<script type="application/x-javascript" src="carrier/common.js"></script>
-	<script type="application/x-javascript" src="carrier/foma.js"></script>
-	<script type="application/x-javascript" src="carrier/softbank.js"></script>
-	<script type="application/x-javascript" src="carrier/ezweb.js"></script>
 
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="msim-strings" src="chrome://msim/locale/msim.properties"/>
@@ -38,24 +40,24 @@
 
 	<menupopup id="menu_ToolsPopup">
 		<menu id="msim-menu" class="menu-iconic" accesskey="&msim.menu.accesskey;" insertafter="devToolsSeparator" label="&msim.label;">
-			<menupopup id="msim-popup-menu" onpopupshowing="msim.displayDeviceSwitcherMenu(this, 'menu');">
-				<menuitem id="msim-default-menu" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="msim.msim_resetDevice(event);" name="devicelist"/>
+			<menupopup id="msim-popup-menu" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'menu');">
+				<menuitem id="msim-default-menu" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
 				<menuseparator id="msim-separator1-menu"/>
 				<menuseparator id="msim-separator2-menu"/>
-				<menuitem id="msim-options-menu" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="msim.msim_openOptions();"/>
-				<menuitem id="msim-about-menu" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="msim.msim_openAbout();"/>
+				<menuitem id="msim-options-menu" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
+				<menuitem id="msim-about-menu" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</menu>
 	</menupopup>
 
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="msim-button" label="&msim.label;" tooltiptext="&msim.label;" type="menu" onmouseover="msim.msim_openToolbarButton(this);">
-			<menupopup id="msim-popup-toolbar" onpopupshowing="msim.displayDeviceSwitcherMenu(this, 'toolbar');">
-				<menuitem id="msim-default-toolbar" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="msim.msim_resetDevice(event);" name="devicelist"/>
+		<toolbarbutton id="msim-button" label="&msim.label;" tooltiptext="&msim.label;" type="menu" onmouseover="firemobilesimulator.overlay.openToolbarButton(this);">
+			<menupopup id="msim-popup-toolbar" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'toolbar');">
+				<menuitem id="msim-default-toolbar" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
 				<menuseparator id="msim-separator1-toolbar"/>
 				<menuseparator id="msim-separator2-toolbar"/>
-				<menuitem id="msim-options-toolbar" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="msim.msim_openOptions();"/>
-				<menuitem id="msim-about-toolbar" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="msim.msim_openAbout();"/>
+				<menuitem id="msim-options-toolbar" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
+				<menuitem id="msim-about-toolbar" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</toolbarbutton>
 	</toolbarpalette>

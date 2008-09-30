@@ -17,8 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.common) firemobilesimulator.common = {};
+if(!firemobilesimulator.common.util) firemobilesimulator.common.util = {};
+
 // Opens the URL in a new tab
-function openURL(url) {
+firemobilesimulator.common.util.openURL = function(url) {
 	var parentWindow = null;
 
 	// If there is a parent window
@@ -37,45 +42,17 @@ function openURL(url) {
 	}
 }
 
-// page load eventからcontent documentを返す
-function getPageLoadEventContentDocument(event) {
-	try {
-		var eventTarget = event.target;
-		var originalTarget = event.originalTarget;
-
-		if (eventTarget
-				&& originalTarget
-				&& (originalTarget.nodeName == "#document" || eventTarget == getBrowser())) {
-			var contentDocument = eventTarget.contentDocument;
-
-			if (!contentDocument && originalTarget.defaultView
-					&& originalTarget.defaultView.parent) {
-				contentDocument = originalTarget.defaultView.parent.document;
-			}
-
-			if (contentDocument
-					&& contentDocument.documentURI == originalTarget.documentURI) {
-				return contentDocument;
-			}
-		}
-	} catch (exception) {
-		dump("[msim]Error can't get content document:" + exception + "\n");
-	}
-
-	return null;
-}
-
 /**
  * 
  * @param {} path パス
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-function getParamsFromPath(path, func){
+firemobilesimulator.common.util.getParamsFromPath = function(path, func){
 	var params = {};
 	var qindex = path.indexOf("?");
 	if (qindex >= 0) {
-		params = getParamsFromQuery(path.substring(qindex+1), func);
+		params = firemobilesimulator.common.util.getParamsFromQuery(path.substring(qindex+1), func);
 	}
 	return params;
 }
@@ -86,7 +63,7 @@ function getParamsFromPath(path, func){
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-function getParamsFromQuery(q, func){
+firemobilesimulator.common.util.getParamsFromQuery = function(q, func){
 	if (!func || !func instanceof Function) func = decodeURI;
 	//dump("##getParamsFromQuery start\n");
 	var params = {};
@@ -115,11 +92,12 @@ function getParamsFromQuery(q, func){
  * @param {} lat
  * @param {} lon
  */
-function Point(lat,lon){
+firemobilesimulator.common.util.Point = function(lat,lon){
 	this.lat=lat;
 	this.lon=lon;
 };
-Point.prototype = {
+
+firemobilesimulator.common.util.Point.prototype = {
 	lat : null,
 	lon : null,
 	datum : "0",
@@ -130,15 +108,15 @@ Point.prototype = {
 	UNIT_DEGREE : "1",
 	toDms : function (){
 		if (this.unit == this.UNIT_DEGREE) {
-			this.lat = degree2dms(this.lat);
-			this.lon = degree2dms(this.lon);
+			this.lat = firemobilesimulator.common.util.degree2dms(this.lat);
+			this.lon = firemobilesimulator.common.util.degree2dms(this.lon);
 			this.unit = this.UNIT_DMS;
 		}
 	},
 	toDegree : function(){
 		if (this.unit == this.UNIT_DMS) {
-			this.lat = dms2degree(this.lat);
-			this.lon = dms2degree(this.lon);
+			this.lat = firemobilesimulator.common.util.dms2degree(this.lat);
+			this.lon = firemobilesimulator.common.util.dms2degree(this.lon);
 			this.unit = this.UNIT_DEGREE;
 		}
 	},
@@ -162,7 +140,7 @@ Point.prototype = {
  * @param {} dms
  * @return {}
  */
-function dms2degree(dms){
+firemobilesimulator.common.util.dms2degree = function(dms){
 	if (!/[-+]?(\d+)\.(\d+)\.(\d+\.\d+)/.test(dms)) {
 		return null;
 	}
@@ -178,7 +156,7 @@ function dms2degree(dms){
  * @param {} degree
  * @return {}
  */
-function degree2dms(degree){
+firemobilesimulator.common.util.degree2dms = function(degree){
 	var n = 1000;
 	var u = Math.floor(degree*3600*n + 0.5);
 	var s = parseInt(u/n) % 60;
@@ -202,7 +180,7 @@ String.prototype.padding = function(pad, len){
 	return new String(newString);
 }
 
-function getYYYYMMDDHHmm(){
+firemobilesimulator.common.util.getYYYYMMDDHHmm = function(){
 	var now = new Date();
 	var y = (now.getFullYear()).toString();
 	var m = (now.getMonth()+1).toString().padding("0",2);
@@ -212,11 +190,11 @@ function getYYYYMMDDHHmm(){
 	return y+m+d+h+min;
 }
 
-function getHiddenTag(params){
+firemobilesimulator.common.util.getHiddenTag = function(params){
 	var r = "";
 	for (var i in params) {
 		if (i.toUpperCase() == "UID" && params[i].toUpperCase() == "NULLGWDOCOMO") {
-			params[i] = pref.copyUnicharPref("msim.config.DC.uid");
+			params[i] = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.uid");
 		}
 		r += '<input type="hidden" name="'+i+'" value="'+params[i]+'" />\n';
 	}

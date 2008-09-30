@@ -17,17 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-var MPC_SJIS = "SJIS";
-var MPC_UTF8 = "UTF-8";
-var MPC_EUCJP = "EUC_JP";
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.mpc) firemobilesimulator.mpc = {};
+if(!firemobilesimulator.mpc.common) firemobilesimulator.mpc.common = {};
 
-var HexStrings = function(hexstrings, charset) {
+firemobilesimulator.mpc.common.MPC_SJIS = "SJIS";
+firemobilesimulator.mpc.common.MPC_UTF8 = "UTF-8";
+firemobilesimulator.mpc.common.MPC_EUCJP = "EUC_JP";
+
+firemobilesimulator.mpc.common.HexStrings = function(hexstrings, charset) {
 	this.hexstrings = hexstrings || "";
-	this.charset = charset || MPC_SJIS;
+	this.charset = charset || firemobilesimulator.mpc.common.MPC_SJIS;
 	this.i = 0;
 };
 
-HexStrings.prototype = {
+firemobilesimulator.mpc.common.HexStrings.prototype = {
 	hexstring : "",
 	charset : "",
 	i : 0,
@@ -37,17 +42,17 @@ HexStrings.prototype = {
 
 	getNextCharacterDecs : function() {
 		var ds = parseInt(this.hexstrings[this.i], 16);
-		if (ds >= 0x00 && ds <= 0x7F || this.charset == MPC_SJIS && ds >= 0xA0
+		if (ds >= 0x00 && ds <= 0x7F || this.charset == firemobilesimulator.mpc.common.MPC_SJIS && ds >= 0xA0
 				&& ds <= 0xDF) {
 			// 1バイト文字
 			this.i += 1;
 			return [ds];
-		} else if (this.charset == MPC_SJIS) {
+		} else if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
 			// 2バイト文字
 			var ds2 = parseInt(this.hexstrings[this.i + 1], 16);
 			this.i += 2;
 			return [ds, ds2];
-		} else if (this.charset == MPC_UTF8) {
+		} else if (this.charset == firemobilesimulator.mpc.common.MPC_UTF8) {
 			// 3バイト(UTF-8)
 			if (ds >= 0xE0 && ds <= 0xEF) {
 				var ds2 = parseInt(this.hexstrings[this.i + 1], 16);
@@ -62,7 +67,7 @@ HexStrings.prototype = {
 	}
 };
 
-function unpack(str) {
+firemobilesimulator.mpc.common.unpack = function(str) {
 	// dump("unpack start:"+str+"\n");
 	var last = str.length;
 	var ret = Array(last);
@@ -73,13 +78,13 @@ function unpack(str) {
 	return ret;
 }
 
-function sdecs2udec(chs) {
+firemobilesimulator.mpc.common.sdecs2udec = function(chs) {
 	var hex = "";
 	for (var i = 0; i < chs.length; i++) {
 		var temp = "0" + chs[i].toString(16);
 		hex += "%" + temp.slice(-2);
 	}
-	var unicode = EscapeUnicode(UnescapeSJIS(hex));
+	var unicode = firemobilesimulator.common.ecl.EscapeUnicode(firemobilesimulator.common.ecl.UnescapeSJIS(hex));
 	if (/^%(?:u[0-9A-F]{4}|[0-9A-F]{2})$/.test(unicode)) {
 		//dump("return" + parseInt(unicode.substring(2, 6), 16) + "\n");
 		return parseInt(unicode.substring(2, 6), 16);
@@ -88,13 +93,13 @@ function sdecs2udec(chs) {
 	}
 }
 
-function u8decs2udec(chs) {
+firemobilesimulator.mpc.common.u8decs2udec = function(chs) {
 	var hex = "";
 	for (var i = 0; i < chs.length; i++) {
 		var temp = "0" + chs[i].toString(16);
 		hex += "%" + temp.slice(-2);
 	}
-	var unicode = EscapeUnicode(UnescapeUTF8(hex));
+	var unicode = firemobilesimulator.common.ecl.EscapeUnicode(firemobilesimulator.common.ecl.UnescapeUTF8(hex));
 	if (/^%(?:u[0-9A-F]{4}|[0-9A-F]{2})$/.test(unicode)) {
 		//dump("return" + parseInt(unicode.substring(2, 6), 16) + "\n");
 		return parseInt(unicode.substring(2, 6), 16);
@@ -103,7 +108,7 @@ function u8decs2udec(chs) {
 	}
 }
 
-function utf82unicode(bits) {
+firemobilesimulator.mpc.common.utf82unicode = function(bits) {
 	var rbits = new Array(2);
 	if (bits.length == 3) {
 		var x = bits[0] & 0x0F;
@@ -117,7 +122,7 @@ function utf82unicode(bits) {
 	return rbits;
 }
 
-function unicode2utf8(bits) {
+firemobilesimulator.mpc.common.unicode2utf8 = function(bits){
 	var rbits = new Array(3);
 	if (bits.length == 2) {
 		rbits[0] = 0xE0 + (bits[0] >> 4);
@@ -129,7 +134,7 @@ function unicode2utf8(bits) {
 	return rbits;
 }
 
-function bits2dec(bits) {
+firemobilesimulator.mpc.common.bits2dec = function(bits) {
 	var r = 0;
 	for (var i=0; i<bits.length; i++) {
 		r += bits[i] << (8*(bits.length-i-1));

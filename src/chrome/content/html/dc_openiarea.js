@@ -17,20 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-function openiareaInit(params){
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+
+firemobilesimulator.openiareaInit = function(params){
 	var nl = unescape(params["nl"]);
 	var posinfo = params["posinfo"];
 	var arg1 = params["arg1"];
 	var arg2 = params["arg2"];
 	dump("##"+arg1+":"+arg2+"\n");
-	var arg1params = arg1 ? getParamsFromQuery(unescape(arg1)) : null;
-	var arg2params = arg2 ? getParamsFromQuery(unescape(arg2)) : null;
+	var arg1params = arg1 ? firemobilesimulator.common.util.getParamsFromQuery(unescape(arg1)) : null;
+	var arg2params = arg2 ? firemobilesimulator.common.util.getParamsFromQuery(unescape(arg2)) : null;
 
-	var openiareaBody = document.getElementById("openiarea_body");
-	var areaname = pref.copyUnicharPref("msim.config.DC.gps.areaname");
-	var areacode = pref.copyUnicharPref("msim.config.DC.gps.areacode");
-	var lat = pref.copyUnicharPref("msim.config.DC.gps.lat");
-	var lon = pref.copyUnicharPref("msim.config.DC.gps.lon");
+	var openiareaBody = document.getElementById("firemobilesimulator-openiarea-body");
+	var areaname = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.areaname");
+	var areacode = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.areacode");
+	var lat = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.lat");
+	var lon = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.lon");
 
 	if(!posinfo){
 		//エリアコードのみ
@@ -40,8 +43,8 @@ function openiareaInit(params){
 <div>よろしいですか？</div>\
 <form method="POST" action='+nl+'>\
 <input type="hidden" name="AREACODE" value="'+areacode+'">';
-body += getHiddenTag(arg1params);
-body += getHiddenTag(arg2params);
+body += firemobilesimulator.common.util.getHiddenTag(arg1params);
+body += firemobilesimulator.common.util.getHiddenTag(arg2params);
 body += '\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\
 </form>\
@@ -64,8 +67,8 @@ body += '\
 <input type="hidden" name="LON" value="'+lon+'">\
 <input type="hidden" name="GEO" value="wgs84">\
 <input type="hidden" name="XACC" value="1">';
-body += getHiddenTag(arg1params);
-body += getHiddenTag(arg2params);
+body += firemobilesimulator.common.util.getHiddenTag(arg1params);
+body += firemobilesimulator.common.util.getHiddenTag(arg2params);
 body += '\
 <input type="hidden" name="POSINFO" value="'+posinfo+'">\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\

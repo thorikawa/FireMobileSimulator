@@ -1,9 +1,13 @@
-var msim_optionsDataBoolean = new Array();
-var msim_optionsDataInteger = new Array();
-var msim_optionsDataString  = new Array();
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.options) firemobilesimulator.options = {};
+
+firemobilesimulator.options.optionsDataBoolean = new Array();
+firemobilesimulator.options.optionsDataInteger = new Array();
+firemobilesimulator.options.optionsDataString  = new Array();
 
 //Adds a device
-function msim_addDevice(){
+firemobilesimulator.options.addDevice = function(){
 	var retVals = {};
 	if(window.openDialog("chrome://msim/content/options/dialogs/device.xul", "msim-device-dialog", "centerscreen,chrome,modal,resizable", "add", null, null, retVals)){
 		if(retVals.id && retVals.carrier){
@@ -21,36 +25,31 @@ function msim_addDevice(){
 }
 
 //Handles changing the options page
-function msim_changePage(pageList){
-	msim_storeOptions();
+firemobilesimulator.options.changePage = function(pageList){
+	firemobilesimulator.options.storeOptions();
 	document.getElementById("msim-options-iframe").setAttribute("src", pageList.selectedItem.getAttribute("value"));
 }
 
 //Deletes a device
-function msim_deleteDevice(){
+firemobilesimulator.options.deleteDevice = function(){
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox    = pageDocument.getElementById("msim-listbox");
 	var selectedItem = deviceBox.selectedItem;
-	if(selectedItem && confirm(document.getElementById("msim-string-bundle").getString("msim_deleteConfirmation"))){
+	if(selectedItem && confirm(document.getElementById("msim-string-bundle").getString("firemobilesimulator.options.deleteConfirmation"))){
 		var carrier = selectedItem.getAttribute("carrier");
 		var deletedId = parseInt(selectedItem.getAttribute("id"));
 		var prefPrefix = "msim.devicelist." + carrier + "." + deletedId + "."
 		deviceBasicAttribute.concat(deviceAttribute[carrier]).forEach(function(attribute){
-			pref.deletePref(prefPrefix+attribute);
+			firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 		});
 
 		//既に使われている端末だったら設定をリセット
-		if(pref.copyUnicharPref("msim.current.id") == deletedId && pref.copyUnicharPref("msim.current.carrier") == carrier){
-			dump("[msim]Debug : This device is used. Reset your settings.\n");
-			pref.deletePref("msim.current.carrier");
-			pref.deletePref("msim.current.device");
-			pref.deletePref("general.useragent.override");
-			pref.deletePref("msim.current.useragent");
-			pref.deletePref("msim.current.id");
+		if(firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId && firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier") == carrier){
+			firemobilesimulator.options.core.resetDevice();
 		}
 
 		//各端末のidを再計算
-		var count = pref.getIntPref("msim.devicelist." + carrier + ".count");
+		var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
 		dump(deletedId+":"+count+"\n");
 		dump((deletedId+1)+":"+count+"\n");
 		for(var i=deletedId+1; i<=count; i++){
@@ -58,17 +57,17 @@ function msim_deleteDevice(){
 			var sPrefPrefix = "msim.devicelist." + carrier + "." + i + ".";
 			var ePrefPrefix = "msim.devicelist." + carrier + "." + (i-1) + ".";
 			deviceBasicAttribute.contcat(deviceAttribute[carrier]).forEach(function(attribute){
-				pref.setUnicharPref(ePrefPrefix+attribute, pref.copyUnicharPref(sPrefPrefix+attribute));
+				firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
 			});
 		}
-		pref.setIntPref("msim.devicelist." + carrier + ".count", count-1);
+		firemobilesimulator.common.pref.setIntPref("msim.devicelist." + carrier + ".count", count-1);
 
 		deviceBox.removeChild(selectedItem);
 	}
 }
 
 //Edits a device
-function msim_editDevice(){
+firemobilesimulator.options.editDevice = function(){
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox    = pageDocument.getElementById("msim-listbox");
 	var selectedItem = deviceBox.selectedItem;
@@ -77,7 +76,12 @@ function msim_editDevice(){
 		var carrier = selectedItem.getAttribute("carrier");
 		var id = selectedItem.getAttribute("id");
 		if(window.openDialog("chrome://msim/content/options/dialogs/device.xul", "msim-device-dialog", "centerscreen,chrome,modal,resizable", "edit", carrier, id, retVals)){
-			setDevice(carrier, id);
+			//setDevice(carrier, id);
+			if(retVals.id && retVals.carrier){
+				if(firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == retVals.id && firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier") == retVals.carrier){
+					firemobilesimulator.core.setDevice(retVals.carrier, retVals.id);
+				}
+			}
 		}
 	}else{
 		dump("[msim]Error : Device is not selected.\n");
@@ -85,37 +89,37 @@ function msim_editDevice(){
 }
 
 // Initializes the options dialog box
-function msim_initializeOptions(){
+firemobilesimulator.options.initializeOptions = function(){
 	var selectedPage = document.getElementById("msim-page-list").selectedItem.getAttribute("value");
 
 	// If this is the general page
 	if(selectedPage.indexOf("general") != -1){
-		msim_initializeGeneral();
+		firemobilesimulator.options.initializeGeneral();
 	}else if(selectedPage.indexOf("devices") != -1){
-		msim_initializeDevices();
+		firemobilesimulator.options.initializeDevices();
 	}else if(selectedPage.indexOf("gps") != -1){
-		msim_initializeGps();
+		firemobilesimulator.options.initializeGps();
 	}else if(selectedPage.indexOf("pictogram") != -1){
-		msim_initializePictogram();
+		firemobilesimulator.options.initializePictogram();
 	}
 }
 
 // Initializes the general page
-function msim_initializeGeneral()
+firemobilesimulator.options.initializeGeneral = function()
 {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
-	pageDocument.getElementById("msim-textbox-docomo-uid").setAttribute("value",pref.copyUnicharPref("msim.config.DC.uid"));
-	pageDocument.getElementById("msim-textbox-docomo-ser").setAttribute("value",pref.copyUnicharPref("msim.config.DC.ser"));
-	pageDocument.getElementById("msim-textbox-docomo-icc").setAttribute("value",pref.copyUnicharPref("msim.config.DC.icc"));
-	pageDocument.getElementById("msim-textbox-docomo-guid").setAttribute("value",pref.copyUnicharPref("msim.config.DC.guid"));
-	pageDocument.getElementById("msim-textbox-au-uid").setAttribute("value",pref.copyUnicharPref("msim.config.AU.uid"));
-	pageDocument.getElementById("msim-textbox-softbank-uid").setAttribute("value",pref.copyUnicharPref("msim.config.SB.uid"));
-	pageDocument.getElementById("msim-textbox-softbank-serial").setAttribute("value",pref.copyUnicharPref("msim.config.SB.serial"));
+	pageDocument.getElementById("msim-textbox-docomo-uid").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.uid"));
+	pageDocument.getElementById("msim-textbox-docomo-ser").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.ser"));
+	pageDocument.getElementById("msim-textbox-docomo-icc").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.icc"));
+	pageDocument.getElementById("msim-textbox-docomo-guid").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.guid"));
+	pageDocument.getElementById("msim-textbox-au-uid").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.uid"));
+	pageDocument.getElementById("msim-textbox-softbank-uid").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.uid"));
+	pageDocument.getElementById("msim-textbox-softbank-serial").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.serial"));
 }
 
 // Initializes the devices page
-function msim_initializeDevices(){
-	dump("msim_initializeDevices\n");
+firemobilesimulator.options.initializeDevices = function(){
+	dump("firemobilesimulator.options.initializeDevices\n");
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox    = pageDocument.getElementById("msim-listbox");
 	var deviceCount  = 0;
@@ -125,12 +129,12 @@ function msim_initializeDevices(){
 		deviceBox.removeChild(deviceBox.lastChild);
 	}
 
-	carrierArray.forEach(function(carrier){
+	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier){
 
-		deviceCount = pref.getIntPref("msim.devicelist." + carrier + ".count");
+		deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
 		for(var i = 1; i <= deviceCount; i++){
-			var device = pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".device");
-			var useragent = pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".useragent");
+			var device = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".device");
+			var useragent = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".useragent");
 			if(device){
 				var listItem = deviceBox.appendItem(carrier + ":" + device, useragent);
 				listItem.setAttribute("carrier", carrier);
@@ -139,35 +143,35 @@ function msim_initializeDevices(){
 		}
 	});
 
-	msim_deviceSelected();
+	firemobilesimulator.options.deviceSelected();
 }
 
 // Saves the user's options
-function msim_saveOptions(){
+firemobilesimulator.options.saveOptions = function(){
 	var option      = null;
 	var optionValue = null;
 
 	// Make sure current page is stored
-	msim_storeOptions();
+	firemobilesimulator.options.storeOptions();
 
 	// Loop through the boolean options
-	for(option in msim_optionsDataBoolean){
-		pref.setBoolPref(option, msim_optionsDataBoolean[option]);
+	for(option in firemobilesimulator.options.optionsDataBoolean){
+		firemobilesimulator.common.pref.setBoolPref(option, firemobilesimulator.options.optionsDataBoolean[option]);
 	}
 
 	// Loop through the integer options
-	for(option in msim_optionsDataInteger){
-		pref.setIntPref(option, msim_optionsDataInteger[option]);
+	for(option in firemobilesimulator.options.optionsDataInteger){
+		firemobilesimulator.common.pref.setIntPref(option, firemobilesimulator.options.optionsDataInteger[option]);
 	}
 
 	// Loop through the string options
-	for(option in msim_optionsDataString){
-		pref.setUnicharPref(option, msim_optionsDataString[option]);
+	for(option in firemobilesimulator.options.optionsDataString){
+		firemobilesimulator.common.pref.setUnicharPref(option, firemobilesimulator.options.optionsDataString[option]);
 	}
 }
 
 // Stores the user's options to be saved later
-function msim_storeOptions(){
+firemobilesimulator.options.storeOptions = function(){
 	var iFrame       = document.getElementById("msim-options-iframe");
 	var iFrameSrc    = iFrame.getAttribute("src");
 	var pageDocument = iFrame.contentDocument;
@@ -175,43 +179,43 @@ function msim_storeOptions(){
 	// If this is the general page
 	if(iFrameSrc.indexOf("general") != -1){
 		dump("[msim]store generals.\n");
-		msim_optionsDataString["msim.config.DC.uid"]    = pageDocument.getElementById("msim-textbox-docomo-uid").value;
-		msim_optionsDataString["msim.config.DC.ser"]    = pageDocument.getElementById("msim-textbox-docomo-ser").value;
-		msim_optionsDataString["msim.config.DC.icc"]    = pageDocument.getElementById("msim-textbox-docomo-icc").value;
-		msim_optionsDataString["msim.config.DC.guid"]   = pageDocument.getElementById("msim-textbox-docomo-guid").value;
-		msim_optionsDataString["msim.config.AU.uid"]    = pageDocument.getElementById("msim-textbox-au-uid").value;
-		msim_optionsDataString["msim.config.SB.uid"]    = pageDocument.getElementById("msim-textbox-softbank-uid").value;
-		msim_optionsDataString["msim.config.SB.serial"] = pageDocument.getElementById("msim-textbox-softbank-serial").value;
-		var carrier = pref.copyUnicharPref("msim.current.carrier");
-		if(carrier == SOFTBANK){
+		firemobilesimulator.options.optionsDataString["msim.config.DC.uid"]    = pageDocument.getElementById("msim-textbox-docomo-uid").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.ser"]    = pageDocument.getElementById("msim-textbox-docomo-ser").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.icc"]    = pageDocument.getElementById("msim-textbox-docomo-icc").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.guid"]   = pageDocument.getElementById("msim-textbox-docomo-guid").value;
+		firemobilesimulator.options.optionsDataString["msim.config.AU.uid"]    = pageDocument.getElementById("msim-textbox-au-uid").value;
+		firemobilesimulator.options.optionsDataString["msim.config.SB.uid"]    = pageDocument.getElementById("msim-textbox-softbank-uid").value;
+		firemobilesimulator.options.optionsDataString["msim.config.SB.serial"] = pageDocument.getElementById("msim-textbox-softbank-serial").value;
+		var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier");
+		if(carrier == firemobilesimulator.common.carrier.SOFTBANK){
 			dump("[msim]Debug : Current Carrier is SoftBank. Replace User-Agent.\n");
-			var id = pref.copyUnicharPref("msim.current.id");
-			var useragent = pref.copyUnicharPref("msim.devicelist."+carrier+"."+id+".useragent");
-			var newUserAgent = getSoftBankUserAgent(useragent, msim_optionsDataString["msim.config.SB.serial"]);
-			msim_optionsDataString["general.useragent.override"] = newUserAgent;
-			msim_optionsDataString["msim.current.useragent"] = newUserAgent;
+			var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+			var useragent = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+carrier+"."+id+".useragent");
+			var newUserAgent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent, firemobilesimulator.options.optionsDataString["msim.config.SB.serial"]);
+			firemobilesimulator.options.optionsDataString["general.useragent.override"] = newUserAgent;
+			firemobilesimulator.options.optionsDataString["msim.current.useragent"] = newUserAgent;
 		}
 	}else if(iFrameSrc.indexOf("devices") != -1){
 		//Nothing to do
 	}else if(iFrameSrc.indexOf("gps") != -1){
 		dump("[msim]store gps.\n");
-		msim_optionsDataString["msim.config.DC.gps.areacode"]    = pageDocument.getElementById("msim-textbox-docomo-gps-areacode").value;
-		msim_optionsDataString["msim.config.DC.gps.areaname"]    = pageDocument.getElementById("msim-textbox-docomo-gps-areaname").value;
-		msim_optionsDataString["msim.config.DC.gps.lat"]    = pageDocument.getElementById("msim-textbox-docomo-gps-lat").value;
-		msim_optionsDataString["msim.config.DC.gps.lon"]    = pageDocument.getElementById("msim-textbox-docomo-gps-lon").value;
-		msim_optionsDataString["msim.config.DC.gps.alt"]    = pageDocument.getElementById("msim-textbox-docomo-gps-alt").value;
-		msim_optionsDataString["msim.config.AU.gps.lat"]    = pageDocument.getElementById("msim-textbox-au-gps-lat").value;
-		msim_optionsDataString["msim.config.AU.gps.lon"]    = pageDocument.getElementById("msim-textbox-au-gps-lon").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.gps.areacode"]    = pageDocument.getElementById("msim-textbox-docomo-gps-areacode").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.gps.areaname"]    = pageDocument.getElementById("msim-textbox-docomo-gps-areaname").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.gps.lat"]    = pageDocument.getElementById("msim-textbox-docomo-gps-lat").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.gps.lon"]    = pageDocument.getElementById("msim-textbox-docomo-gps-lon").value;
+		firemobilesimulator.options.optionsDataString["msim.config.DC.gps.alt"]    = pageDocument.getElementById("msim-textbox-docomo-gps-alt").value;
+		firemobilesimulator.options.optionsDataString["msim.config.AU.gps.lat"]    = pageDocument.getElementById("msim-textbox-au-gps-lat").value;
+		firemobilesimulator.options.optionsDataString["msim.config.AU.gps.lon"]    = pageDocument.getElementById("msim-textbox-au-gps-lon").value;
 	}else if(iFrameSrc.indexOf("pictogram") != -1){
 		dump("[msim]store pictogram.\n");
-		msim_optionsDataBoolean["msim.config.DC.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-docomo-pictogram-enabled").checked;
-		msim_optionsDataBoolean["msim.config.AU.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-au-pictogram-enabled").checked;
-		msim_optionsDataBoolean["msim.config.SB.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-softbank-pictogram-enabled").checked;
+		firemobilesimulator.options.optionsDataBoolean["msim.config.DC.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-docomo-pictogram-enabled").checked;
+		firemobilesimulator.options.optionsDataBoolean["msim.config.AU.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-au-pictogram-enabled").checked;
+		firemobilesimulator.options.optionsDataBoolean["msim.config.SB.pictogram.enabled"]    = pageDocument.getElementById("msim-textbox-softbank-pictogram-enabled").checked;
 	}
 }
 
 // Called whenever the device box is selected
-function msim_deviceSelected(){
+firemobilesimulator.options.deviceSelected = function(){
 	dump("something selected\n");
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox    = pageDocument.getElementById("msim-listbox");
@@ -224,51 +228,51 @@ function msim_deviceSelected(){
 	}
 }
 
-function clearAllDeviceSettings(){
+firemobilesimulator.options.clearAllDeviceSettings = function(){
 	if(confirm(document.getElementById("msim-string-bundle").getString("msim_clearAllConfirmation"))){
-		carrierArray.forEach(function(carrier){
+		firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier){
 			dump("target carrier is "+carrier+"\n");
-			pref.deletePref("msim.devicelist." + carrier + ".count");
-			var count = pref.getIntPref("msim.devicelist." + carrier + ".count");
+			firemobilesimulator.common.pref.deletePref("msim.devicelist." + carrier + ".count");
+			var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
 			for(var i=1; i<=count; i++){
 				var prefPrefix = "msim.devicelist." + carrier + "." + i + ".";
 
-				dump("target prefix is "+prefPrefix+"\n");
+				dump("target firemobilesimulator.common.pref.x is "+prefPrefix+"\n");
 				deviceBasicAttribute.concat(deviceAttribute[carrier]).forEach(function(attribute){
-					pref.deletePref(prefPrefix+attribute);
+					firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 				});
 			}
 		});
 
-		pref.deletePref("msim.current.carrier");
-		pref.deletePref("msim.current.device");
-		pref.deletePref("general.useragent.override");
-		pref.deletePref("msim.current.useragent");
-		pref.deletePref("msim.current.id");
+		firemobilesimulator.common.pref.deletePref("msim.current.carrier");
+		firemobilesimulator.common.pref.deletePref("msim.current.device");
+		firemobilesimulator.common.pref.deletePref("general.useragent.override");
+		firemobilesimulator.common.pref.deletePref("msim.current.useragent");
+		firemobilesimulator.common.pref.deletePref("msim.current.id");
 
 		//TODO:ツールバー上のiconをupdate
 		//parent.msim.resetDevice();
 	}
 
-	msim_initializeDevices();
+	firemobilesimulator.options.initializeDevices();
 }
 
 // Initializes the general page
-function msim_initializeGps(){
+firemobilesimulator.options.initializeGps = function(){
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
-	pageDocument.getElementById("msim-textbox-docomo-gps-areacode").setAttribute("value",pref.copyUnicharPref("msim.config.DC.gps.areacode"));
-	pageDocument.getElementById("msim-textbox-docomo-gps-areaname").setAttribute("value",pref.copyUnicharPref("msim.config.DC.gps.areaname"));
-	pageDocument.getElementById("msim-textbox-docomo-gps-lat").setAttribute("value",pref.copyUnicharPref("msim.config.DC.gps.lat"));
-	pageDocument.getElementById("msim-textbox-docomo-gps-lon").setAttribute("value",pref.copyUnicharPref("msim.config.DC.gps.lon"));
-	pageDocument.getElementById("msim-textbox-docomo-gps-alt").setAttribute("value",pref.copyUnicharPref("msim.config.DC.gps.alt"));
-	pageDocument.getElementById("msim-textbox-au-gps-lat").setAttribute("value",pref.copyUnicharPref("msim.config.AU.gps.lat"));
-	pageDocument.getElementById("msim-textbox-au-gps-lon").setAttribute("value",pref.copyUnicharPref("msim.config.AU.gps.lon"));
+	pageDocument.getElementById("msim-textbox-docomo-gps-areacode").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.areacode"));
+	pageDocument.getElementById("msim-textbox-docomo-gps-areaname").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.areaname"));
+	pageDocument.getElementById("msim-textbox-docomo-gps-lat").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.lat"));
+	pageDocument.getElementById("msim-textbox-docomo-gps-lon").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.lon"));
+	pageDocument.getElementById("msim-textbox-docomo-gps-alt").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.alt"));
+	pageDocument.getElementById("msim-textbox-au-gps-lat").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.lat"));
+	pageDocument.getElementById("msim-textbox-au-gps-lon").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.lon"));
 }
 
-function msim_initializePictogram(){
+firemobilesimulator.options.initializePictogram = function(){
 	dump("[msim]initializePictogram.\n");
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
-	pageDocument.getElementById("msim-textbox-docomo-pictogram-enabled").checked = pref.getBoolPref("msim.config.DC.pictogram.enabled");
-	pageDocument.getElementById("msim-textbox-au-pictogram-enabled").checked = pref.getBoolPref("msim.config.AU.pictogram.enabled");
-	pageDocument.getElementById("msim-textbox-softbank-pictogram-enabled").checked = pref.getBoolPref("msim.config.SB.pictogram.enabled");
+	pageDocument.getElementById("msim-textbox-docomo-pictogram-enabled").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.DC.pictogram.enabled");
+	pageDocument.getElementById("msim-textbox-au-pictogram-enabled").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.AU.pictogram.enabled");
+	pageDocument.getElementById("msim-textbox-softbank-pictogram-enabled").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.SB.pictogram.enabled");
 }

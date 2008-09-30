@@ -17,10 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-var MPC_DC = function(charset) {
-	this.charset = charset || MPC_SJIS;
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.mpc) firemobilesimulator.mpc = {};
+
+firemobilesimulator.mpc.docomo = function(charset) {
+	this.charset = charset || firemobilesimulator.mpc.common.MPC_SJIS;
 };
-MPC_DC.prototype = {
+firemobilesimulator.mpc.docomo.prototype = {
 	/**
 	 * i-mode絵文字画像格納パス
 	 * 
@@ -37,18 +41,6 @@ MPC_DC.prototype = {
 	 */
 	convert : function(str) {
 		dump("[mpc]DoCoMo convert start.charset = "+this.charset+"\n");
-		// Firefoxから数値参照が直接渡ってこないので、とりあえずコメントアウト
-		// var re1 = /&#x([a-f0-9]{4});/ig;
-		// var re2 = /&#([0-9]{5});/g;
-		// var _this = this;
-		// Unicodeの16進数値文字参照をimgタグ形式に変換
-		// str = str.replace(re1, function(whole, s1) { var udec =
-		// parseInt(s1,16); return _this.isPictogramDec(udec) ?
-		// _this.i_options_encode(udec) : s1 ; });
-		// SJISの10進数値文字参照をimgタグ形式に変換
-		// str = str.replace(re2, function(whole, s1) { var udec = sdec2udec(s1);
-		// return _this.isPictogramDec(udec) ? _this.i_options_encode(udec) : s1
-		// ; });
 
 		// 10進数値文字参照をバイナリに変換(絵文字以外も対象としてよし)
 		// SJISの場合、そのままSJISのバイナリになるが問題なし
@@ -75,7 +67,7 @@ MPC_DC.prototype = {
 
 		//TODO: Auから呼び出される場合は違う判定にすべきかどうか？
 		//TODO: 基本絵文字のみに限定する
-		if (this.charset == MPC_SJIS) {
+		if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
 			dump("[mpc]DoCoMo SJIS10match start\n");
 			var regNumericReferenceDec = /&#([0-9]{5});/g;
 			str = str.replace(regNumericReferenceDec, function(whole, s1) {
@@ -94,23 +86,23 @@ MPC_DC.prototype = {
 
 		// バイナリをimgタグ形式に変換
 		dump("[mpc]DoCoMo binary match start\n");
-		var hexstrings = new HexStrings(unpack(str), this.charset);
+		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 		var r = "";
 		while (hexstrings.hasNextCharacter()) {
 			var decs = hexstrings.getNextCharacterDecs();
-			if (this.charset == MPC_SJIS) {
+			if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
 				// SJISバイナリの絵文字を変換
 				if (this.isPictogramSJISDecs(decs)) {
-					r += this.i_options_encode(sdecs2udec(decs));
+					r += this.i_options_encode(firemobilesimulator.mpc.common.sdecs2udec(decs));
 				} else {
 					for (var i = 0; i < decs.length; i++) {
 						r += String.fromCharCode(decs[i]);
 					}
 				}
-			} else if (this.charset == MPC_UTF8) {
+			} else if (this.charset == firemobilesimulator.mpc.common.MPC_UTF8) {
 				// UTF-8バイナリの絵文字を変換
 				if (this.isPictogramUTF8Decs(decs)) {
-					r += this.i_options_encode(u8decs2udec(decs));
+					r += this.i_options_encode(firemobilesimulator.mpc.common.u8decs2udec(decs));
 				} else {
 					for (var i = 0; i < decs.length; i++) {
 						r += String.fromCharCode(decs[i]);

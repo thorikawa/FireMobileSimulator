@@ -17,10 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-var MPC_AU = function(charset) {
-	this.charset = charset || MPC_SJIS;
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.mpc) firemobilesimulator.mpc = {};
+
+firemobilesimulator.mpc.ezweb = function(charset) {
+	this.charset = charset || firemobilesimulator.mpc.common.MPC_SJIS;
 };
-MPC_AU.prototype = {
+firemobilesimulator.mpc.ezweb.prototype = {
 	/**
 	 * EZweb絵文字画像格納パス
 	 * 
@@ -836,12 +840,12 @@ MPC_AU.prototype = {
 				// decsはSJISの文字コード
 				dump("au SJIS 16 match\n");
 				return _this
-						.e_options_encode(_this.getIconMapSJIS()[bits2dec(decs)]);
+						.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else if (_this.isPictogramUnicodeDecs(decs)) {
 				// decsはUnicode
 				dump("au Unicode 16 match\n");
 				return _this
-						.e_options_encode(_this.getIconMapUnicode()[bits2dec(decs)]);
+						.e_options_encode(_this.getIconMapUnicode()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else {
 				dump("au 16 no match\n")
 				// return String.fromCharCode(dec1) + String.fromCharCode(dec2);
@@ -866,12 +870,12 @@ MPC_AU.prototype = {
 				// decsはSJISの文字コード
 				dump("au SJIS 10 match\n");
 				return _this
-						.e_options_encode(_this.getIconMapSJIS()[bits2dec(decs)]);
+						.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else if (_this.isPictogramUnicodeDecs(decs)) {
 				// decsはUnicode
 				dump("au Unicode 10 match\n");
 				return _this
-						.e_options_encode(_this.getIconMapUnicode()[bits2dec(decs)]);
+						.e_options_encode(_this.getIconMapUnicode()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else {
 				dump("au 10 no match\n");
 				// return String.fromCharCode(dec1) + String.fromCharCode(dec2);
@@ -881,28 +885,28 @@ MPC_AU.prototype = {
 
 		// var hexstrings = unpack_e(str);
 		var r = "";
-		var hexstrings = new HexStrings(unpack(str), this.charset);
+		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 
 		dump("[mpc]Au binary match start\n");
 		while (hexstrings.hasNextCharacter()) {
 			var decs = hexstrings.getNextCharacterDecs();
 			// 絵文字変換処理
-			if (this.charset == MPC_SJIS) {
+			if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
 				// SJISバイナリの絵文字を変換
 				if (this.isPictogramSJISDecs(decs)) {
 					r += this
-							.e_options_encode(_this.getIconMapSJIS()[bits2dec(decs)]);
+							.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 				} else {
 					for (var i = 0; i < decs.length; i++) {
 						r += String.fromCharCode(decs[i]);
 					}
 				}
-			} else if (this.charset == MPC_UTF8) {
+			} else if (this.charset == firemobilesimulator.mpc.common.MPC_UTF8) {
 				// 裏KDDIのUTF-8バイナリの絵文字を変換
 				if (this.isPictogramUTF8Decs(decs)) {
 					r += this
-							.e_options_encode(_this.getIconMapSJIS()[bits2dec(_this
-									.e_unofficialUnicode2SJIS(utf82unicode(decs)))]);
+							.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(_this
+									.e_unofficialUnicode2SJIS(firemobilesimulator.mpc.common.utf82unicode(decs)))]);
 				} else {
 					for (var i = 0; i < decs.length; i++) {
 						r += String.fromCharCode(decs[i]);

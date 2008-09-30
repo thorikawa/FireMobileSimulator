@@ -5,28 +5,28 @@
 
 <dialog buttons="accept, cancel"
 		id="msim-options-dialog"
-		ondialogaccept="msim_saveOptions()"
+		ondialogaccept="firemobilesimulator.options.saveOptions()"
 		title="&msim.options.title;"
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script type="application/x-javascript" src="chrome://msim/content/common/preferences.js"/>
-	<script type="application/x-javascript" src="chrome://msim/content/common/carrier.js"/>
-	<script type="application/x-javascript" src="chrome://msim/content/options/options.js"/>
-	<script type="application/x-javascript" src="chrome://msim/content/msim.js"/>
+	<script type="application/x-javascript" src="chrome://msim/content/core.js"/>
+	<script type="application/x-javascript" src="chrome://msim/content/common/pref.js" />
+	<script type="application/x-javascript" src="chrome://msim/content/common/carrier.js" />
+	<script type="application/x-javascript" src="chrome://msim/content/options/options.js" />
 
 	<stringbundleset id="stringbundleset">
-		<stringbundle id="msim-string-bundle" src="chrome://msim/locale/msim.properties"/>
+		<stringbundle id="msim-string-bundle" src="chrome://msim/locale/msim.properties" />
 	</stringbundleset>
 
 	<hbox flex="1">
-		<listbox id="msim-page-list" onselect="msim_changePage(this)">
-			<listitem label="&msim.options.general.label;" selected="true" value="chrome://msim/content/options/pages/general.xul" accesskey="g"/>
-			<listitem label="&msim.options.devices.label;" value="chrome://msim/content/options/pages/devices.xul" accesskey="d"/>
-			<listitem label="&msim.options.gps.label;" value="chrome://msim/content/options/pages/gps.xul" accesskey="d"/>
-			<listitem label="&msim.options.pictogram.label;" value="chrome://msim/content/options/pages/pictogram.xul" accesskey="p"/>
+		<listbox id="msim-page-list" onselect="firemobilesimulator.options.changePage(this)">
+			<listitem label="&msim.options.general.label;" selected="true" value="chrome://msim/content/options/pages/general.xul" accesskey="g" />
+			<listitem label="&msim.options.devices.label;" value="chrome://msim/content/options/pages/devices.xul" accesskey="d" />
+			<listitem label="&msim.options.gps.label;" value="chrome://msim/content/options/pages/gps.xul" accesskey="d" />
+			<listitem label="&msim.options.pictogram.label;" value="chrome://msim/content/options/pages/pictogram.xul" accesskey="p" />
 		</listbox>
 		<vbox flex="1">
-			<iframe flex="1" id="msim-options-iframe" src="chrome://msim/content/options/pages/general.xul"/>
+			<iframe flex="1" id="msim-options-iframe" src="chrome://msim/content/options/pages/general.xul" />
 		</vbox>
 	</hbox>
 </dialog>

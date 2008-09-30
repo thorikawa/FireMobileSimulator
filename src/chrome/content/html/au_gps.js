@@ -17,10 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-function auLocationInit(params) {
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+
+firemobilesimulator.auLocationInit = function(params) {
 	var href = location.href;
-	var lat = encodeURIComponent(pref.copyUnicharPref("msim.config.AU.gps.lat"));
-	var lon = encodeURIComponent(pref.copyUnicharPref("msim.config.AU.gps.lon"));
+	var lat = encodeURIComponent(firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.lat"));
+	var lon = encodeURIComponent(firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.lon"));
 
 	if(href.indexOf("device:location") == 0){
 		dump("location menu\n");
@@ -30,15 +33,15 @@ function auLocationInit(params) {
 		dump("gpsone menu\n");
 		var datum = params["datum"]; // 測地系
 		var unit  = params["unit"]; // 緯度経度表記方法
-		var alt   = pref.copyUnicharPref("msim.config.AU.gps.alt") || 50; //海抜高度
-		var time  = getYYYYMMDDHHmm();
-		var smaj  = pref.copyUnicharPref("msim.config.AU.gps.smaj") || 100; //長軸成分誤差
-		var smin  = pref.copyUnicharPref("msim.config.AU.gps.smin") || 100; //短軸成分誤差
-		var vert  = pref.copyUnicharPref("msim.config.AU.gps.vert") || 100; //高度誤差
-		var majaa = pref.copyUnicharPref("msim.config.AU.gps.majaa") || 60; //長軸短軸傾き値
+		var alt   = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.alt") || 50; //海抜高度
+		var time  = firemobilesimulator.common.util.getYYYYMMDDHHmm();
+		var smaj  = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.smaj") || 100; //長軸成分誤差
+		var smin  = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.smin") || 100; //短軸成分誤差
+		var vert  = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.vert") || 100; //高度誤差
+		var majaa = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.gps.majaa") || 60; //長軸短軸傾き値
 		var fm = 1; //測位結果の精度
 
-		var point = new Point(lat, lon);
+		var point = new firemobilesimulator.common.util.Point(lat, lon);
 		if(datum == 1){
 			// 東京測地系
 			point.toTokyo();

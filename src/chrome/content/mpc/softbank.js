@@ -17,8 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-var MPC_SB = function(){};
-MPC_SB.prototype =
+var firemobilesimulator;
+if(!firemobilesimulator) firemobilesimulator = {};
+if(!firemobilesimulator.mpc) firemobilesimulator.mpc = {};
+
+firemobilesimulator.mpc.softbank = function(){};
+firemobilesimulator.mpc.softbank.prototype =
 {
 	/**
 	 * SoftBank絵文字画像格納パス
@@ -39,7 +43,7 @@ MPC_SB.prototype =
 		//Webコード: エスケープシーケンス開始(\x1B\x24) + コード + エスケープ終わり(\x0F)をimgタグ形式に変換
 		var _this = this;
 		var f = function(whole, s1){
-			var hexstrings = unpack(s1);
+			var hexstrings = firemobilesimulator.mpc.common.unpack(s1);
 			var emoji = "";
 			for (var i=1; i<hexstrings.length; i++) {
 				var dec = parseInt(""+hexstrings[0]+hexstrings[i], 16);
@@ -76,15 +80,15 @@ MPC_SB.prototype =
 
 		// バイナリをimgタグ形式に変換
 		dump("[mpc]SoftBank binary match start\n");
-		var hexstrings = new HexStrings(unpack(str), this.charset);
+		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 		var r = "";
 		while (hexstrings.hasNextCharacter()) {
 			var decs = hexstrings.getNextCharacterDecs();
-			if (this.charset == MPC_SJIS) {
+			if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
 				// SJISバイナリの絵文字を変換 [unofficial]
 				var web = 0;
 				if (decs.length==2) {
-					web = this.s2web(bits2dec(decs));
+					web = this.s2web(firemobilesimulator.mpc.common.bits2dec(decs));
 				}
 				if (web) {
 					r += this.s_options_encode(web);
@@ -93,11 +97,11 @@ MPC_SB.prototype =
 						r += String.fromCharCode(decs[i]);
 					}
 				}
-			} else if (this.charset == MPC_UTF8) {
+			} else if (this.charset == firemobilesimulator.mpc.common.MPC_UTF8) {
 				// UTF-8バイナリの絵文字を変換 [unofficial]
 				var web = 0;
 				if (decs.length==3) {
-					web = this.u2web(bits2dec(utf82unicode(decs)));
+					web = this.u2web(firemobilesimulator.mpc.common.bits2dec(firemobilesimulator.mpc.common.utf82unicode(decs)));
 				}
 				if (web) {
 					r += this.s_options_encode(web);
@@ -189,12 +193,3 @@ MPC_SB.prototype =
 		return buf;
 	}
 };
-
-function unpack(str){
-	var last = str.length;
-	var ret = Array(last);
-	for (var i = 0; i < last; i++) {
-		ret[i] = str.charCodeAt(i).toString(16);
-	}
-	return ret;
-}

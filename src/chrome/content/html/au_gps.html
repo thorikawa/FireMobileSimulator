@@ -1,13 +1,13 @@
 <html>
 <head>
-<script type="text/javascript" src="chrome://msim/content/common/preferences.js"></script>
+<script type="text/javascript" src="chrome://msim/content/common/pref.js"></script>
 <script type="text/javascript" src="chrome://msim/content/common/util.js"></script>
 <script type="text/javascript" src="chrome://msim/content/html/au_gps.js"></script>
 <script type="text/javascript">
 	window.onload=
 	function init(){
-		var params = getParamsFromPath(location.href);
-		auLocationInit(params);
+		var params = firemobilesimulator.common.util.getParamsFromPath(location.href);
+		firemobilesimulator.auLocationInit(params);
 	};
 </script>
 </head>

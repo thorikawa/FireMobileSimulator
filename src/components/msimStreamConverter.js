@@ -30,12 +30,13 @@ var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 		.getService(Components.interfaces.mozIJSSubScriptLoader);
 jsLoader.loadSubScript("chrome://msim/content/common/ecl.js");
 jsLoader.loadSubScript("chrome://msim/content/common/carrier.js");
-jsLoader.loadSubScript("chrome://msim/content/common/preferences.js");
+jsLoader.loadSubScript("chrome://msim/content/common/pref.js");
+jsLoader.loadSubScript("chrome://msim/content/mpc/common.js");
+jsLoader.loadSubScript("chrome://msim/content/mpc/ezweb.js");
+jsLoader.loadSubScript("chrome://msim/content/mpc/docomo.js");
+jsLoader.loadSubScript("chrome://msim/content/mpc/softbank.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc.js");
-jsLoader.loadSubScript("chrome://msim/content/carrier/common.js");
-jsLoader.loadSubScript("chrome://msim/content/carrier/ezweb.js");
-jsLoader.loadSubScript("chrome://msim/content/carrier/foma.js");
-jsLoader.loadSubScript("chrome://msim/content/carrier/softbank.js");
+
 /* text/msim.html -> text/html stream converter */
 function MsimStreamConverter() {
 	this.logger = Components.classes['@mozilla.org/consoleservice;1']
@@ -74,11 +75,11 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 		aStatusCode) {
 	dump("[msim]onStopRequest\n");
 
-	var carrier = pref.copyUnicharPref("msim.current.carrier");
+	var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier");
 
 	//絵文字変換
 	dump("[msim]convert pictogram in msimStreamConverter.js\n");
-	var mpc = MobilePictogramConverter.factory(carrier);
+	var mpc = firemobilesimulator.mpc.factory(carrier);
 	mpc.setImagePath("chrome://msim/content/emoji");
 
 	//文字コード判別
@@ -87,21 +88,21 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 			|| this.charset.toUpperCase() == "X-SJIS"
 			|| this.charset.toUpperCase() == "CP932"
 			|| this.charset.toUpperCase() == "WINDOWS-31J") {
-		mpccharset = MPC_SJIS;
+		mpccharset = firemobilesimulator.mpc.common.MPC_SJIS;
 	} else if (this.charset.toUpperCase() == "UTF-8") {
-		mpccharset = MPC_UTF8
+		mpccharset = firemobilesimulator.mpc.common.MPC_UTF8
 	} else if (this.charset.toUpperCase() == "EUC-JP"
 			|| this.charset.toUpperCase() == "X-EUC-JP") {
-		mpccharset = MPC_EUCJP;
+		mpccharset = firemobilesimulator.mpc.common.MPC_EUCJP;
 	} else {
-		mpccharset = MPC_SJIS;
+		mpccharset = firemobilesimulator.mpc.common.MPC_SJIS;
 	}
 	mpc.charset = mpccharset;
 
-	if (AU == carrier) {
+	if (firemobilesimulator.common.carrier.AU == carrier) {
 		dump("[msim]convertPictogram for AU\n");
 		this.data = mpc.convert(this.data);
-		var mpc2 = new MPC_DC();
+		var mpc2 = firemobilesimulator.mpc.factory(firemobilesimulator.common.carrier.DOCOMO);
 		mpc2.setImagePath("chrome://msim/content/emoji");
 		mpc2.charset = mpccharset;
 		this.data = mpc2.convert(this.data);
@@ -144,12 +145,6 @@ MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 	} else {
 		dump("[msim]Already got charset: " + this.charset
 				+ "\n");
-	}
-
-	// Default charset
-	if (this.charset == undefined || this.charset == '') {
-		dump("[msim]set default charset "+MPC_SJIS+"\n");
-		this.charset = MPC_SJIS;
 	}
 
 	this.data += data;
