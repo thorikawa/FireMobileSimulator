@@ -22,8 +22,7 @@ if(!firemobilesimulator) firemobilesimulator = {};
 if(!firemobilesimulator.mpc) firemobilesimulator.mpc = {};
 
 firemobilesimulator.mpc.softbank = function(){};
-firemobilesimulator.mpc.softbank.prototype =
-{
+firemobilesimulator.mpc.softbank.prototype = {
 	/**
 	 * SoftBank絵文字画像格納パス
 	 *

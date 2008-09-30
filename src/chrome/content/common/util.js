@@ -40,7 +40,7 @@ firemobilesimulator.common.util.openURL = function(url) {
 				.addTab(url);
 		window.close();
 	}
-}
+};
 
 /**
  * 
@@ -55,7 +55,7 @@ firemobilesimulator.common.util.getParamsFromPath = function(path, func){
 		params = firemobilesimulator.common.util.getParamsFromQuery(path.substring(qindex+1), func);
 	}
 	return params;
-}
+};
 
 /**
  * 
@@ -85,7 +85,7 @@ firemobilesimulator.common.util.getParamsFromQuery = function(q, func){
 		params["" + v.substring(0,eindex)] = "" + value;
 	});
 	return params;
-}
+};
 
 /**
  * 位置情報オブジェクト
@@ -149,7 +149,7 @@ firemobilesimulator.common.util.dms2degree = function(dms){
 	var dms3 = parseFloat(RegExp.$3);
 	var degree = dms1+dms2/60+dms3/3600;
 	return degree;
-}
+};
 
 /**
  * degree(度)をdms(時分秒)に変換する
@@ -164,7 +164,7 @@ firemobilesimulator.common.util.degree2dms = function(degree){
 	var d = parseInt(u/3600/n);
 	var u = u % n;
 	return d+"."+m.toString().padding("0",2)+"."+s.toString().padding("0",2)+"."+u;
-}
+};
 
 /**
  * 指定された文字列で指定された長さになるまで埋めます
@@ -178,7 +178,7 @@ String.prototype.padding = function(pad, len){
 		newString = pad+newString;
 	}
 	return new String(newString);
-}
+};
 
 firemobilesimulator.common.util.getYYYYMMDDHHmm = function(){
 	var now = new Date();
@@ -188,7 +188,7 @@ firemobilesimulator.common.util.getYYYYMMDDHHmm = function(){
 	var h = now.getHours().toString().padding("0",2);
 	var min = now.getMinutes().toString().padding("0",2);
 	return y+m+d+h+min;
-}
+};
 
 firemobilesimulator.common.util.getHiddenTag = function(params){
 	var r = "";
@@ -199,4 +199,4 @@ firemobilesimulator.common.util.getHiddenTag = function(params){
 		r += '<input type="hidden" name="'+i+'" value="'+params[i]+'" />\n';
 	}
 	return r;
-}
+};

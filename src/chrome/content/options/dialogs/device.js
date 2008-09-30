@@ -113,7 +113,7 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 
 	}
 
-}
+};
 
 firemobilesimulator.options.dialogs.device.carrierSelected = function(obj) {
 	if (firemobilesimulator.options.dialogs.device.carrier) {
@@ -130,7 +130,7 @@ firemobilesimulator.options.dialogs.device.carrierSelected = function(obj) {
 				firemobilesimulator.options.dialogs.device.carrier, null);
 	}
 	window.sizeToContent();
-}
+};
 
 firemobilesimulator.options.dialogs.device.appendDeviceAttributeRows = function(
 		parentNode, carrier, id) {
@@ -160,7 +160,7 @@ firemobilesimulator.options.dialogs.device.appendDeviceAttributeRows = function(
 				r.appendChild(t);
 				parentNode.appendChild(r);
 			});
-}
+};
 
 firemobilesimulator.options.dialogs.device.removeDeviceAttributeRows = function(
 		parentNode) {
@@ -169,7 +169,7 @@ firemobilesimulator.options.dialogs.device.removeDeviceAttributeRows = function(
 		dump("remove:" + parentNode.lastChild.getAttribute("id") + "\n");
 		parentNode.removeChild(parentNode.lastChild);
 	}
-}
+};
 
 // Saves a device
 firemobilesimulator.options.dialogs.device.saveDevice = function() {
@@ -250,4 +250,4 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 				});
 	}
 	return true;
-}
+};

@@ -1,4 +1,4 @@
-pref("msim.config.regist.enabled", true);
+pref("msim.config.register.enabled", true);
 pref("msim.config.initialized", false);
 
 pref("msim.config.general.reset-device-onquit", true);

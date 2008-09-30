@@ -76,4 +76,4 @@ body += '\
 ';
 		openiareaBody.innerHTML = body;
 	}
-}
+};

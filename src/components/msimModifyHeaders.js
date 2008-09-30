@@ -41,8 +41,8 @@ myHTTPListener.prototype = {
 				.copyUnicharPref("msim.current.carrier");
 		if (carrier) {
 
-			var registFlag = firemobilesimulator.common.pref
-					.getBoolPref("msim.config.regist.enabled");
+			var registerFlag = firemobilesimulator.common.pref
+					.getBoolPref("msim.config.register.enabled");
 
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
@@ -104,19 +104,20 @@ myHTTPListener.prototype = {
 								.getParamsFromQuery(parts[1]);
 
 						if (uri.scheme != "https") {
-							// httpsではUID送信とiモードID送信は行わない
+							// HTTPSではUID送信とiモードID送信は行わない
 							
-							for(var i=0; i<values.length; i++) {
-								if (values[i].toUpperCase() == "UID=NULLGWDOCOMO") {
-									dump("[msim]send uid:"+uid+" for DoCoMo.\n")
-									values[i] = values[i].substr(0, 3) + "=" + uid;
+							values = values.map(function(value) {
+								if (value.toUpperCase() == "UID=NULLGWDOCOMO") {
+									dump("[msim]send uid:"+uid+" for DoCoMo.\n");
+									value = value.substr(0, 3) + "=" + uid;
 									rewriteFlag = true;
-								} else if (values[i].toUpperCase() == "GUID=ON") {
+								} else if (value.toUpperCase() == "GUID=ON") {
 									dump("[msim]send guid:"+guid+" for DoCoMo.\n");
 									httpChannel.setRequestHeader("X-DCMGUID",
 											guid, false);
 								}
-							}
+								return value;
+							});
 						}
 						qs = values.join("&");
 						as = parts[0] + "?" + qs;

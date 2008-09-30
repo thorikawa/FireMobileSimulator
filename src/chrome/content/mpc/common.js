@@ -76,7 +76,7 @@ firemobilesimulator.mpc.common.unpack = function(str) {
 		// dump("[unpack]"+str.charCodeAt(i)+":"+ret[i]+"\n");
 	}
 	return ret;
-}
+};
 
 firemobilesimulator.mpc.common.sdecs2udec = function(chs) {
 	var hex = "";
@@ -91,7 +91,7 @@ firemobilesimulator.mpc.common.sdecs2udec = function(chs) {
 	} else {
 		return undefined;
 	}
-}
+};
 
 firemobilesimulator.mpc.common.u8decs2udec = function(chs) {
 	var hex = "";
@@ -106,7 +106,7 @@ firemobilesimulator.mpc.common.u8decs2udec = function(chs) {
 	} else {
 		return undefined;
 	}
-}
+};
 
 firemobilesimulator.mpc.common.utf82unicode = function(bits) {
 	var rbits = new Array(2);
@@ -120,7 +120,7 @@ firemobilesimulator.mpc.common.utf82unicode = function(bits) {
 		dump("NOT IMPLEMENTED!\n");
 	}
 	return rbits;
-}
+};
 
 firemobilesimulator.mpc.common.unicode2utf8 = function(bits){
 	var rbits = new Array(3);
@@ -132,7 +132,7 @@ firemobilesimulator.mpc.common.unicode2utf8 = function(bits){
 		dump("NOT IMPLEMENTED!\n");
 	}
 	return rbits;
-}
+};
 
 firemobilesimulator.mpc.common.bits2dec = function(bits) {
 	var r = 0;
@@ -144,6 +144,6 @@ firemobilesimulator.mpc.common.bits2dec = function(bits) {
 		//dump(bits[1].toString(16)+",return to:"+r+"\n");
 	//}
 	return r;
-}
+};
 
 dump("common.js is loaded.\n");

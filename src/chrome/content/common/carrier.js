@@ -75,6 +75,6 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, se
 	}
 	dump("SB UA:" + useragent + "\n");
 	return useragent;
-}
+};
 
 dump("carrier.js is loaded.\n");

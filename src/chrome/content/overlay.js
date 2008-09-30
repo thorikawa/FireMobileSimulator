@@ -58,7 +58,7 @@ firemobilesimulator.overlay.onInitialize = function() {
 		// true);
 	}
 	firemobilesimulator.overlay.updateIcon();
-}
+};
 
 firemobilesimulator.overlay.onUnload = function() {
 	dump("[msim]onUnload\n");
@@ -94,7 +94,7 @@ firemobilesimulator.overlay.onUnload = function() {
 		dump("[msim]removeEventListner error:" + exception + "\n");
 	}
 
-}
+};
 
 firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
@@ -142,7 +142,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 		currentMenu = document.getElementById("msim-default-" + suffix);
 	}
 	currentMenu.setAttribute("checked", true);
-}
+};
 
 firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
 		permanentMenus) {
@@ -167,17 +167,17 @@ firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
 		}
 	}
 
-}
+};
 
 firemobilesimulator.overlay.openOptions = function() {
 	window.openDialog("chrome://msim/content/options/options.xul",
 			"msim-options-dialog", "centerscreen,chrome,modal,resizable");
-}
+};
 
 firemobilesimulator.overlay.openAbout = function() {
 	window.openDialog("chrome://msim/content/about.xul", "msim-about-dialog",
 			"centerscreen,chrome,modal,resizable");
-}
+};
 
 firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 	dump("[msim]BrowserOnLoad is fired.\n");
@@ -408,7 +408,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 			}
 		}
 	}
-}
+};
 
 // 他のツールバーボタンが開いていても、FireMobileSimulatorのツールバーボタンを開く
 firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
@@ -430,7 +430,7 @@ firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
 			}
 		}
 	}
-}
+};
 
 firemobilesimulator.overlay.updateIcon = function() {
 	dump("[msim]updateicon\n");
@@ -450,18 +450,17 @@ firemobilesimulator.overlay.updateIcon = function() {
 			}
 		}
 	});
-}
+};
 
 /*
  * firemobilesimulator.overlay.onInitialize = function(e) {
- * firemobilesimulator.overlay.onInitialize(e); }
+ * firemobilesimulator.overlay.onInitialize(e); };
  * 
  * firemobilesimulator.overlay.onUnload = function(e) {
- * firemobilesimulator.overlay.onUnload(e); }
+ * firemobilesimulator.overlay.onUnload(e); };
  */
 
-window
-		.addEventListener("load", firemobilesimulator.overlay.onInitialize,
+window.addEventListener("load", firemobilesimulator.overlay.onInitialize,
 				false);
 window.addEventListener("unload", firemobilesimulator.overlay.onUnload, false);
 
