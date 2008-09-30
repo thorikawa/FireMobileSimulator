@@ -1,3 +1,22 @@
+/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 ***** 
+ * FireMobileFimulator is a Firefox add-on that simulate web browsers of 
+ * japanese mobile phones.
+ * Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * ***** END LICENSE BLOCK ***** */
+
 var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
 if(!firemobilesimulator.options) firemobilesimulator.options = {};
@@ -95,6 +114,8 @@ firemobilesimulator.options.initializeOptions = function(){
 	// If this is the general page
 	if(selectedPage.indexOf("general") != -1){
 		firemobilesimulator.options.initializeGeneral();
+	}else if(selectedPage.indexOf("idno") != -1){
+		firemobilesimulator.options.initializeIdno();
 	}else if(selectedPage.indexOf("devices") != -1){
 		firemobilesimulator.options.initializeDevices();
 	}else if(selectedPage.indexOf("gps") != -1){
@@ -106,6 +127,13 @@ firemobilesimulator.options.initializeOptions = function(){
 
 // Initializes the general page
 firemobilesimulator.options.initializeGeneral = function()
+{
+	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+	pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
+}
+
+// Initializes the general page
+firemobilesimulator.options.initializeIdno = function()
 {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	pageDocument.getElementById("msim-textbox-docomo-uid").setAttribute("value",firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.uid"));
@@ -178,7 +206,11 @@ firemobilesimulator.options.storeOptions = function(){
 
 	// If this is the general page
 	if(iFrameSrc.indexOf("general") != -1){
-		dump("[msim]store generals.\n");
+		dump("[msim]store general.\n");
+		firemobilesimulator.options.optionsDataBoolean["msim.config.general.reset-device-onquit"]    = pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked;
+		//Nothing to do
+	}else if(iFrameSrc.indexOf("idno") != -1){
+		dump("[msim]store idno.\n");
 		firemobilesimulator.options.optionsDataString["msim.config.DC.uid"]    = pageDocument.getElementById("msim-textbox-docomo-uid").value;
 		firemobilesimulator.options.optionsDataString["msim.config.DC.ser"]    = pageDocument.getElementById("msim-textbox-docomo-ser").value;
 		firemobilesimulator.options.optionsDataString["msim.config.DC.icc"]    = pageDocument.getElementById("msim-textbox-docomo-icc").value;

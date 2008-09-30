@@ -1,6 +1,8 @@
 pref("msim.config.regist.enabled", true);
 pref("msim.config.initialized", false);
 
+pref("msim.config.general.reset-device-onquit", true);
+
 pref("msim.config.DC.uid", "01msimmsim00");
 pref("msim.config.DC.ser", "012345678901234");
 pref("msim.config.DC.icc", "01234567890123456789");

@@ -66,9 +66,10 @@ firemobilesimulator.overlay.onUnload = function() {
 		windowCount++;
 	}
 
-	dump("windowcount:" + windowCount.toString() + "\n");
+	dump("[msim]windowcount:" + windowCount.toString() + "\n");
 	if (windowCount == 0) {
-		firemobilesimulator.core.resetDevice();
+		var resetOnQuit = firemobilesimulator.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
+		if(resetOnQuit) firemobilesimulator.core.resetDevice();
 	}
 
 	try {

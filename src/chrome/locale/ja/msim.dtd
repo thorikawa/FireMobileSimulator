@@ -8,9 +8,12 @@
 <!ENTITY msim.menu.about.accesskey "a">
 <!ENTITY msim.options.title "オプション設定">
 <!ENTITY msim.options.general.label "全般">
+<!ENTITY msim.options.idno.label "ID情報">
 <!ENTITY msim.options.devices.label "デバイス設定">
 <!ENTITY msim.options.gps.label "位置情報設定">
 <!ENTITY msim.options.pictogram.label "絵文字表示設定">
+<!ENTITY msim.options.general.quit.label "終了">
+<!ENTITY msim.options.general.quit.reset-device-onquit.label "ブラウザ終了時に端末選択を解除する">
 <!ENTITY msim.options.edit "編集する">
 <!ENTITY msim.options.delete "削除する">
 <!ENTITY msim.options.clearall "初期設定に戻す">

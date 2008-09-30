@@ -7,52 +7,11 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<groupbox>
-		<caption label="DoCoMo"/>
+		<caption label="&msim.options.general.quit.label;"/>
 		<grid>
-			<rows id="msim.options.device.rows">
+			<rows id="msim.options.general.quit.rows">
 				<row align="center">
-					<label control="msim-textbox-docomo-uid" value="UID" style="width:120px"/>
-					<textbox id="msim-textbox-docomo-uid" value="" size="30"/>
-				</row>
-				<row align="center">
-					<label control="msim-textbox-docomo-ser" value="端末製造番号"/>
-					<textbox id="msim-textbox-docomo-ser" value="" size="30"/>
-				</row>
-				<row align="center">
-					<label control="msim-textbox-docomo-icc" value="FOMAカード製造番号"/>
-					<textbox id="msim-textbox-docomo-icc" value="" size="30"/>
-				</row>
-				<row align="center">
-					<label control="msim-textbox-docomo-guid" value="iモードID"/>
-					<textbox id="msim-textbox-docomo-guid" value="" size="30"/>
-				</row>
-			</rows>
-		</grid>
-	</groupbox>
-
-	<groupbox>
-		<caption label="Au"/>
-		<grid>
-			<rows>
-				<row align="center">
-					<label control="msim-textbox-au-uid" value="UID" style="width:120px"/>
-					<textbox id="msim-textbox-au-uid" value="" size="30"/>
-				</row>
-			</rows>
-		</grid>
-	</groupbox>
-
-	<groupbox>
-		<caption label="SoftBank"/>
-		<grid>
-			<rows>
-				<row align="center">
-					<label control="msim-textbox-softbank-uid" value="UID" style="width:120px"/>
-					<textbox id="msim-textbox-softbank-uid" value="" size="30"/>
-				</row>
-				<row align="center">
-					<label control="msim-textbox-softbank-serial" value="端末製造番号"/>
-					<textbox id="msim-textbox-softbank-serial" value="" size="30"/>
+					<checkbox id="msim-checkbox-general-reset-device-onquit" label="&msim.options.general.quit.reset-device-onquit.label;"/>
 				</row>
 			</rows>
 		</grid>
