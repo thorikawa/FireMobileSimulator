@@ -195,6 +195,11 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 		//	dump("[msim]body is null\n");
 		//	return;
 		//}
+		
+		//フォントを等幅に統一
+		ndDocument.body.style.fontFamily = "monospace";
+		
+		//表示領域サイズの制御（現在は横幅のみ）
 		var forceScreenWidth = firemobilesimulator.common.pref
 				.getBoolPref("msim.config.general.force-screen-width")
 		var forceScreenHeight = firemobilesimulator.common.pref
