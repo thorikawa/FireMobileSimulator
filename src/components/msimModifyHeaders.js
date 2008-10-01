@@ -51,6 +51,8 @@ myHTTPListener.prototype = {
 				var id = firemobilesimulator.common.pref
 						.copyUnicharPref("msim.current.id");
 
+				dump("name:"+httpChannel.name+"\n");
+				dump("name:"+httpChannel.URI.asciiSpec+"\n");
 				httpChannel.setRequestHeader("x-msim-use", "on", false);
 
 				var uri = httpChannel.URI
@@ -304,7 +306,7 @@ function rewriteURI(subject, url) {
 	var documentLoad = subject.loadFlags & (1<<16);
 	//TODO: <img src="...">の指定などでrewriteする場合に対応要
 	if(documentLoad){
-		subject.loadFlags = subject.loadFlags | Ci.nsICachingChannel.LOAD_ONLY_FROM_CACHE;
+		subject.loadFlags = Ci.nsICachingChannel.LOAD_ONLY_FROM_CACHE;
 		subject.cancel(Cr.NS_ERROR_FAILURE);
 		var webNav = subject.notificationCallbacks
 				.getInterface(Ci.nsIWebNavigation);					

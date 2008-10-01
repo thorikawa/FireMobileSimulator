@@ -63,6 +63,9 @@ firemobilesimulator.mpc.common.HexStrings.prototype = {
 				this.i += 1;
 				return [ds];
 			}
+		}else{
+			this.i += 1;
+			return [ds];
 		}
 	}
 };

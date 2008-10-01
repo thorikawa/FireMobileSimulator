@@ -45,8 +45,13 @@ firemobilesimulator.overlay.onInitialize = function() {
 		//window.addEventListener('load',
 		//		firemobilesimulator.overlay.BrowserOnLoad, true);
 		var appcontent = document.getElementById("appcontent");   // ブラウザ
-		if(appcontent)
-			appcontent.addEventListener("DOMContentLoaded", firemobilesimulator.overlay.BrowserOnLoad, true);
+		if(appcontent){
+			dump("###\n");
+			//appcontent.addEventListener("DOMContentLoaded", firemobilesimulator.overlay.BrowserOnLoad, true);
+			appcontent.addEventListener("load", firemobilesimulator.overlay.BrowserOnLoad, true);
+		}else{
+			dump("[msim]no appcontent.\n");
+		}
 
 	}
 

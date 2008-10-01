@@ -74,6 +74,8 @@ firemobilesimulator.mpc.softbank.prototype = {
 			if (sdec) {
 				dump("is SoftBank Pictogram:"+s1+"\n");
 				return _this.s_options_encode(sdec);
+			}else {
+				return whole;
 			}
 		});
 
