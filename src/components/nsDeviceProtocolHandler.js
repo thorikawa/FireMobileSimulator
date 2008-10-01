@@ -47,7 +47,13 @@ Protocol.prototype = {
 	newURI: function(spec, charset, baseURI){
 		var uri = Cc["@mozilla.org/network/simple-uri;1"].createInstance(Ci.nsIURI);
 		dump("[msim]spec:"+spec+"\n");
-		uri.spec = spec;
+		try{
+			uri.spec = spec;
+		}catch(ex){
+			dump("[msim]uri.spec error.\n")
+			var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+			uri = ios.newURI("chrome://msim/content/html/error.html", null, null);
+		}
 		return uri;
 	},
 
