@@ -432,10 +432,11 @@ firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
 	}
 };
 
-firemobilesimulator.overlay.updateIcon = function() {
+firemobilesimulator.overlay.updateIcon = function(windowObj) {
 	dump("[msim]updateicon\n");
-	var msimButton = document.getElementById("msim-button");
-	var menu = document.getElementById("msim-menu");
+	windowObj = windowObj || window;
+	var msimButton = windowObj.document.getElementById("msim-button");
+	var menu = windowObj.document.getElementById("msim-menu");
 	var target = [msimButton, menu];
 	target.forEach(function(item) {
 		if (item) {
