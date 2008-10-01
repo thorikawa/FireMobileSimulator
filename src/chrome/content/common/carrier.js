@@ -73,7 +73,7 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, se
 	} else {
 		useragent = useragent.replace("[/Serial]", "");
 	}
-	dump("SB UA:" + useragent + "\n");
+	dump("[msim]SB UA:" + useragent + "\n");
 	return useragent;
 };
 
