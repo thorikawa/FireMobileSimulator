@@ -30,7 +30,8 @@ firemobilesimulator.core.resetDevice = function(e) {
 	firemobilesimulator.common.pref.deletePref("general.useragent.override");
 	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
 	firemobilesimulator.common.pref.deletePref("msim.current.id");
-	firemobilesimulator.overlay.updateIcon();
+	firemobilesimulator.overlay && firemobilesimulator.overlay.updateIcon(window);
+	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
 };
 
 firemobilesimulator.core.setDevice = function(carrier, id) {
@@ -61,5 +62,6 @@ firemobilesimulator.core.setDevice = function(carrier, id) {
 	firemobilesimulator.common.pref
 			.setUnicharPref("msim.current.useragent", useragent);
 	firemobilesimulator.common.pref.setUnicharPref("msim.current.id", id);
-	firemobilesimulator.overlay.updateIcon();
+	firemobilesimulator.overlay && firemobilesimulator.overlay.updateIcon(window);
+	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
 };
