@@ -75,7 +75,7 @@ firemobilesimulator.options.deleteDevice = function(){
 			dump("[msim]Debug : Id is not the last one.Re-arrange ids.\n");
 			var sPrefPrefix = "msim.devicelist." + carrier + "." + i + ".";
 			var ePrefPrefix = "msim.devicelist." + carrier + "." + (i-1) + ".";
-			firemobilesimulator.common.carrier.deviceBasicAttribute.contcat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute){
+			firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute){
 				firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
 			});
 		}
