@@ -23,12 +23,18 @@
 				</row>
 				<row align="top">
 					<hbox>
-						<button label="&msim.options.add;" oncommand="parent.firemobilesimulator.options.addDevice()" accesskey="n"/>
+						<button id="msim-add" label="&msim.options.add;" oncommand="parent.firemobilesimulator.options.addDevice()" accesskey="n"/>
 						<button id="msim-edit" label="&msim.options.edit;" oncommand="parent.firemobilesimulator.options.editDevice()" accesskey="e"/>
 						<button id="msim-delete" label="&msim.options.delete;" oncommand="parent.firemobilesimulator.options.deleteDevice()" accesskey="d"/>
 						<button id="msim-clearall" label="&msim.options.clearall;" oncommand="parent.firemobilesimulator.options.clearAllDeviceSettings()" accesskey="c"/>
 					</hbox>
 				</row>
+				<row align="top">
+					<hbox>
+						<button id="msim-export" label="&msim.options.export;" oncommand="parent.firemobilesimulator.options.exportDevices()" accesskey="x"/>
+						<button id="msim-import" label="&msim.options.import;" oncommand="parent.firemobilesimulator.options.importDevices()" accesskey="i"/>				
+					</hbox>
+				</row>					
 			</rows>
 		</grid>
 	</groupbox>

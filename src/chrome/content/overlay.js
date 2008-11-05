@@ -108,9 +108,12 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 					"msim-options-" + suffix, "msim-about-" + suffix]);
 
 	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier) {
+		
+		dump("init:"+carrier+"\n");
 		var deviceCount = firemobilesimulator.common.pref
 				.getIntPref("msim.devicelist." + carrier + ".count");
 		for (var i = 1; i <= deviceCount; i++) {
+			dump("init:"+i+"\n");
 			var menuItem = document.createElement("menuitem");
 
 			var device = firemobilesimulator.common.pref

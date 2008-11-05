@@ -25,3 +25,5 @@
 <!ENTITY msim.options.device.useragent "User agent(必須)">
 <!ENTITY msim.options.device.screen-width "スクリーン横幅(px)">
 <!ENTITY msim.options.device.screen-height "スクリーン高さ(px)">
+<!ENTITY msim.options.export "エクスポート">
+<!ENTITY msim.options.import "インポート">

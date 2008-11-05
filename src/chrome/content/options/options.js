@@ -311,3 +311,165 @@ firemobilesimulator.options.initializePictogram = function()
 	pageDocument.getElementById("msim-textbox-au-pictogram-enabled").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.AU.pictogram.enabled");
 	pageDocument.getElementById("msim-textbox-softbank-pictogram-enabled").checked = firemobilesimulator.common.pref.getBoolPref("msim.config.SB.pictogram.enabled");
 };
+
+//XMLでのエクスポート
+firemobilesimulator.options.exportDevices = function()
+{
+    var filePicker   = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+    var result       = null;
+
+    filePicker.defaultExtension = "xml";
+    filePicker.defaultString    = "firemobilesimulator.xml";
+
+    filePicker.appendFilter("XML Files", "*.xml");
+    filePicker.init(window, "Export Devices", filePicker.modeSave);
+
+    result = filePicker.show();
+
+    if(result == filePicker.returnOK || result == filePicker.returnReplace)
+    {
+        var file           = filePicker.file;
+        var listItem       = null;
+        var outputStream   = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        var xmlDocument    = document.implementation.createDocument("", "", null);
+        var rootElement    = xmlDocument.createElement("firemobilesimulator");
+        var xmlSerializer  = new XMLSerializer();
+
+        if(!file.exists()){
+            file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00644);
+        }
+
+        var eDeviceList = xmlDocument.createElement("DeviceList");
+        
+        // Loop through the possible user agents
+		firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier){
+			var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
+			for(var i = 1; i <= deviceCount; i++){
+				
+		        var eDevice = xmlDocument.createElement("Device");
+		        rootElement.appendChild(eDevice);
+
+				var deviceName = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".device");
+				var useragent = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".useragent");
+				var extraHeaderCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + "." + i + ".extra-header.count");
+				var screenWidth = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".screen-width");
+				var screenHeight = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".screen-height");
+				
+				var eId = xmlDocument.createElement("Id");
+				eId.appendChild(xmlDocument.createTextNode(i));
+				var eDeviceName = xmlDocument.createElement("DeviceName");
+				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName))
+				var eUserAgent = xmlDocument.createElement("UserAgent");
+				eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
+				var eCarrier = xmlDocument.createElement("Carrier");
+				eCarrier.appendChild(xmlDocument.createTextNode(carrier));
+				var eScreenWidth = xmlDocument.createElement("ScreenWidth");
+				eScreenWidth.appendChild(xmlDocument.createTextNode(screenWidth));
+				var eScreenHeight = xmlDocument.createElement("ScreenHeight");
+				eScreenHeight.appendChild(xmlDocument.createTextNode(screenHeight));
+				var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
+				
+				for(var j = 1; j <= extraHeaderCount; j++){
+					var eExtraHeader = xmlDocument.createElement("Header");
+					var headerName = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".extra-header."+j+".name");
+					var headerValue = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".extra-header."+j+".value");
+					var eHeaderName = xmlDocument.createElement("Name");
+					var eHeaderValue = xmlDocument.createElement("Value");
+					eHeaderName.appendChild(xmlDocument.createTextNode(headerName));
+					eHeaderValue.appendChild(xmlDocument.createTextNode(headerValue));
+					eExtraHeader.appendChild(eHeaderName);
+					eExtraHeader.appendChild(eHeaderValue);
+					eExtraHeaders.appendChild(eExtraHeader);
+				}
+				
+				eDevice.appendChild(eId);
+				eDevice.appendChild(eDeviceName)
+				eDevice.appendChild(eUserAgent);
+				eDevice.appendChild(eCarrier);
+				eDevice.appendChild(eExtraHeaders);
+				eDeviceList.appendChild(eDevice);
+			}
+		});
+
+        rootElement.appendChild(eDeviceList);
+        xmlDocument.appendChild(rootElement);
+
+        outputStream.init(file, 0x04 | 0x08 | 0x20, 00644, null);
+        //日本語を含むUTF-8対応
+        var xmlContent = unescape(encodeURIComponent(XML(xmlSerializer.serializeToString(xmlDocument)).toXMLString()));
+        outputStream.write(xmlContent, xmlContent.length);
+        outputStream.close();
+    }
+    return;
+};
+
+firemobilesimulator.options.importDevices = function()
+{
+    var filePicker   = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+    var stringBundle = document.getElementById("msim-string-bundle");
+
+    filePicker.appendFilter("XML Files", "*.xml");
+    filePicker.init(window, "Import Devices", filePicker.modeOpen);
+
+    // If the user selected an XML file
+    if(filePicker.show() != filePicker.returnOK){
+    	dump("not ok\n")
+    	return;
+    }
+    
+    var file     = filePicker.file;
+    var filePath = file.path;
+
+    // If the file exists, is a file and is readable
+    if(!file.exists() || !file.isFile() || !file.isReadable()){
+    	alert(stringBundle.getFormattedString("msim_importFileFailed", [filePath]));
+    	return;
+    }
+
+    var request     = new XMLHttpRequest();
+    var xmlDocument = null;
+
+    request.open("get", "file://" + filePath, false);
+    request.send(null);
+
+    var xmlDocumentNode = request.responseXML;
+    var xmlDocumentElement = xmlDocumentNode.documentElement;
+
+    // If the file could not be parsed correctly
+    if(xmlDocumentNode.nodeName == "parsererror"){
+        alert(stringBundle.getFormattedString("msim_importParserError", [filePath]));
+        return;
+    }
+    
+	var deviceResults = null;
+	var deviceElement = null;
+    var xPathEvaluator    = new XPathEvaluator();
+    var resolver          = xPathEvaluator.createNSResolver(xmlDocumentElement);
+    deviceResults = xPathEvaluator.evaluate("//DeviceList/Device", xmlDocumentNode, resolver, XPathResult.ANY_TYPE, null);
+
+    if(deviceResults.length == 0){
+		alert(stringBundle.getFormattedString("msim_importParserError", [filePath]));
+		return;
+    }
+    
+    // If no user agents were found
+    /*
+	if(pageDocument.getElementById("useragentswitcher.import.overwrite").checked){
+        // While there are user agents
+        while(userAgentBox.getRowCount() > 0){
+            userAgentBox.removeItemAt(0);
+        }
+    }
+    */
+    	
+    while((deviceElement = deviceResults.iterateNext()) != null){
+    	var id = xPathEvaluator.evaluate("Id", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    	var deviceName = xPathEvaluator.evaluate("DeviceName", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    	var userAgent = xPathEvaluator.evaluate("UserAgent", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    	var carrier = xPathEvaluator.evaluate("Carrier", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    	var headerResults = xPathEvaluator.evaluate("ExtraHeaders", deviceElement, resolver, XPathResult.ANY_TYPE, null).stringValue;
+    	var deviceName = xPathEvaluator.evaluate("DeviceName", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    	dump("deviceName:"+deviceName+"\n");
+    }
+	return;
+};
