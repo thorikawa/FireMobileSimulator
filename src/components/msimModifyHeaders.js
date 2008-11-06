@@ -46,8 +46,6 @@ myHTTPListener.prototype = {
 
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
-				var device = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.current.device");
 				var id = firemobilesimulator.common.pref
 						.copyUnicharPref("msim.current.id");
 

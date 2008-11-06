@@ -65,7 +65,7 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 		//r.replaceChild(carrierList, r.lastChild);
 		//r.replaceChild(carrierList, r);
 
-		document.getElementById("msim.options.device.device").disabled = false;
+		document.getElementById("msim.options.device.label").disabled = false;
 
 	} else if (firemobilesimulator.options.dialogs.device.windowType == "edit") {
 		dump("[msim]edit device.\n");
@@ -75,11 +75,11 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 		firemobilesimulator.options.dialogs.device.id = window.arguments[2];
 		dump(firemobilesimulator.options.dialogs.device.carrier + "\n");
 		dump(firemobilesimulator.options.dialogs.device.id + "\n");
-		document.getElementById("msim.options.device.device").value = firemobilesimulator.common.pref
+		document.getElementById("msim.options.device.label").value = firemobilesimulator.common.pref
 				.copyUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.carrier
 						+ "." + firemobilesimulator.options.dialogs.device.id
-						+ ".device");
+						+ ".label");
 		//<textbox id="msim.options.device.carrier" size="50" disabled="true"/>
 		var carrierTextBox = document.createElement("textbox");
 		var r = document.getElementById("msim.options.device.carrier.row");
@@ -204,7 +204,7 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 				+ firemobilesimulator.options.dialogs.device.carrier + "\n");
 		dump("save-id:" + saveId + "\n");
 
-		var deviceName = document.getElementById("msim.options.device.device").value;
+		var deviceName = document.getElementById("msim.options.device.label").value;
 		var userAgent = document
 				.getElementById("msim.options.device.useragent").value;
 		var screenWidth  = document.getElementById("msim.options.device.screen-width").value;
@@ -220,7 +220,7 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		}
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.carrier
-						+ "." + saveId + ".device", deviceName);
+						+ "." + saveId + ".label", deviceName);
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.carrier
 						+ "." + saveId + ".useragent", userAgent);

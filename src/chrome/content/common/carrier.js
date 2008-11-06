@@ -51,7 +51,7 @@ firemobilesimulator.common.carrier.carrierName = {
 /**
  * キャリア共通の属性 
  */
-firemobilesimulator.common.carrier.deviceBasicAttribute = ["device", "useragent", "carrier"];
+firemobilesimulator.common.carrier.deviceBasicAttribute = ["label", "useragent", "carrier"];
 
 /**
  * キャリア固有の属性

@@ -26,8 +26,8 @@
 		</columns>
 		<rows id="msim.options.device.rows">
 			<row align="center">
-				<label control="msim.options.device.device" value="&msim.options.device.device;"/>
-				<textbox id="msim.options.device.device" size="50"/>
+				<label control="msim.options.device.label" value="&msim.options.device.device;"/>
+				<textbox id="msim.options.device.label" size="50"/>
 			</row>
 			<row id="msim.options.device.carrier.row" align="center">
 				<label control="msim.options.device.carrier" value="&msim.options.device.carrier;"/>

@@ -118,7 +118,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 
 			var device = firemobilesimulator.common.pref
 					.copyUnicharPref("msim.devicelist." + carrier + "." + i
-							+ ".device");
+							+ ".label");
 			var useragent = firemobilesimulator.common.pref
 					.copyUnicharPref("msim.devicelist." + carrier + "." + i
 							+ ".useragent");
