@@ -45,11 +45,11 @@ firemobilesimulator.overlay.onInitialize = function() {
 		//window.addEventListener('load',
 		//		firemobilesimulator.overlay.BrowserOnLoad, true);
 		var appcontent = document.getElementById("appcontent");   // ブラウザ
-		if(appcontent){
+		if (appcontent) {
 			dump("###\n");
 			//appcontent.addEventListener("DOMContentLoaded", firemobilesimulator.overlay.BrowserOnLoad, true);
 			appcontent.addEventListener("load", firemobilesimulator.overlay.BrowserOnLoad, true);
-		}else{
+		} else {
 			dump("[msim]no appcontent.\n");
 		}
 
@@ -108,7 +108,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 					"msim-options-" + suffix, "msim-about-" + suffix]);
 
 	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier) {
-		
+
 		dump("init:"+carrier+"\n");
 		var deviceCount = firemobilesimulator.common.pref
 				.getIntPref("msim.devicelist." + carrier + ".count");
@@ -195,23 +195,23 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 
 	if (carrier) {
 		var ndDocument = objEvent.originalTarget;
-		if(objEvent.originalTarget.nodeName != "#document"){
-			dump("[msim]nodeName is not #document\n")
+		if (objEvent.originalTarget.nodeName != "#document") {
+			dump("[msim]nodeName is not #document\n");
 			return;
 		}
 		//if (!ndDocument.body) {
 		//	dump("[msim]body is null\n");
 		//	return;
 		//}
-		
+
 		//フォントを等幅に統一
 		ndDocument.body.style.fontFamily = "monospace";
-		
+
 		//表示領域サイズの制御（現在は横幅のみ）
 		var forceScreenWidth = firemobilesimulator.common.pref
-				.getBoolPref("msim.config.general.force-screen-width")
+				.getBoolPref("msim.config.general.force-screen-width");
 		var forceScreenHeight = firemobilesimulator.common.pref
-				.getBoolPref("msim.config.general.force-screen-height")
+				.getBoolPref("msim.config.general.force-screen-height");
 
 		if (forceScreenWidth) {
 			var width = firemobilesimulator.common.pref
@@ -301,7 +301,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 
 			var pictogramConverterEnabled = firemobilesimulator.common.pref
 					.getBoolPref("msim.config." + carrier
-							+ ".pictogram.enabled")
+							+ ".pictogram.enabled");
 			if (pictogramConverterEnabled) {
 				dump("[msim]convert pictogram in overlay.js\n");
 				var mpc = firemobilesimulator.mpc.factory(carrier);

@@ -64,13 +64,13 @@ firemobilesimulator.core.setDevice = function(carrier, id) {
 };
 
 firemobilesimulator.core.deleteDevice = function(carrier, deletedId) {
-	var prefPrefix = "msim.devicelist." + carrier + "." + deletedId + "."
-	firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute){
+	var prefPrefix = "msim.devicelist." + carrier + "." + deletedId + ".";
+	firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute) {
 		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 	});
 
 	//既に使われている端末だったら設定をリセット
-	if(firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId && firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier") == carrier){
+	if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId && firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier") == carrier) {
 		firemobilesimulator.core.resetDevice();
 	}
 
@@ -78,11 +78,11 @@ firemobilesimulator.core.deleteDevice = function(carrier, deletedId) {
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
 	//dump(deletedId+":"+count+"\n");
 	//dump((deletedId+1)+":"+count+"\n");
-	for(var i=deletedId+1; i<=count; i++){
+	for (var i=deletedId+1; i<=count; i++) {
 		//dump("[msim]Debug : Id is not the last one. Re-arrange ids.\n");
 		var sPrefPrefix = "msim.devicelist." + carrier + "." + i + ".";
 		var ePrefPrefix = "msim.devicelist." + carrier + "." + (i-1) + ".";
-		firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute){
+		firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute) {
 			firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
 		});
 	}

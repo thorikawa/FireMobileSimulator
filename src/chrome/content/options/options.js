@@ -31,13 +31,13 @@ firemobilesimulator.options.optionsDataString = new Array();
 firemobilesimulator.options.addDevice = function() {
 	var retVals = {};
 	if (window.openDialog("chrome://msim/content/options/dialogs/device.xul",
-			"msim-device-dialog", "centerscreen,chrome,modal,resizable", "add",
-			null, null, retVals)) {
+	                      "msim-device-dialog", "centerscreen,chrome,modal,resizable", "add",
+	                      null, null, retVals)) {
 		if (retVals.id && retVals.carrier) {
 			var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 			var deviceBox = pageDocument.getElementById("msim-listbox");
 			var listItem = deviceBox.appendItem(retVals.carrier + ":"
-							+ retVals.deviceName, retVals.userAgent);
+			                                    + retVals.deviceName, retVals.userAgent);
 			listItem.setAttribute("carrier", retVals.carrier);
 			listItem.setAttribute("id", retVals.id);
 			deviceBox.ensureElementIsVisible(listItem);
@@ -51,8 +51,8 @@ firemobilesimulator.options.addDevice = function() {
 // Handles changing the options page
 firemobilesimulator.options.changePage = function(pageList) {
 	firemobilesimulator.options.storeOptions();
-	document.getElementById("msim-options-iframe").setAttribute("src",
-			pageList.selectedItem.getAttribute("value"));
+	document.getElementById("msim-options-iframe")
+	        .setAttribute("src", pageList.selectedItem.getAttribute("value"));
 };
 
 // Deletes a device
@@ -62,7 +62,7 @@ firemobilesimulator.options.deleteDevice = function() {
 	var selectedItem = deviceBox.selectedItem;
 	if (selectedItem
 			&& confirm(document.getElementById("msim-string-bundle")
-					.getString("msim_deleteConfirmation"))) {
+			                   .getString("msim_deleteConfirmation"))) {
 		var carrier = selectedItem.getAttribute("carrier");
 		var deletedId = parseInt(selectedItem.getAttribute("id"));
 		firemobilesimulator.core.deleteDevice(carrier, deletedId);
@@ -451,7 +451,7 @@ firemobilesimulator.options.exportDevices = function() {
 				var eId = xmlDocument.createElement("Id");
 				eId.appendChild(xmlDocument.createTextNode(i));
 				var eDeviceName = xmlDocument.createElement("DeviceName");
-				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName))
+				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName));
 				var eUserAgent = xmlDocument.createElement("UserAgent");
 				eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
 				var eCarrier = xmlDocument.createElement("Carrier");
