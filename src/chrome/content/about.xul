@@ -27,7 +27,7 @@
 <groupbox align="center" orient="horizontal">
 <vbox>
   <label value="FireMobileSimulator" style="font-weight: bold; font-size: x-large;"/>
-  <label value="&version; 0.2.0"/>
+  <label value="&version; 0.2.1pre"/>
   <separator class="thin"/>
   <label value="&createdBy;" style="font-weight: bold;"/>
   <label value="Takahiro Horikawa &lt;horikawa.takahiro@gmail.com&gt;"/>

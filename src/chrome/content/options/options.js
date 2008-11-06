@@ -315,8 +315,8 @@ firemobilesimulator.options.initializePictogram = function()
 //XMLでのエクスポート
 firemobilesimulator.options.exportDevices = function()
 {
-    var filePicker   = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
-    var result       = null;
+    var filePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+    var result     = null;
 
     filePicker.defaultExtension = "xml";
     filePicker.defaultString    = "firemobilesimulator.xml";
@@ -328,37 +328,37 @@ firemobilesimulator.options.exportDevices = function()
 
     if(result == filePicker.returnOK || result == filePicker.returnReplace)
     {
-        var file           = filePicker.file;
-        var listItem       = null;
-        var outputStream   = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-        var xmlDocument    = document.implementation.createDocument("", "", null);
-        var rootElement    = xmlDocument.createElement("firemobilesimulator");
-        var xmlSerializer  = new XMLSerializer();
+	var file          = filePicker.file;
+	var listItem      = null;
+	var outputStream  = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+	var xmlDocument   = document.implementation.createDocument("", "", null);
+	var rootElement   = xmlDocument.createElement("firemobilesimulator");
+	var xmlSerializer = new XMLSerializer();
 
-        if(!file.exists()){
-            file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00644);
-        }
+	if(!file.exists()){
+		file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00644);
+	}
 
-        var eDeviceList = xmlDocument.createElement("DeviceList");
-        
-        // Loop through the possible user agents
+	var eDeviceList = xmlDocument.createElement("DeviceList");
+
+	// Loop through the possible user agents
 		firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier){
 			var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
 			for(var i = 1; i <= deviceCount; i++){
-				
-		        var eDevice = xmlDocument.createElement("Device");
-		        rootElement.appendChild(eDevice);
+
+				var eDevice = xmlDocument.createElement("Device");
+				rootElement.appendChild(eDevice);
 
 				var deviceName = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".device");
 				var useragent = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".useragent");
 				var extraHeaderCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + "." + i + ".extra-header.count");
 				var screenWidth = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".screen-width");
 				var screenHeight = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".screen-height");
-				
+
 				var eId = xmlDocument.createElement("Id");
 				eId.appendChild(xmlDocument.createTextNode(i));
 				var eDeviceName = xmlDocument.createElement("DeviceName");
-				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName))
+				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName));
 				var eUserAgent = xmlDocument.createElement("UserAgent");
 				eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
 				var eCarrier = xmlDocument.createElement("Carrier");
@@ -368,7 +368,7 @@ firemobilesimulator.options.exportDevices = function()
 				var eScreenHeight = xmlDocument.createElement("ScreenHeight");
 				eScreenHeight.appendChild(xmlDocument.createTextNode(screenHeight));
 				var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
-				
+
 				for(var j = 1; j <= extraHeaderCount; j++){
 					var eExtraHeader = xmlDocument.createElement("Header");
 					var headerName = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + carrier + "." + i + ".extra-header."+j+".name");
@@ -381,9 +381,9 @@ firemobilesimulator.options.exportDevices = function()
 					eExtraHeader.appendChild(eHeaderValue);
 					eExtraHeaders.appendChild(eExtraHeader);
 				}
-				
+
 				eDevice.appendChild(eId);
-				eDevice.appendChild(eDeviceName)
+				eDevice.appendChild(eDeviceName);
 				eDevice.appendChild(eUserAgent);
 				eDevice.appendChild(eCarrier);
 				eDevice.appendChild(eExtraHeaders);
@@ -413,10 +413,10 @@ firemobilesimulator.options.importDevices = function()
 
     // If the user selected an XML file
     if(filePicker.show() != filePicker.returnOK){
-    	dump("not ok\n")
+        dump("not ok\n");
     	return;
     }
-    
+
     var file     = filePicker.file;
     var filePath = file.path;
 
@@ -437,10 +437,10 @@ firemobilesimulator.options.importDevices = function()
 
     // If the file could not be parsed correctly
     if(xmlDocumentNode.nodeName == "parsererror"){
-        alert(stringBundle.getFormattedString("msim_importParserError", [filePath]));
-        return;
+	alert(stringBundle.getFormattedString("msim_importParserError", [filePath]));
+	return;
     }
-    
+
 	var deviceResults = null;
 	var deviceElement = null;
     var xPathEvaluator    = new XPathEvaluator();
@@ -451,17 +451,17 @@ firemobilesimulator.options.importDevices = function()
 		alert(stringBundle.getFormattedString("msim_importParserError", [filePath]));
 		return;
     }
-    
+
     // If no user agents were found
     /*
 	if(pageDocument.getElementById("useragentswitcher.import.overwrite").checked){
-        // While there are user agents
-        while(userAgentBox.getRowCount() > 0){
-            userAgentBox.removeItemAt(0);
-        }
+	// While there are user agents
+	while(userAgentBox.getRowCount() > 0){
+	    userAgentBox.removeItemAt(0);
+	}
     }
     */
-    	
+
     while((deviceElement = deviceResults.iterateNext()) != null){
     	var id = xPathEvaluator.evaluate("Id", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
     	var deviceName = xPathEvaluator.evaluate("DeviceName", deviceElement, resolver, XPathResult.STRING_TYPE, null).stringValue;
