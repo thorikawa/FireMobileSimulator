@@ -309,7 +309,7 @@ firemobilesimulator.options.dialogs.device.appendExtraHeaderRows = function(
 			t.setAttribute("size", 50);
 			t.setAttribute("value", extraHeader.value);
 			// TODO propertieファイルから取得するように修正
-			b.setAttribute("label", "削除")
+			b.setAttribute("label", "削除");
 			b.setAttribute("oncommand",
 					"this.parentNode.parentNode.removeChild(this.parentNode);");
 			r.appendChild(l);
@@ -330,7 +330,7 @@ firemobilesimulator.options.dialogs.device.addExtraHeaderRow = function(
 	l.setAttribute("size", 50);
 	t.setAttribute("size", 50);
 	// TODO propertieファイルから取得するように修正
-	b.setAttribute("label", "削除")
+	b.setAttribute("label", "削除");
 	b.setAttribute("oncommand",
 			"this.parentNode.parentNode.removeChild(this.parentNode);");
 	r.appendChild(l);

@@ -460,7 +460,7 @@ firemobilesimulator.options.exportDevices = function() {
 				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + carrier + "." + i
 								+ ".extra-header", ["name", "value"]);
 				var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
-				extraHeaders.forEach(function(extraHeader){
+				extraHeaders.forEach(function(extraHeader) {
 					var eExtraHeader = xmlDocument.createElement("Header");
 					var eHeaderName = xmlDocument.createElement("Name");
 					var eHeaderValue = xmlDocument.createElement("Value");
@@ -552,23 +552,23 @@ firemobilesimulator.options.importDevices = function() {
 	}
 
 	var currentId = {};
-	if(pageDocument.getElementById("msim.import.overwrite").checked){
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier){
+	if (pageDocument.getElementById("msim.import.overwrite").checked) {
+		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
 			currentId[_carrier] = 0;
 		});
-	}else{
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier){
+	} else {
+		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
 			var deviceCount = firemobilesimulator.common.pref
 				.getIntPref("msim.devicelist." + _carrier + ".count");
 			currentId[_carrier] = deviceCount;
 			dump("setCurrentId:"+_carrier+":"+currentId[_carrier]+"\n");
-		});			
+		});
 	}
 
 	//XMLから端末情報を順次解析
 	var devices = new Array();
 	var i = 0;
-	while ((deviceElement = deviceResults.iterateNext()) != null) {		
+	while ((deviceElement = deviceResults.iterateNext()) != null) {
 		var label = xPathEvaluator.evaluate("DeviceName", deviceElement,
 				resolver, XPathResult.STRING_TYPE, null).stringValue;
 		var useragent = xPathEvaluator.evaluate("UserAgent", deviceElement,
@@ -585,7 +585,7 @@ firemobilesimulator.options.importDevices = function() {
 		var headerElement = null;
 		currentId[carrier]++;
 		var id = currentId[carrier];
-		
+
 		//ExtraHeaderエレメントの取得
 		var headers = new Array();
 		var j = 0;
@@ -611,7 +611,7 @@ firemobilesimulator.options.importDevices = function() {
 		};
 		i++;
 	}
-	
+
 	// update preference
 	pageDocument.getElementById("msim.import.overwrite").checked && firemobilesimulator.options.clearAllDeviceSettings();
 	devices.forEach(function(device) {
@@ -645,7 +645,7 @@ firemobilesimulator.options.importDevices = function() {
 				firemobilesimulator.common.pref.setIntPref("msim.devicelist."
 								+ carrier + "." + id + ".extra-header.count",
 						value.length);
-			} else if(key == "id"){
+			} else if (key == "id") {
 			} else {
 				firemobilesimulator.common.pref.setUnicharPref(
 						"msim.devicelist." + carrier + "." + id + "." + key,
@@ -655,9 +655,9 @@ firemobilesimulator.options.importDevices = function() {
 			}
 		}
 	});
-	
+
 	//set device count
-	firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier){
+	firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
 		firemobilesimulator.common.pref.setIntPref("msim.devicelist." + _carrier + ".count", currentId[_carrier]);
 	});
 
