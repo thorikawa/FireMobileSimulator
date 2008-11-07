@@ -27,17 +27,43 @@ firemobilesimulator.common.jsLoader.loadSubScript("chrome://global/content/nsUse
 firemobilesimulator.common.pref = {
 	__proto__ : nsPreferences,
 
-	getPrefService2 : function()
-	{
+	getPrefService2 : function(){
 		return Components.classes["@mozilla.org/preferences-service;1"].
 			getService(Components.interfaces.nsIPrefService).getBranch("");
 	},
 
-	deletePref : function(preference)
-	{
-		if(this.getPrefService2().prefHasUserValue(preference))
-		{
+	deletePref : function(preference){
+		if(this.getPrefService2().prefHasUserValue(preference)){
 			this.getPrefService2().clearUserPref(preference);
 		}
+	},
+	
+	getListPref : function(parentPreferenceName, childPreferenceNameArray){
+		var count = this.getIntPref(parentPreferenceName+".count") || 0;
+		var resultArray = new Array(count);
+		for (var i = 1; i <= count; i++) {
+			var o = {};
+			childPreferenceNameArray.forEach(function(childPreferenceName){
+				var childPreferenceValue = firemobilesimulator.common.pref
+					.copyUnicharPref(parentPreferenceName + "." + i + "." + childPreferenceName);
+				o[childPreferenceName] = childPreferenceValue;
+			});
+			resultArray[i-1] = o;
+		}
+		return resultArray;
+	},
+	
+	deleteListPref : function(parentPreferenceName, childPreferenceNameArray){
+		var count = this.getIntPref(parentPreferenceName+".count");
+		for (var i = 1; i <= count; i++) {
+			for(var j = 0; j < childPreferenceNameArray.length; j++){
+				var childPreferenceName = childPreferenceNameArray[j];
+				dump("delete:"+parentPreferenceName+"."+i+"."+childPreferenceName+"\n");
+				this.deletePref(parentPreferenceName+"."+i+"."+childPreferenceName);
+			}
+		}
+		dump("delete:"+parentPreferenceName+".count"+"\n");
+		this.deletePref(parentPreferenceName+".count");
+		return;
 	}
 };

@@ -27,3 +27,7 @@
 <!ENTITY msim.options.device.screen-height "スクリーン高さ(px)">
 <!ENTITY msim.options.export "エクスポート">
 <!ENTITY msim.options.import "インポート">
+<!ENTITY msim.options.import-export "インポート/エクスポート">
+<!ENTITY msim.import.overwrite "既存のデバイス情報をクリアしてインポートする">
+<!ENTITY msim.options.device.extra-headers "HTTP Header">
+<!ENTITY msim.options.device.extra-headers.add "追加する">

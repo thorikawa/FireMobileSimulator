@@ -29,13 +29,18 @@
 						<button id="msim-clearall" label="&msim.options.clearall;" oncommand="parent.firemobilesimulator.options.clearAllDeviceSettings()" accesskey="c"/>
 					</hbox>
 				</row>
-				<row align="top">
-					<hbox>
-						<button id="msim-export" label="&msim.options.export;" oncommand="parent.firemobilesimulator.options.exportDevices()" accesskey="x"/>
-						<button id="msim-import" label="&msim.options.import;" oncommand="parent.firemobilesimulator.options.importDevices()" accesskey="i"/>				
-					</hbox>
-				</row>					
 			</rows>
 		</grid>
 	</groupbox>
+    <groupbox>
+        <caption label="&msim.options.import-export;"/>
+        <hbox align="top">
+            <checkbox id="msim.import.overwrite" label="&msim.import.overwrite;"/>
+            <spacer flex="1"/>
+            <vbox>
+            	<button id="msim-import" label="&msim.options.import;" oncommand="parent.firemobilesimulator.options.importDevices()" accesskey="i"/>				
+				<button id="msim-export" label="&msim.options.export;" oncommand="parent.firemobilesimulator.options.exportDevices()" accesskey="x"/>
+            </vbox>
+        </hbox>
+    </groupbox>
 </page>

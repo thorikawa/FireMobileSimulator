@@ -109,11 +109,9 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 
 	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier) {
 
-		dump("init:"+carrier+"\n");
 		var deviceCount = firemobilesimulator.common.pref
 				.getIntPref("msim.devicelist." + carrier + ".count");
 		for (var i = 1; i <= deviceCount; i++) {
-			dump("init:"+i+"\n");
 			var menuItem = document.createElement("menuitem");
 
 			var device = firemobilesimulator.common.pref
@@ -204,37 +202,26 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 		//	return;
 		//}
 
-		//フォントを等幅に統一
-		ndDocument.body.style.fontFamily = "monospace";
-
-		//表示領域サイズの制御（現在は横幅のみ）
-		var forceScreenWidth = firemobilesimulator.common.pref
-				.getBoolPref("msim.config.general.force-screen-width");
-		var forceScreenHeight = firemobilesimulator.common.pref
-				.getBoolPref("msim.config.general.force-screen-height");
-
-		if (forceScreenWidth) {
-			var width = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + id
-							+ ".screen-width")
-					|| firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.general.screen-width-default");
-			ndDocument.body.style.width = width + "px";
-			ndDocument.body.style.border = "solid 2px black";
+		if(ndDocument.body){
+			//フォントを等幅に統一
+			ndDocument.body.style.fontFamily = "monospace";
+	
+			//表示領域サイズの制御（現在は横幅のみ）
+			var forceScreenWidth = firemobilesimulator.common.pref
+					.getBoolPref("msim.config.general.force-screen-width");
+			var forceScreenHeight = firemobilesimulator.common.pref
+					.getBoolPref("msim.config.general.force-screen-height");
+	
+			if (forceScreenWidth) {
+				var width = firemobilesimulator.common.pref
+						.copyUnicharPref("msim.devicelist." + carrier + "." + id
+								+ ".screen-width")
+						|| firemobilesimulator.common.pref
+								.copyUnicharPref("msim.config.general.screen-width-default");
+				ndDocument.body.style.width = width + "px";
+				ndDocument.body.style.border = "solid 2px black";
+			}
 		}
-		/*
-		if (forceScreenHeight) {
-			var height = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + id
-							+ ".screen-height")
-					|| firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.general.screen-height-default");
-			dump("setheight:"+height+"\n");
-			ndDocument.body.style.height = height + "px";
-			//ndDocument.body.clientHeight = height + "px";
-			ndDocument.body.style.overflow = "scroll";
-		}
-		*/
 
 		// Firefoxの埋め込み表示Content-Typeは、自動的にDOMに変換されている為、除外する。
 		if (ndDocument.contentType != "text/html") {

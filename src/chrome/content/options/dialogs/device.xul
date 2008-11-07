@@ -47,4 +47,18 @@
 			</row>
 		</rows>
 	</grid>
+	
+    <groupbox>
+        <caption label="&msim.options.device.extra-headers;"/>
+		<grid>
+			<columns>
+				<column/>
+				<column/>
+			</columns>
+			<rows id="msim.options.device.extra-headers.rows">
+			</rows>
+		</grid>
+		<button id="msim.options.device.extra-headers.add" label="&msim.options.device.extra-headers.add;" oncommand="firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById('msim.options.device.extra-headers.rows'));window.sizeToContent();" accesskey="x"/>
+    </groupbox>
+    
 </dialog>

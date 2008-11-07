@@ -196,17 +196,15 @@ myHTTPListener.prototype = {
 				}
 
 				// set extra http headers
-				firemobilesimulator.common.carrier.deviceAttribute[carrier]
-						.forEach(function(a) {
-							var value = firemobilesimulator.common.pref
-									.copyUnicharPref("msim.devicelist."
-											+ carrier + "." + id + "." + a);
-							if (value) {
-								// dump("set http header:"+a+":"+value+"\n");
-								httpChannel.setRequestHeader(a, value, false);
-							}
-						});
-
+				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + carrier + "." + id
+								+ ".extra-header", ["name", "value"]);
+				extraHeaders.forEach(function(extraHeader){
+					if (extraHeader.value) {
+						dump("[msim]set http header:"+extraHeader.name+":"+extraHeader.value+"\n");
+						httpChannel.setRequestHeader(extraHeader.name, extraHeader.value, false);
+					}
+				});
+				
 				return;
 			} else if (topic == "http-on-examine-response"
 					|| topic == "http-on-examine-merged-response") {

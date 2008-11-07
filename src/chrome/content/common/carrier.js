@@ -51,19 +51,17 @@ firemobilesimulator.common.carrier.carrierName = {
 /**
  * キャリア共通の属性
  */
-firemobilesimulator.common.carrier.deviceBasicAttribute = ["label", "useragent", "carrier"];
+firemobilesimulator.common.carrier.deviceBasicAttribute = [
+	"label", "useragent", "carrier", "screen-height", "screen-width", "extra-header"
+];
 
 /**
  * キャリア固有の属性
  */
 firemobilesimulator.common.carrier.deviceAttribute = {
 	DC : [],
-	AU : ["x-up-devcap-multimedia", "x-up-devcap-cc", "x-up-devcap-iscolor",
-	      "x-up-devcap-max-pdu", "x-up-devcap-numsoftkeys",
-	      "x-up-devcap-qvga", "x-up-devcap-screenchars",
-	      "x-up-devcap-screendepth", "x-up-devcap-screenpixels",
-	      "x-up-devcap-softkeysize", "x-up-devcap-titlebar"],
-	SB : ["x-jphone-msname", "x-jphone-display", "x-jphone-color"]
+	AU : [],
+	SB : []
 };
 
 firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, serial) {
