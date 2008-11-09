@@ -59,9 +59,9 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
  * キャリア固有の属性
  */
 firemobilesimulator.common.carrier.deviceAttribute = {
-	DC : [],
+	DC : [{name:"isfoma", type:"boolean"}],
 	AU : [],
-	SB : []
+	SB : [{name:"isIPhone", type:"boolean"}, {name:"is3GCType", type:"boolean"}, {name:"isPType", type:"boolean"}]
 };
 
 firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, serial) {
