@@ -192,50 +192,34 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 	return true;
 };
 
-firemobilesimulator.options.dialogs.device.appendExtraHeaderRows = function(
-		targetNode, id) {
-	dump("[msim]append:" + targetNode + ":" + id + "\n");
+firemobilesimulator.options.dialogs.device.appendExtraHeaderRows = function(targetNode, id) {
 	var extraHeaders = firemobilesimulator.common.pref.getListPref(
 			"msim.devicelist." + id + ".extra-header", ["name",
 					"value"]);
 	extraHeaders.forEach(function(extraHeader) {
 		if (id && extraHeader.value) {
-			var r = document.createElement("row");
-			var l = document.createElement("textbox");
-			var t = document.createElement("textbox");
-			var b = document.createElement("button");
-			r.setAttribute("align", "center");
-			l.setAttribute("size", 50);
-			l.setAttribute("value", extraHeader.name);
-			t.setAttribute("size", 50);
-			t.setAttribute("value", extraHeader.value);
-			// TODO propertieファイルから取得するように修正
-			b.setAttribute("label", "削除");
-			b.setAttribute("oncommand",
-					"this.parentNode.parentNode.removeChild(this.parentNode);");
-			r.appendChild(l);
-			r.appendChild(t);
-			r.appendChild(b);
-			targetNode.appendChild(r);
+			firemobilesimulator.options.dialogs.device.addExtraHeaderRow(targetNode, extraHeader);
 		}
 	});
 };
 
-firemobilesimulator.options.dialogs.device.addExtraHeaderRow = function(
-		targetNode) {
+firemobilesimulator.options.dialogs.device.addExtraHeaderRow = function(targetNode, headerObj) {
 	var r = document.createElement("row");
 	var l = document.createElement("textbox");
 	var t = document.createElement("textbox");
 	var b = document.createElement("button");
+	var h = document.createElement("hbox");
 	r.setAttribute("align", "center");
 	l.setAttribute("size", 50);
+	if(headerObj && headerObj.name) l.setAttribute("value", headerObj.name);
 	t.setAttribute("size", 50);
+	if(headerObj && headerObj.value) t.setAttribute("value", headerObj.value);
 	// TODO propertieファイルから取得するように修正
 	b.setAttribute("label", "削除");
-	b.setAttribute("oncommand",
-			"this.parentNode.parentNode.removeChild(this.parentNode);");
+	b.setAttribute("oncommand",	"this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);");
+	h.appendChild(t);
+	h.appendChild(b);
 	r.appendChild(l);
-	r.appendChild(t);
-	r.appendChild(b);
+	r.appendChild(h);
 	targetNode.appendChild(r);
 };

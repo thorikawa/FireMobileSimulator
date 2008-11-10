@@ -423,8 +423,12 @@ firemobilesimulator.options.exportDevices = function() {
 					eDevice.appendChild(eExtraHeaders);
 				}else{
 					var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+					dump("key:"+key+"\n");
+					dump("tagName:"+tagName+"\n");
 					if(tagName){
+						dump("createelement.\n")
 						var value = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + "." + key);
+						dump("msim.devicelist." + i + "." + key+"\n");
 						var ele = xmlDocument.createElement(tagName);
 						ele.appendChild(xmlDocument.createTextNode(value));
 						eDevice.appendChild(ele);
@@ -519,7 +523,8 @@ firemobilesimulator.options.importDevices = function() {
 	while ((deviceElement = deviceResults.iterateNext()) != null) {
 		currentId++;
 		var id = currentId;
-		devoce[i]["id"] = id;
+		devices[i] = {};
+		devices[i]["id"] = id;
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
 			if(key == "extra-header"){
 				var headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
@@ -541,7 +546,7 @@ firemobilesimulator.options.importDevices = function() {
 					};
 					j++;
 				}
-				devoce[i]["headers"] = headers;
+				devices[i]["headers"] = headers;
 			}else{
 				var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
 				var value = xPathEvaluator.evaluate(tagName, deviceElement,
