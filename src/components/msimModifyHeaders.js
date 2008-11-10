@@ -37,17 +37,14 @@ function myHTTPListener() {
 myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
-		var carrier = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.current.carrier");
-		if (carrier) {
-
-			var registerFlag = firemobilesimulator.common.pref
-					.getBoolPref("msim.config.register.enabled");
+		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+		
+		if (id) {
+			var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
+			var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
 
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
-				var id = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.current.id");
 
 				dump("name:"+httpChannel.name+"\n");
 				dump("name:"+httpChannel.URI.asciiSpec+"\n");
@@ -168,10 +165,10 @@ myHTTPListener.prototype = {
 						rewriteURI(subject, as);
 					}
 				} else if (carrier == "SB") {
-					httpChannel.setRequestHeader("x-jphone-uid",
-							firemobilesimulator.common.pref
-									.copyUnicharPref("msim.config.SB.uid"),
-							false);
+					var type = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type");
+					if(type != "iPhone"){
+						httpChannel.setRequestHeader("x-jphone-uid",firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.uid"),false);
+					}
 				} else if (carrier == "AU") {
 					httpChannel.setRequestHeader("x-up-subno",
 							firemobilesimulator.common.pref
@@ -196,7 +193,7 @@ myHTTPListener.prototype = {
 				}
 
 				// set extra http headers
-				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + carrier + "." + id
+				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + id
 								+ ".extra-header", ["name", "value"]);
 				extraHeaders.forEach(function(extraHeader){
 					if (extraHeader.value) {

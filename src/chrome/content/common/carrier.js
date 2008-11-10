@@ -52,16 +52,24 @@ firemobilesimulator.common.carrier.carrierName = {
  * キャリア共通の属性
  */
 firemobilesimulator.common.carrier.deviceBasicAttribute = [
-	"label", "useragent", "carrier", "screen-height", "screen-width", "extra-header"
+	"label", "useragent", "carrier", "type", "screen-height", "screen-width", "extra-header"
 ];
 
-/**
- * キャリア固有の属性
- */
-firemobilesimulator.common.carrier.deviceAttribute = {
-	DC : [{name:"isfoma", type:"boolean"}],
-	AU : [],
-	SB : [{name:"isIPhone", type:"boolean"}, {name:"is3GCType", type:"boolean"}, {name:"isPType", type:"boolean"}]
+firemobilesimulator.common.carrier.Type = {
+	DOCOMO_FOMA   : "FOMA",
+	DOCOMO_MOVA   : "mova",
+	AU_WAP1       : "WAP1.0",
+	AU_WAP2       : "WAP2.0",
+	SOFTBANK_C2   : "C2",
+	SOFTBANK_C3   : "C3",
+	SOFTBANK_C4   : "C4",
+	SOFTBANK_P4_1 : "P4_1",
+	SOFTBANK_P4_2 : "P4_2",
+	SOFTBANK_P5   : "P5",
+	SOFTBANK_P6   : "P6",
+	SOFTBANK_W    : "W",
+	SOFTBANK_3GC  : "3GC",
+	SOFTBANK_IPHONE  : "iPhone"
 };
 
 firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, serial) {

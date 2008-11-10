@@ -32,13 +32,12 @@ firemobilesimulator.options.addDevice = function() {
 	var retVals = {};
 	if (window.openDialog("chrome://msim/content/options/dialogs/device.xul",
 	                      "msim-device-dialog", "centerscreen,chrome,modal,resizable", "add",
-	                      null, null, retVals)) {
-		if (retVals.id && retVals.carrier) {
+	                      null, retVals)) {
+		if (retVals.id) {
 			var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 			var deviceBox = pageDocument.getElementById("msim-listbox");
-			var listItem = deviceBox.appendItem(retVals.carrier + ":"
+			var listItem = deviceBox.appendItem(retVals.carrier + " "
 			                                    + retVals.deviceName, retVals.userAgent);
-			listItem.setAttribute("carrier", retVals.carrier);
 			listItem.setAttribute("id", retVals.id);
 			deviceBox.ensureElementIsVisible(listItem);
 			deviceBox.selectItem(listItem);
@@ -63,9 +62,8 @@ firemobilesimulator.options.deleteDevice = function() {
 	if (selectedItem
 			&& confirm(document.getElementById("msim-string-bundle")
 			                   .getString("msim_deleteConfirmation"))) {
-		var carrier = selectedItem.getAttribute("carrier");
 		var deletedId = parseInt(selectedItem.getAttribute("id"));
-		firemobilesimulator.core.deleteDevice(carrier, deletedId);
+		firemobilesimulator.core.deleteDevice(deletedId);
 		deviceBox.removeChild(selectedItem);
 	}
 };
@@ -77,20 +75,14 @@ firemobilesimulator.options.editDevice = function() {
 	var selectedItem = deviceBox.selectedItem;
 	var retVals = {};
 	if (selectedItem) {
-		var carrier = selectedItem.getAttribute("carrier");
 		var id = selectedItem.getAttribute("id");
 		if (window.openDialog(
 				"chrome://msim/content/options/dialogs/device.xul",
 				"msim-device-dialog", "centerscreen,chrome,modal,resizable",
-				"edit", carrier, id, retVals)) {
-			// setDevice(carrier, id);
-			if (retVals.id && retVals.carrier) {
-				if (firemobilesimulator.common.pref
-						.copyUnicharPref("msim.current.id") == retVals.id
-						&& firemobilesimulator.common.pref
-								.copyUnicharPref("msim.current.carrier") == retVals.carrier) {
-					firemobilesimulator.core.setDevice(retVals.carrier,
-							retVals.id);
+				"edit", id, retVals)) {
+			if (retVals.id) {
+				if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == retVals.id) {
+					firemobilesimulator.core.setDevice(retVals.id);
 				}
 			}
 		}
@@ -165,32 +157,25 @@ firemobilesimulator.options.initializeDevices = function() {
 	dump("firemobilesimulator.options.initializeDevices\n");
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox = pageDocument.getElementById("msim-listbox");
-	var deviceCount = 0;
 
 	while (deviceBox.lastChild.tagName != "listhead") {
 		dump("removeList:" + deviceBox.lastChild.tagName + "\n");
 		deviceBox.removeChild(deviceBox.lastChild);
 	}
 
-	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier) {
-
-		deviceCount = firemobilesimulator.common.pref
-				.getIntPref("msim.devicelist." + carrier + ".count");
-		for (var i = 1; i <= deviceCount; i++) {
-			var device = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + i
-							+ ".label");
-			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + i
-							+ ".useragent");
-			if (device) {
-				var listItem = deviceBox.appendItem(carrier + ":" + device,
-						useragent);
-				listItem.setAttribute("carrier", carrier);
-				listItem.setAttribute("id", i);
-			}
+	var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+	for (var i = 1; i <= deviceCount; i++) {
+		var carrier = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i + ".carrier");
+		var device = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i + ".label");
+		var useragent = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i + ".useragent");
+		if (device) {
+			var listItem = deviceBox.appendItem(carrier + " " + device, useragent);
+			listItem.setAttribute("id", i);
 		}
-	});
+	}
 
 	firemobilesimulator.options.deviceSelected();
 };
@@ -259,8 +244,7 @@ firemobilesimulator.options.storeOptions = function() {
 			var id = firemobilesimulator.common.pref
 					.copyUnicharPref("msim.current.id");
 			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + id
-							+ ".useragent");
+					.copyUnicharPref("msim.devicelist." + id + ".useragent");
 			var newUserAgent = firemobilesimulator.common.carrier
 					.getSoftBankUserAgent(
 							useragent,
@@ -312,30 +296,22 @@ firemobilesimulator.options.deviceSelected = function() {
 };
 
 firemobilesimulator.options.clearAllDeviceSettings = function() {
-	if (confirm(document.getElementById("msim-string-bundle")
-			.getString("msim_clearAllConfirmation"))) {
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(
-				carrier) {
-			dump("target carrier is " + carrier + "\n");
-			var count = firemobilesimulator.common.pref
-					.getIntPref("msim.devicelist." + carrier + ".count");
-			for (var i = 1; i <= count; i++) {
-				var prefPrefix = "msim.devicelist." + carrier + "." + i + ".";
+	if (confirm(document.getElementById("msim-string-bundle").getString("msim_clearAllConfirmation"))) {
+		var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+		for (var i = 1; i <= count; i++) {
+			var prefPrefix = "msim.devicelist." + i + ".";
 
-				dump("target firemobilesimulator.common.pref.x is "
-						+ prefPrefix + "\n");
-				firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute) {
-					if (attribute == "extra-header") {
-						firemobilesimulator.common.pref.deleteListPref("msim.devicelist." + carrier + "." + i + ".extra-header", ["name", "value"]);
-					} else {
-						firemobilesimulator.common.pref.deletePref(prefPrefix + attribute);
-					}
-				});
-			}
-			firemobilesimulator.common.pref.deletePref("msim.devicelist."
-					+ carrier + ".count");
-		});
-
+			dump("target firemobilesimulator.common.pref.x is "
+					+ prefPrefix + "\n");
+			firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
+				if (attribute == "extra-header") {
+					firemobilesimulator.common.pref.deleteListPref("msim.devicelist." + i + ".extra-header", ["name", "value"]);
+				} else {
+					firemobilesimulator.common.pref.deletePref(prefPrefix + attribute);
+				}
+			});
+		}
+		firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
 		firemobilesimulator.common.pref.deletePref("msim.current.carrier");
 		firemobilesimulator.common.pref.deletePref("general.useragent.override");
 		firemobilesimulator.common.pref.deletePref("msim.current.useragent");
@@ -421,67 +397,66 @@ firemobilesimulator.options.exportDevices = function() {
 
 		var eDeviceList = xmlDocument.createElement("DeviceList");
 
-		// Loop through the possible user agents
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(
-				carrier) {
-			var deviceCount = firemobilesimulator.common.pref
-					.getIntPref("msim.devicelist." + carrier + ".count");
-			for (var i = 1; i <= deviceCount; i++) {
+		var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+		for (var i = 1; i <= deviceCount; i++) {
 
-				var eDevice = xmlDocument.createElement("Device");
-				rootElement.appendChild(eDevice);
+			var eDevice = xmlDocument.createElement("Device");
+			rootElement.appendChild(eDevice);
 
-				var deviceName = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.devicelist." + carrier + "." + i
-								+ ".label");
-				var useragent = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.devicelist." + carrier + "." + i
-								+ ".useragent");
-				var screenWidth = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.devicelist." + carrier + "." + i
-								+ ".screen-width");
-				var screenHeight = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.devicelist." + carrier + "." + i
-								+ ".screen-height");
+			var carrier = firemobilesimulator.common.pref
+					.copyUnicharPref("msim.devicelist." + i
+							+ ".carrier");
+			var deviceName = firemobilesimulator.common.pref
+					.copyUnicharPref("msim.devicelist." + i
+							+ ".label");
+			var useragent = firemobilesimulator.common.pref
+					.copyUnicharPref("msim.devicelist." + i
+							+ ".useragent");
+			var screenWidth = firemobilesimulator.common.pref
+					.copyUnicharPref("msim.devicelist." + i
+							+ ".screen-width");
+			var screenHeight = firemobilesimulator.common.pref
+					.copyUnicharPref("msim.devicelist." + i
+							+ ".screen-height");
 
-				var eDeviceName = xmlDocument.createElement("DeviceName");
-				eDeviceName.appendChild(xmlDocument.createTextNode(deviceName));
-				var eUserAgent = xmlDocument.createElement("UserAgent");
-				eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
-				var eCarrier = xmlDocument.createElement("Carrier");
-				eCarrier.appendChild(xmlDocument.createTextNode(carrier));
-				var eScreenWidth = xmlDocument.createElement("ScreenWidth");
-				eScreenWidth.appendChild(xmlDocument
-						.createTextNode(screenWidth));
-				var eScreenHeight = xmlDocument.createElement("ScreenHeight");
-				eScreenHeight.appendChild(xmlDocument
-						.createTextNode(screenHeight));
+			var eDeviceName = xmlDocument.createElement("DeviceName");
+			eDeviceName.appendChild(xmlDocument.createTextNode(deviceName));
+			var eUserAgent = xmlDocument.createElement("UserAgent");
+			eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
+			var eCarrier = xmlDocument.createElement("Carrier");
+			eCarrier.appendChild(xmlDocument.createTextNode(carrier));
+			var eScreenWidth = xmlDocument.createElement("ScreenWidth");
+			eScreenWidth.appendChild(xmlDocument
+					.createTextNode(screenWidth));
+			var eScreenHeight = xmlDocument.createElement("ScreenHeight");
+			eScreenHeight.appendChild(xmlDocument
+					.createTextNode(screenHeight));
 
-				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + carrier + "." + i
-								+ ".extra-header", ["name", "value"]);
-				var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
-				extraHeaders.forEach(function(extraHeader) {
-					var eExtraHeader = xmlDocument.createElement("Header");
-					var eHeaderName = xmlDocument.createElement("Name");
-					var eHeaderValue = xmlDocument.createElement("Value");
-					eHeaderName.appendChild(xmlDocument
-							.createTextNode(extraHeader.name));
-					eHeaderValue.appendChild(xmlDocument
-							.createTextNode(extraHeader.value));
-					eExtraHeader.appendChild(eHeaderName);
-					eExtraHeader.appendChild(eHeaderValue);
-					eExtraHeaders.appendChild(eExtraHeader);
-				});
+			var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + i
+							+ ".extra-header", ["name", "value"]);
+			var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
+			extraHeaders.forEach(function(extraHeader) {
+				var eExtraHeader = xmlDocument.createElement("Header");
+				var eHeaderName = xmlDocument.createElement("Name");
+				var eHeaderValue = xmlDocument.createElement("Value");
+				eHeaderName.appendChild(xmlDocument
+						.createTextNode(extraHeader.name));
+				eHeaderValue.appendChild(xmlDocument
+						.createTextNode(extraHeader.value));
+				eExtraHeader.appendChild(eHeaderName);
+				eExtraHeader.appendChild(eHeaderValue);
+				eExtraHeaders.appendChild(eExtraHeader);
+			});
 
-				eDevice.appendChild(eDeviceName);
-				eDevice.appendChild(eUserAgent);
-				eDevice.appendChild(eCarrier);
-				eDevice.appendChild(eScreenWidth);
-				eDevice.appendChild(eScreenHeight);
-				eDevice.appendChild(eExtraHeaders);
-				eDeviceList.appendChild(eDevice);
-			}
-		});
+			eDevice.appendChild(eDeviceName);
+			eDevice.appendChild(eUserAgent);
+			eDevice.appendChild(eCarrier);
+			eDevice.appendChild(eScreenWidth);
+			eDevice.appendChild(eScreenHeight);
+			eDevice.appendChild(eExtraHeaders);
+			eDeviceList.appendChild(eDevice);
+		}
+
 
 		rootElement.appendChild(eDeviceList);
 		xmlDocument.appendChild(rootElement);
@@ -551,18 +526,13 @@ firemobilesimulator.options.importDevices = function() {
 		return;
 	}
 
-	var currentId = {};
+	var currentId = 0;
 	if (pageDocument.getElementById("msim.import.overwrite").checked) {
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
-			currentId[_carrier] = 0;
-		});
+		currentId = 0;
 	} else {
-		firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
-			var deviceCount = firemobilesimulator.common.pref
-				.getIntPref("msim.devicelist." + _carrier + ".count");
-			currentId[_carrier] = deviceCount;
-			dump("setCurrentId:"+_carrier+":"+currentId[_carrier]+"\n");
-		});
+		var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+		currentId = deviceCount;
+		dump("setCurrentId:"+currentId+"\n");
 	}
 
 	//XMLから端末情報を順次解析
@@ -583,8 +553,8 @@ firemobilesimulator.options.importDevices = function() {
 				deviceElement, resolver,
 				XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
 		var headerElement = null;
-		currentId[carrier]++;
-		var id = currentId[carrier];
+		currentId++;
+		var id = currentId;
 
 		//ExtraHeaderエレメントの取得
 		var headers = new Array();
@@ -625,41 +595,39 @@ firemobilesimulator.options.importDevices = function() {
 				dump("value:" + value + "\n");
 				value.forEach(function(header) {
 					firemobilesimulator.common.pref.setUnicharPref(
-							"msim.devicelist." + carrier + "." + id
+							"msim.devicelist." + id
 									+ ".extra-header." + i + ".name",
 							header.name);
 					firemobilesimulator.common.pref.setUnicharPref(
-							"msim.devicelist." + carrier + "." + id
+							"msim.devicelist." + id
 									+ ".extra-header." + i + ".value",
 							header.value);
-					dump("set:msim.devicelist." + carrier + "." + id
+					dump("set:msim.devicelist." + id
 							+ ".extra-header." + i + ".name:" + header.name
 							+ "\n");
-					dump("set:msim.devicelist." + carrier + "." + id
+					dump("set:msim.devicelist." + id
 							+ ".extra-header." + i + ".value:" + header.value
 							+ "\n");
 					i++;
 				});
-				dump("set:" + "msim.devicelist." + carrier + "." + id
+				dump("set:" + "msim.devicelist." + id
 						+ ".extra-header.count:" + value.length + "\n");
 				firemobilesimulator.common.pref.setIntPref("msim.devicelist."
-								+ carrier + "." + id + ".extra-header.count",
+								+ id + ".extra-header.count",
 						value.length);
 			} else if (key == "id") {
 			} else {
 				firemobilesimulator.common.pref.setUnicharPref(
-						"msim.devicelist." + carrier + "." + id + "." + key,
+						"msim.devicelist." + id + "." + key,
 						value);
-				dump("set:msim.devicelist." + carrier + "." + id + "." + key
+				dump("set:msim.devicelist." + id + "." + key
 						+ ":" + value + "\n");
 			}
 		}
 	});
 
 	//set device count
-	firemobilesimulator.common.carrier.carrierArray.forEach(function(_carrier) {
-		firemobilesimulator.common.pref.setIntPref("msim.devicelist." + _carrier + ".count", currentId[_carrier]);
-	});
+	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", currentId);
 
 	return;
 };

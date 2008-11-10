@@ -107,39 +107,34 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
 					"msim-options-" + suffix, "msim-about-" + suffix]);
 
-	firemobilesimulator.common.carrier.carrierArray.forEach(function(carrier) {
+	var deviceCount = firemobilesimulator.common.pref
+			.getIntPref("msim.devicelist.count");
+	for (var i = 1; i <= deviceCount; i++) {
+		var menuItem = document.createElement("menuitem");
 
-		var deviceCount = firemobilesimulator.common.pref
-				.getIntPref("msim.devicelist." + carrier + ".count");
-		for (var i = 1; i <= deviceCount; i++) {
-			var menuItem = document.createElement("menuitem");
+		var carrier = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i
+						+ ".carrier");
+		var device = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i
+						+ ".label");
+		var useragent = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i
+						+ ".useragent");
 
-			var device = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + i
-							+ ".label");
-			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + carrier + "." + i
-							+ ".useragent");
-
-			if (device) {
-				menuItem.setAttribute("id", "msim-device-" + suffix + "-"
-								+ carrier + "-" + i);
-				menuItem.setAttribute("label", carrier + " " + device);
-				menuItem.setAttribute("oncommand",
-						"firemobilesimulator.core.setDevice(\"" + carrier
-								+ "\", " + i + ");");
-				menuItem.setAttribute("type", "radio");
-				menuItem.setAttribute("name", "devicelist");
-				menu.insertBefore(menuItem, optionsSeparator);
-			}
+		if (device) {
+			menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
+			menuItem.setAttribute("label", carrier + " " + device);
+			menuItem.setAttribute("oncommand",
+					"firemobilesimulator.core.setDevice(" + i + ");");
+			menuItem.setAttribute("type", "radio");
+			menuItem.setAttribute("name", "devicelist");
+			menu.insertBefore(menuItem, optionsSeparator);
 		}
-	});
+	}
 
 	var currentMenuId = "msim-device-"
 			+ suffix
-			+ "-"
-			+ firemobilesimulator.common.pref
-					.copyUnicharPref("msim.current.carrier")
 			+ "-"
 			+ firemobilesimulator.common.pref
 					.copyUnicharPref("msim.current.id");
@@ -214,8 +209,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 
 			if (forceScreenWidth) {
 				var width = firemobilesimulator.common.pref
-						.copyUnicharPref("msim.devicelist." + carrier + "." + id
-								+ ".screen-width")
+						.copyUnicharPref("msim.devicelist." + id + ".screen-width")
 						|| firemobilesimulator.common.pref
 								.copyUnicharPref("msim.config.general.screen-width-default");
 				ndDocument.body.style.width = width + "px";

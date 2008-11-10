@@ -33,19 +33,19 @@ firemobilesimulator.core.resetDevice = function(e) {
 	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
 };
 
-firemobilesimulator.core.setDevice = function(carrier, id) {
+firemobilesimulator.core.setDevice = function(id) {
 
 	//dump("[msim]setDevice:" + carrier + ",id:" + id + "\n");
 
-	if (!carrier || !id) {
+	if (!id) {
 		dump("[msim]Error : the attribute which you have selected is insufficient.\n");
 		return;
 	}
 
-	var pref_prefix = "msim.devicelist." + carrier + "." + id;
-	firemobilesimulator.common.pref.setUnicharPref("msim.current.carrier",
-			firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier"));
-
+	var pref_prefix = "msim.devicelist." + id;
+	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+	
+	firemobilesimulator.common.pref.setUnicharPref("msim.current.carrier", carrier);
 	var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
 			+ ".useragent");
 	if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
@@ -63,28 +63,28 @@ firemobilesimulator.core.setDevice = function(carrier, id) {
 	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
 };
 
-firemobilesimulator.core.deleteDevice = function(carrier, deletedId) {
-	var prefPrefix = "msim.devicelist." + carrier + "." + deletedId + ".";
-	firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute) {
+firemobilesimulator.core.deleteDevice = function(deletedId) {
+	var prefPrefix = "msim.devicelist." + deletedId + ".";
+	firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 	});
 
 	//既に使われている端末だったら設定をリセット
-	if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId && firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier") == carrier) {
+	if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId) {
 		firemobilesimulator.core.resetDevice();
 	}
 
 	//各端末のidを再計算
-	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist." + carrier + ".count");
+	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	//dump(deletedId+":"+count+"\n");
 	//dump((deletedId+1)+":"+count+"\n");
 	for (var i=deletedId+1; i<=count; i++) {
 		//dump("[msim]Debug : Id is not the last one. Re-arrange ids.\n");
-		var sPrefPrefix = "msim.devicelist." + carrier + "." + i + ".";
-		var ePrefPrefix = "msim.devicelist." + carrier + "." + (i-1) + ".";
-		firemobilesimulator.common.carrier.deviceBasicAttribute.concat(firemobilesimulator.common.carrier.deviceAttribute[carrier]).forEach(function(attribute) {
+		var sPrefPrefix = "msim.devicelist." + i + ".";
+		var ePrefPrefix = "msim.devicelist." + (i-1) + ".";
+		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
 		});
 	}
-	firemobilesimulator.common.pref.setIntPref("msim.devicelist." + carrier + ".count", count-1);
+	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
 };

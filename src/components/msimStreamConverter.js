@@ -75,7 +75,8 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 		aStatusCode) {
 	dump("[msim]onStopRequest\n");
 
-	var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier");
+	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+	var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
 
 	//絵文字変換
 	dump("[msim]convert pictogram in msimStreamConverter.js\n");
