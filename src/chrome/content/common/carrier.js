@@ -52,8 +52,24 @@ firemobilesimulator.common.carrier.carrierName = {
  * キャリア共通の属性
  */
 firemobilesimulator.common.carrier.deviceBasicAttribute = [
-	"label", "useragent", "carrier", "type", "screen-height", "screen-width", "extra-header"
+	"label",
+	"useragent",
+	"carrier",
+	"type",
+	"screen-height",
+	"screen-width",
+	"extra-header"
 ];
+
+firemobilesimulator.common.carrier.xmlTagName = {
+	label : "DeviceName",
+	useragent : "UserAgent",
+	carrier : "Carrier",
+	type : "Type",
+	"screen-height" : "ScreenHeight",
+	"screen-width"  : "ScreenWidth",
+	"extra-header"  : "ExtraHeader"
+};
 
 firemobilesimulator.common.carrier.Type = {
 	DOCOMO_FOMA   : "FOMA",

@@ -62,7 +62,7 @@ firemobilesimulator.overlay.onInitialize = function() {
 		// firemobilesimulator.common.pref.setBoolPref("msim.config.initialized",
 		// true);
 	}
-	firemobilesimulator.overlay.updateIcon();
+	firemobilesimulator.core.updateIcon();
 };
 
 firemobilesimulator.overlay.onUnload = function() {
@@ -419,27 +419,6 @@ firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
 			}
 		}
 	}
-};
-
-firemobilesimulator.overlay.updateIcon = function(windowObj) {
-	dump("[msim]updateicon\n");
-	windowObj = windowObj || window;
-	var msimButton = windowObj.document.getElementById("msim-button");
-	var menu = windowObj.document.getElementById("msim-menu");
-	var target = [msimButton, menu];
-	target.forEach(function(item) {
-		if (item) {
-			var carrier = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.current.carrier");
-			if (!carrier) {
-				dump("[msim]set default\n");
-				item.removeAttribute("device");
-			} else {
-				dump("[msim]set something device\n");
-				item.setAttribute("device", "on");
-			}
-		}
-	});
 };
 
 /*

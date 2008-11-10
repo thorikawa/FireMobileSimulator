@@ -24,13 +24,11 @@ if (!firemobilesimulator.core)
 	firemobilesimulator.core = {};
 
 firemobilesimulator.core.resetDevice = function(e) {
-	dump("[msim]resetDevice.\n");
 	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
 	firemobilesimulator.common.pref.deletePref("general.useragent.override");
 	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
 	firemobilesimulator.common.pref.deletePref("msim.current.id");
-	firemobilesimulator.overlay && firemobilesimulator.overlay.updateIcon(window);
-	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
+	firemobilesimulator.core.updateIcon();
 };
 
 firemobilesimulator.core.setDevice = function(id) {
@@ -54,13 +52,10 @@ firemobilesimulator.core.setDevice = function(id) {
 						.copyUnicharPref("msim.config.SB.serial"));
 	}
 
-	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override",
-			useragent);
-	firemobilesimulator.common.pref
-			.setUnicharPref("msim.current.useragent", useragent);
+	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override", useragent);
+	firemobilesimulator.common.pref.setUnicharPref("msim.current.useragent", useragent);
 	firemobilesimulator.common.pref.setUnicharPref("msim.current.id", id);
-	firemobilesimulator.overlay && firemobilesimulator.overlay.updateIcon(window);
-	parent.firemobilesimulator.overlay && parent.firemobilesimulator.overlay.updateIcon(parent);
+	firemobilesimulator.core.updateIcon();
 };
 
 firemobilesimulator.core.deleteDevice = function(deletedId) {
@@ -87,4 +82,27 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		});
 	}
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
+};
+
+firemobilesimulator.core.updateIcon = function() {
+	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator)
+			.getEnumerator("navigator:browser");
+
+	while (windowEnumeration.hasMoreElements()) {
+		var windowObj = windowEnumeration.getNext();
+		var msimButton = windowObj.document.getElementById("msim-button");
+		var menu = windowObj.document.getElementById("msim-menu");
+		var target = [msimButton, menu];
+		target.forEach(function(item) {
+			if (item) {
+				var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+				if (!id) {
+					item.removeAttribute("device");
+				} else {
+					item.setAttribute("device", "on");
+				}
+			}
+		});
+	}
 };

@@ -403,60 +403,38 @@ firemobilesimulator.options.exportDevices = function() {
 			var eDevice = xmlDocument.createElement("Device");
 			rootElement.appendChild(eDevice);
 
-			var carrier = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + i
-							+ ".carrier");
-			var deviceName = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + i
-							+ ".label");
-			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + i
-							+ ".useragent");
-			var screenWidth = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + i
-							+ ".screen-width");
-			var screenHeight = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + i
-							+ ".screen-height");
-
-			var eDeviceName = xmlDocument.createElement("DeviceName");
-			eDeviceName.appendChild(xmlDocument.createTextNode(deviceName));
-			var eUserAgent = xmlDocument.createElement("UserAgent");
-			eUserAgent.appendChild(xmlDocument.createTextNode(useragent));
-			var eCarrier = xmlDocument.createElement("Carrier");
-			eCarrier.appendChild(xmlDocument.createTextNode(carrier));
-			var eScreenWidth = xmlDocument.createElement("ScreenWidth");
-			eScreenWidth.appendChild(xmlDocument
-					.createTextNode(screenWidth));
-			var eScreenHeight = xmlDocument.createElement("ScreenHeight");
-			eScreenHeight.appendChild(xmlDocument
-					.createTextNode(screenHeight));
-
-			var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + i
-							+ ".extra-header", ["name", "value"]);
-			var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
-			extraHeaders.forEach(function(extraHeader) {
-				var eExtraHeader = xmlDocument.createElement("Header");
-				var eHeaderName = xmlDocument.createElement("Name");
-				var eHeaderValue = xmlDocument.createElement("Value");
-				eHeaderName.appendChild(xmlDocument
-						.createTextNode(extraHeader.name));
-				eHeaderValue.appendChild(xmlDocument
-						.createTextNode(extraHeader.value));
-				eExtraHeader.appendChild(eHeaderName);
-				eExtraHeader.appendChild(eHeaderValue);
-				eExtraHeaders.appendChild(eExtraHeader);
+			firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
+				if(key == "extra-header"){
+					var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + i
+									+ ".extra-header", ["name", "value"]);
+					var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
+					extraHeaders.forEach(function(extraHeader) {
+						var eExtraHeader = xmlDocument.createElement("Header");
+						var eHeaderName = xmlDocument.createElement("Name");
+						var eHeaderValue = xmlDocument.createElement("Value");
+						eHeaderName.appendChild(xmlDocument
+								.createTextNode(extraHeader.name));
+						eHeaderValue.appendChild(xmlDocument
+								.createTextNode(extraHeader.value));
+						eExtraHeader.appendChild(eHeaderName);
+						eExtraHeader.appendChild(eHeaderValue);
+						eExtraHeaders.appendChild(eExtraHeader);
+					});
+					eDevice.appendChild(eExtraHeaders);
+				}else{
+					var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+					if(tagName){
+						var value = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + "." + key);
+						var ele = xmlDocument.createElement(tagName);
+						ele.appendChild(xmlDocument.createTextNode(value));
+						eDevice.appendChild(ele);
+					}else{
+						dump("[msim]Error:No TagName.\n");
+					}
+				}
 			});
-
-			eDevice.appendChild(eDeviceName);
-			eDevice.appendChild(eUserAgent);
-			eDevice.appendChild(eCarrier);
-			eDevice.appendChild(eScreenWidth);
-			eDevice.appendChild(eScreenHeight);
-			eDevice.appendChild(eExtraHeaders);
 			eDeviceList.appendChild(eDevice);
 		}
-
 
 		rootElement.appendChild(eDeviceList);
 		xmlDocument.appendChild(rootElement);
@@ -539,46 +517,38 @@ firemobilesimulator.options.importDevices = function() {
 	var devices = new Array();
 	var i = 0;
 	while ((deviceElement = deviceResults.iterateNext()) != null) {
-		var label = xPathEvaluator.evaluate("DeviceName", deviceElement,
-				resolver, XPathResult.STRING_TYPE, null).stringValue;
-		var useragent = xPathEvaluator.evaluate("UserAgent", deviceElement,
-				resolver, XPathResult.STRING_TYPE, null).stringValue;
-		var carrier = xPathEvaluator.evaluate("Carrier", deviceElement,
-				resolver, XPathResult.STRING_TYPE, null).stringValue;
-		var screemWidth = xPathEvaluator.evaluate("ScreenWidth", deviceElement,
-				resolver, XPathResult.STRING_TYPE, null).stringValue;
-		var screenHeight = xPathEvaluator.evaluate("ScreenHeight", deviceElement,
-				resolver, XPathResult.STRING_TYPE, null).stringValue;
-		var headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
-				deviceElement, resolver,
-				XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-		var headerElement = null;
 		currentId++;
 		var id = currentId;
+		devoce[i]["id"] = id;
+		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
+			if(key == "extra-header"){
+				var headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
+						deviceElement, resolver,
+						XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+				var headerElement = null;
 
-		//ExtraHeaderエレメントの取得
-		var headers = new Array();
-		var j = 0;
-		while ((headerElement = headerResults.iterateNext()) != null) {
-			var name = xPathEvaluator.evaluate("Name", headerElement, resolver,
-					XPathResult.STRING_TYPE, null).stringValue;
-			var value = xPathEvaluator.evaluate("Value", headerElement,
-					resolver, XPathResult.STRING_TYPE, null).stringValue;
-			headers[j] = {
-				name : name,
-				value : value
-			};
-			j++;
-		}
-		devices[i] = {
-			id : id,
-			label : label,
-			useragent : useragent,
-			carrier : carrier,
-			"screen-width" : screemWidth,
-			"screen-height" : screenHeight,
-			headers : headers
-		};
+				//ExtraHeaderエレメントの取得
+				var headers = new Array();
+				var j = 0;
+				while ((headerElement = headerResults.iterateNext()) != null) {
+					var name = xPathEvaluator.evaluate("Name", headerElement, resolver,
+							XPathResult.STRING_TYPE, null).stringValue;
+					var value = xPathEvaluator.evaluate("Value", headerElement,
+							resolver, XPathResult.STRING_TYPE, null).stringValue;
+					headers[j] = {
+						name : name,
+						value : value
+					};
+					j++;
+				}
+				devoce[i]["headers"] = headers;
+			}else{
+				var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+				var value = xPathEvaluator.evaluate(tagName, deviceElement,
+						resolver, XPathResult.STRING_TYPE, null).stringValue;
+				devices[i][key] = value;
+			}
+		});
 		i++;
 	}
 
