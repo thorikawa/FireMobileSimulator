@@ -426,7 +426,7 @@ firemobilesimulator.options.exportDevices = function() {
 					dump("key:"+key+"\n");
 					dump("tagName:"+tagName+"\n");
 					if(tagName){
-						dump("createelement.\n")
+						dump("createelement.\n");
 						var value = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + "." + key);
 						dump("msim.devicelist." + i + "." + key+"\n");
 						var ele = xmlDocument.createElement(tagName);

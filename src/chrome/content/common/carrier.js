@@ -62,10 +62,10 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 ];
 
 firemobilesimulator.common.carrier.xmlTagName = {
-	label : "DeviceName",
-	useragent : "UserAgent",
-	carrier : "Carrier",
-	type : "Type",
+	label           : "DeviceName",
+	useragent       : "UserAgent",
+	carrier         : "Carrier",
+	type            : "Type",
 	"screen-height" : "ScreenHeight",
 	"screen-width"  : "ScreenWidth",
 	"extra-header"  : "ExtraHeader"
@@ -73,33 +73,33 @@ firemobilesimulator.common.carrier.xmlTagName = {
 
 firemobilesimulator.common.carrier.Type = {};
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO] = {
-	DOCOMO_FOMA   : "FOMA",
-	DOCOMO_MOVA   : "mova"
+	DOCOMO_FOMA     : "FOMA",
+	DOCOMO_MOVA     : "mova"
 };
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.AU] = {
-	AU_WAP1       : "WAP1.0",
-	AU_WAP2       : "WAP2.0"
+	AU_WAP1         : "WAP1.0",
+	AU_WAP2         : "WAP2.0"
 };
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.SOFTBANK] = {
-	SOFTBANK_C2   : "C2",
-	SOFTBANK_C3   : "C3",
-	SOFTBANK_C4   : "C4",
-	SOFTBANK_P4_1 : "P4_1",
-	SOFTBANK_P4_2 : "P4_2",
-	SOFTBANK_P5   : "P5",
-	SOFTBANK_P6   : "P6",
-	SOFTBANK_W    : "W",
-	SOFTBANK_3GC  : "3GC",
-	SOFTBANK_IPHONE  : "iPhone"
-}
+	SOFTBANK_C2     : "C2",
+	SOFTBANK_C3     : "C3",
+	SOFTBANK_C4     : "C4",
+	SOFTBANK_P4_1   : "P4_1",
+	SOFTBANK_P4_2   : "P4_2",
+	SOFTBANK_P5     : "P5",
+	SOFTBANK_P6     : "P6",
+	SOFTBANK_W      : "W",
+	SOFTBANK_3GC    : "3GC",
+	SOFTBANK_IPHONE : "iPhone"
+};
 
 firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, serial) {
 	var notifySerial = parent.firemobilesimulator.common.pref.getBoolPref("msim.config.SB.notifyserial");
+	var replacement  = "";
 	if (true == notifySerial) {
-		useragent = useragent.replace("[/Serial]", "/" + serial);
-	} else {
-		useragent = useragent.replace("[/Serial]", "");
+		replacement = "/" + serial;
 	}
+	useragent = useragent.replace("[/Serial]", replacement);
 	dump("[msim]SB UA:" + useragent + "\n");
 	return useragent;
 };

@@ -117,7 +117,7 @@ firemobilesimulator.options.dialogs.device.carrierSelected = function(obj) {
 	firemobilesimulator.options.dialogs.device.appendTypeList(firemobilesimulator.options.dialogs.device.carrier);
 	//firemobilesimulator.options.dialogs.device.carrier = obj.id;
 	//window.sizeToContent();
-	
+
 };
 
 // Saves a device
@@ -217,7 +217,7 @@ firemobilesimulator.options.dialogs.device.addExtraHeaderRow = function(targetNo
 	if(headerObj && headerObj.value) t.setAttribute("value", headerObj.value);
 	// TODO propertieファイルから取得するように修正
 	b.setAttribute("label", "削除");
-	b.setAttribute("oncommand",	"this.parentNode.parentNode.removeChild(this.parentNode);");
+	b.setAttribute("oncommand", "this.parentNode.parentNode.removeChild(this.parentNode);");
 	r.appendChild(l);
 	r.appendChild(t);
 	r.appendChild(b);
@@ -239,5 +239,5 @@ firemobilesimulator.options.dialogs.device.appendTypeList = function(carrier) {
 		ele.appendChild(menuItem);
 	}
 	//});
-	
-}
+
+};
