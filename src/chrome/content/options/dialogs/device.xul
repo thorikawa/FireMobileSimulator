@@ -26,24 +26,29 @@
 		</columns>
 		<rows id="msim.options.device.rows">
 			<row align="center">
-				<label control="msim.options.device.label" value="&msim.options.device.device;" width="50"/>
-				<textbox id="msim.options.device.label" size="50"/>
+				<label control="msim.options.device.label" value="&msim.options.device.device;" width="150"/>
+				<textbox id="msim.options.device.label" width="270"/>
 			</row>
 			<row id="msim.options.device.carrier.row" align="center">
-				<label control="msim.options.device.carrier" value="&msim.options.device.carrier;" size="50"/>
-				<!--<textbox id="msim.options.device.carrier" size="50" disabled="true"/>-->
+				<label control="msim.options.device.carrier" value="&msim.options.device.carrier;"/>
 			</row>
 			<row id="msim.options.device.useragent.row" align="center">
-				<label control="msim.options.device.useragent" value="&msim.options.device.useragent;" size="50"/>
-				<textbox id="msim.options.device.useragent" size="50"/>
+				<label control="msim.options.device.useragent" value="&msim.options.device.useragent;"/>
+				<textbox id="msim.options.device.useragent"/>
+			</row>
+			<row id="msim.options.device.type.row" align="center">
+				<label control="msim.options.device.type" value="&msim.options.device.type;"/>
+				<menulist>
+					<menupopup id="msim.options.device.type.menupopup"></menupopup>
+				</menulist>
 			</row>
 			<row id="msim.options.device.screen-width.row" align="center">
-				<label control="msim.options.device.screen-width" value="&msim.options.device.screen-width;"  size="50"/>
-				<textbox id="msim.options.device.screen-width" size="50"/>
+				<label control="msim.options.device.screen-width" value="&msim.options.device.screen-width;"/>
+				<textbox id="msim.options.device.screen-width"/>
 			</row>
 			<row id="msim.options.device.screen-height.row" align="center">
-				<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;" size="50"/>
-				<textbox id="msim.options.device.screen-height" size="50"/>
+				<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;"/>
+				<textbox id="msim.options.device.screen-height"/>
 			</row>
 		</rows>
 	</grid>
@@ -54,15 +59,25 @@
 			<columns>
 				<column/>
 				<column/>
+				<column/>
 			</columns>
 			<rows id="msim.options.device.extra-headers.rows">
-				<row align="center">
-					<label value="header-name" width="50"/>
-					<label value="header-value" width="50"/>
+				<row>
+					<hbox pack="center" width="150"><label value="header-name2"/></hbox>
+					<hbox pack="center" width="200"><label value="header-value2"/></hbox>
+					<hbox/>
+				</row>
+				<row>
+					<button
+						id="msim.options.device.extra-headers.add"
+						label="&msim.options.device.extra-headers.add;"
+						oncommand="firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById('msim.options.device.extra-headers.rows'));window.sizeToContent();"
+						accesskey="x"/>
+					<hbox/>
+					<hbox/>
 				</row>
 			</rows>
 		</grid>
-		<button id="msim.options.device.extra-headers.add" label="&msim.options.device.extra-headers.add;" oncommand="firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById('msim.options.device.extra-headers.rows'));window.sizeToContent();" accesskey="x" width="50"/>
     </groupbox>
     
 </dialog>
