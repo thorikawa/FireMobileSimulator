@@ -64,7 +64,7 @@ firemobilesimulator.LoadDeviceList = function() {
 		var check = document.createElement("input");
 		check.setAttribute("type", "checkbox");
 		check.setAttribute("name", "r");
-		check.setAttribute("id", "checkbox"+device["device-center-id"])
+		check.setAttribute("id", "checkbox"+device["device-center-id"]);
 		check.setAttribute("value", device["device-center-id"]);
 		var te = document.createTextNode("追加");
 		cell.appendChild(check);

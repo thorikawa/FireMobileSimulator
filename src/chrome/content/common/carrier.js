@@ -63,10 +63,10 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 ];
 
 firemobilesimulator.common.carrier.xmlTagName = {
-	label              : "DeviceName",
-	useragent          : "UserAgent",
-	carrier            : "Carrier",
-	type               : "Type",
+	"label"            : "DeviceName",
+	"useragent"        : "UserAgent",
+	"carrier"          : "Carrier",
+	"type"             : "Type",
 	"screen-height"    : "ScreenHeight",
 	"screen-width"     : "ScreenWidth",
 	"extra-header"     : "ExtraHeader",
