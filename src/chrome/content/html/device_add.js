@@ -33,8 +33,8 @@ window.addEventListener("load", function(e){
 				postData += "&r=" + id;
 			}
 		}
-		var filePath = "http://firemobilesimulator.org/fms/index.cgi";
-		var devices = firemobilesimulator.core.parseDeviceListXML(filePath, postData);
+		var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+		var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
 		var result = firemobilesimulator.core.LoadDevices(devices, false);
 		if(result){
 			confirm("選択した端末がFireMobileSimulatorに追加されました");
@@ -44,7 +44,8 @@ window.addEventListener("load", function(e){
 
 firemobilesimulator.LoadDeviceList = function() {
 
-	var filePath = "http://firemobilesimulator.org/fms/index.cgi?action=list&xml=1&simple=1";
+	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+	var filePath = deviceDB + "?action=list&xml=1&simple=1";
 	var devices = firemobilesimulator.core.parseDeviceListXML(filePath, null);
 	if(!devices){
 		alert("端末リストを取得できませんでした。");

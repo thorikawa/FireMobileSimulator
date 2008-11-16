@@ -1,5 +1,6 @@
 pref("msim.config.register.enabled", true);
 pref("msim.config.initialized", false);
+pref("msim.config.devicedb.url", "http://firemobilesimulator.org/devicedb/");
 
 pref("msim.config.general.reset-device-onquit", true);
 pref("msim.config.general.force-screen-width", true);

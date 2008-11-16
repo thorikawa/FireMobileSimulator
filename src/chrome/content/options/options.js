@@ -450,6 +450,7 @@ firemobilesimulator.options.exportDevices = function() {
 		outputStream.write(xmlContent, xmlContent.length);
 		outputStream.close();
 	}
+	confirm(stringBundle.getFormattedString("msim_exportCompleted"));
 	return;
 };
 
@@ -469,7 +470,7 @@ firemobilesimulator.options.importDevices = function() {
 	}
 
 	var file = filePicker.file;
-	var filePath = file.path;
+	var filePath = file.path;S
 
 	// If the file exists, is a file and is readable
 	if (!file.exists() || !file.isFile() || !file.isReadable()) {
@@ -482,5 +483,6 @@ firemobilesimulator.options.importDevices = function() {
 	var overwrite = pageDocument.getElementById("msim.import.overwrite").checked
 	firemobilesimulator.core.LoadDevices(devices, overwrite);
 	
+	confirm(stringBundle.getFormattedString("msim_importFileCompleted"));
 	return;
 };
