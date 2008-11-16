@@ -45,6 +45,7 @@
 				<menuseparator id="msim-separator1-menu"/>
 				<menuseparator id="msim-separator2-menu"/>
 				<menuitem id="msim-options-menu" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
+				<menuitem id="msim-devicedb-menu" accesskey="&msim.menu.devicedb.accesskey;" label="&msim.menu.devicedb.label;" oncommand="firemobilesimulator.overlay.openDeviceDB();"/>
 				<menuitem id="msim-about-menu" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</menu>
@@ -57,6 +58,7 @@
 				<menuseparator id="msim-separator1-toolbar"/>
 				<menuseparator id="msim-separator2-toolbar"/>
 				<menuitem id="msim-options-toolbar" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
+				<menuitem id="msim-devicedb-toolbar" accesskey="&msim.menu.devicedb.accesskey;" label="&msim.menu.devicedb.label;" oncommand="firemobilesimulator.overlay.openDeviceDB();"/>
 				<menuitem id="msim-about-toolbar" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</toolbarbutton>

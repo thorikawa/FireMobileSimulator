@@ -58,19 +58,20 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 	"type",
 	"screen-height",
 	"screen-width",
-	"extra-header"
+	"extra-header",
+	"device-center-id"
 ];
 
 firemobilesimulator.common.carrier.xmlTagName = {
-	label           : "DeviceName",
-	useragent       : "UserAgent",
-	carrier         : "Carrier",
-	type            : "Type",
-	"screen-height" : "ScreenHeight",
-	"screen-width"  : "ScreenWidth",
-	"extra-header"  : "ExtraHeader"
+	label              : "DeviceName",
+	useragent          : "UserAgent",
+	carrier            : "Carrier",
+	type               : "Type",
+	"screen-height"    : "ScreenHeight",
+	"screen-width"     : "ScreenWidth",
+	"extra-header"     : "ExtraHeader",
+	"device-center-id" : "Id"
 };
-
 firemobilesimulator.common.carrier.Type = {};
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO] = {
 	DOCOMO_FOMA     : "FOMA",

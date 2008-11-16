@@ -105,7 +105,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
 
 	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
-					"msim-options-" + suffix, "msim-about-" + suffix]);
+					"msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
 
 	var deviceCount = firemobilesimulator.common.pref
 			.getIntPref("msim.devicelist.count");
@@ -173,6 +173,10 @@ firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
 firemobilesimulator.overlay.openOptions = function() {
 	window.openDialog("chrome://msim/content/options/options.xul",
 			"msim-options-dialog", "centerscreen,chrome,modal,resizable");
+};
+
+firemobilesimulator.overlay.openDeviceDB = function() {
+	window.getBrowser().selectedTab = window.getBrowser().addTab("chrome://msim/content/html/device_add.html");
 };
 
 firemobilesimulator.overlay.openAbout = function() {

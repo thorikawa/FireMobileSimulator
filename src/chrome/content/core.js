@@ -106,3 +106,130 @@ firemobilesimulator.core.updateIcon = function() {
 		});
 	}
 };
+
+firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
+	var request = new XMLHttpRequest();
+	var xmlDocument = null;
+
+	if(postData){
+		dump("try post:"+postData+"\n");
+		request.open("post", filePath, false);
+		request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		request.send(postData);
+	}else{
+		dump("try get:"+filePath+"\n");
+		request.open("get", filePath, false);
+		request.send(null);
+	}
+
+	var xmlDocumentNode = request.responseXML;
+	if(!xmlDocumentNode) return;
+	var xmlDocumentElement = xmlDocumentNode.documentElement;
+	if (xmlDocumentNode.nodeName == "parsererror") return;
+
+	var deviceResults = null;
+	var deviceElement = null;
+	var xPathEvaluator = new XPathEvaluator();
+	var resolver = xPathEvaluator.createNSResolver(xmlDocumentElement);
+	deviceResults = xPathEvaluator.evaluate("//DeviceList/Device",
+			xmlDocumentNode, resolver, XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+			null);
+	if (deviceResults.length == 0) return;
+
+	//XMLから端末情報を順次解析
+	var devices = new Array();
+	var i = 0;
+	while ((deviceElement = deviceResults.iterateNext()) != null) {
+		devices[i] = {};
+		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
+			if(key == "extra-header"){
+				var headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
+						deviceElement, resolver,
+						XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+				var headerElement = null;
+
+				//ExtraHeaderエレメントの取得
+				var headers = new Array();
+				var j = 0;
+				while ((headerElement = headerResults.iterateNext()) != null) {
+					var name = xPathEvaluator.evaluate("Name", headerElement, resolver,
+							XPathResult.STRING_TYPE, null).stringValue;
+					var value = xPathEvaluator.evaluate("Value", headerElement,
+							resolver, XPathResult.STRING_TYPE, null).stringValue;
+					headers[j] = {
+						name : name,
+						value : value
+					};
+					j++;
+				}
+				devices[i]["headers"] = headers;
+			}else{
+				var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+				var value = xPathEvaluator.evaluate(tagName, deviceElement,
+						resolver, XPathResult.STRING_TYPE, null).stringValue;
+				devices[i][key] = value;
+			}
+		});
+		i++;
+	}
+	return devices;
+};
+
+firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
+	var currentId = 0;
+	if (overwrite) {
+		currentId = 0;
+	} else {
+		var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+		currentId = deviceCount;
+		dump("setCurrentId:"+currentId+"\n");
+	}
+	// update preference
+	overwrite && firemobilesimulator.options.clearAllDeviceSettings();
+	devices.forEach(function(device) {
+		currentId++;
+		var id = currentId;
+		var carrier = device.carrier;
+		for (var key in device) {
+			var value = device[key];
+			if (key == "headers") {
+				var i = 1;
+				dump("length:" + value.length + "\n");
+				dump("value:" + value + "\n");
+				value.forEach(function(header) {
+					firemobilesimulator.common.pref.setUnicharPref(
+							"msim.devicelist." + id
+									+ ".extra-header." + i + ".name",
+							header.name);
+					firemobilesimulator.common.pref.setUnicharPref(
+							"msim.devicelist." + id
+									+ ".extra-header." + i + ".value",
+							header.value);
+					dump("set:msim.devicelist." + id
+							+ ".extra-header." + i + ".name:" + header.name
+							+ "\n");
+					dump("set:msim.devicelist." + id
+							+ ".extra-header." + i + ".value:" + header.value
+							+ "\n");
+					i++;
+				});
+				dump("set:" + "msim.devicelist." + id
+						+ ".extra-header.count:" + value.length + "\n");
+				firemobilesimulator.common.pref.setIntPref("msim.devicelist."
+								+ id + ".extra-header.count",
+						value.length);
+			} else if (key == "id") {
+			} else {
+				firemobilesimulator.common.pref.setUnicharPref(
+						"msim.devicelist." + id + "." + key,
+						value);
+				dump("set:msim.devicelist." + id + "." + key
+						+ ":" + value + "\n");
+			}
+		}
+	});
+
+	//set device count
+	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", currentId);
+	return true;
+};

@@ -1,15 +1,17 @@
 <!ENTITY msim.label "FireMobileSimulator">
 <!ENTITY msim.menu.accesskey "M">
-<!ENTITY msim.menu.default.label "default">
-<!ENTITY msim.menu.default.accesskey "d">
-<!ENTITY msim.menu.options.label "Options">
+<!ENTITY msim.menu.default.label "端末選択解除">
+<!ENTITY msim.menu.default.accesskey "c">
+<!ENTITY msim.menu.options.label "オプション設定">
 <!ENTITY msim.menu.options.accesskey "o">
+<!ENTITY msim.menu.devicedb.label "最新端末リストから端末を追加">
+<!ENTITY msim.menu.devicedb.accesskey "d">
 <!ENTITY msim.menu.about.label "About">
 <!ENTITY msim.menu.about.accesskey "a">
 <!ENTITY msim.options.title "オプション設定">
 <!ENTITY msim.options.general.label "全般">
 <!ENTITY msim.options.idno.label "ID情報">
-<!ENTITY msim.options.devices.label "デバイス設定">
+<!ENTITY msim.options.devices.label "端末設定">
 <!ENTITY msim.options.gps.label "位置情報設定">
 <!ENTITY msim.options.pictogram.label "絵文字表示設定">
 <!ENTITY msim.options.general.quit.label "終了">
@@ -20,7 +22,7 @@
 <!ENTITY msim.options.delete "削除する">
 <!ENTITY msim.options.clearall "初期設定に戻す">
 <!ENTITY msim.options.add "追加する">
-<!ENTITY msim.options.device.device "デバイス名(必須)">
+<!ENTITY msim.options.device.device "端末名(必須)">
 <!ENTITY msim.options.device.carrier "キャリア(必須)">
 <!ENTITY msim.options.device.useragent "User agent(必須)">
 <!ENTITY msim.options.device.type "Type">
@@ -29,6 +31,6 @@
 <!ENTITY msim.options.export "エクスポート">
 <!ENTITY msim.options.import "インポート">
 <!ENTITY msim.options.import-export "インポート/エクスポート">
-<!ENTITY msim.import.overwrite "既存のデバイス情報をクリアしてインポートする">
+<!ENTITY msim.import.overwrite "既存の端末情報をクリアしてインポートする">
 <!ENTITY msim.options.device.extra-headers "HTTP Header">
 <!ENTITY msim.options.device.extra-headers.add "行を追加する">

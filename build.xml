@@ -6,7 +6,7 @@
 	<property name="app.name" value="FireMobileSimulator"/>
 	<property name="app.code" value="msim"/>
 	<property name="app.id" value="{77cc852e-6b45-11dd-929f-d30256d89593}"/> <!-- extension id like: xxx@xxx.com -->
-	<property name="fx.dir" value="C:\Documents and Settings\horikawa_t\Application Data\Mozilla\Firefox\Profiles\dzneq73f.nms\extensions\"/>
+	<property name="fx.dir" value="/Users/horikawa/Library/Application Support/Firefox/Profiles/ayzmk2q6.default/extensions/"/>
 
 	<condition property="fx.present">
 		<and>
