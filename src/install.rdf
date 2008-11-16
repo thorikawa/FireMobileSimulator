@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>{77cc852e-6b45-11dd-929f-d30256d89593}</em:id>
     <em:name>FireMobileSimulator</em:name>
-    <em:version>0.2.1pre</em:version>
+    <em:version>1.0.0pre</em:version>
     <em:creator>Takahiro Horikawa</em:creator>
     <em:aboutURL>chrome://msim/content/about.xul</em:aboutURL>
     <em:optionsURL>chrome://msim/content/options/options.xul</em:optionsURL>
@@ -16,7 +16,8 @@
       </Description>
     </em:targetApplication>
     <em:description>携帯端末のHTTPリクエスト、絵文字表示をシミュレートします。</em:description>
-    <em:homepageURL>https://addons.mozilla.org/firefox/addon/8519</em:homepageURL>
+    <em:homepageURL>http://firemobilesimulator.org/</em:homepageURL>
+    <em:updateURL>https://ss1.xrea.com/poly.s49.xrea.com/dev/firefox/fms/update.xml</em:updateURL>
     <em:iconURL>chrome://msim/skin/msim_icon.png</em:iconURL>
   </Description>
 </RDF>
