@@ -25,14 +25,16 @@ window.addEventListener("load", function(e){
 	var b = document.getElementById("button_add_device");
 	b.addEventListener("click", function(e){
 		var rs = document.getElementsByName("r");
-		var postData = "action=list&xml=1&r=0";
+		var postData = "level=5&id=";
+		var idArray = new Array();
 		for(var i=0; i<rs.length; i++){
 			var ip = rs[i];
 			var id = ip.value;
 			if(ip.checked){
-				postData += "&r=" + id;
+				idArray.push(id);
 			}
 		}
+		postData += idArray.join("_");
 		var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
 		var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
 		var result = firemobilesimulator.core.LoadDevices(devices, false);
@@ -45,7 +47,7 @@ window.addEventListener("load", function(e){
 firemobilesimulator.LoadDeviceList = function() {
 
 	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
-	var filePath = deviceDB + "?action=list&xml=1&simple=1";
+	var filePath = deviceDB + "?level=0";
 	var devices = firemobilesimulator.core.parseDeviceListXML(filePath, null);
 	if(!devices){
 		alert("端末リストを取得できませんでした。");
@@ -55,7 +57,7 @@ firemobilesimulator.LoadDeviceList = function() {
 	var t = document.getElementById("table_device");
 	devices.forEach(function(device) {
 		var row = document.createElement("tr");
-		["label", "carrier", "type", "useragent"].forEach(function(key){
+		["label", "carrier", "type", "release-date"].forEach(function(key){
 			var cell = document.createElement("td");
 			cell.innerHTML = device[key] || "&nbsp;";
 			row.appendChild(cell);
