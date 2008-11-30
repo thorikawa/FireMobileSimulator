@@ -22,8 +22,8 @@ if(!firemobilesimulator) firemobilesimulator = {};
 
 Ext.onReady(function() {
 
-	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
-	var filePath = deviceDB + "?level=0";
+    var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+    var filePath = deviceDB + "?level=0";
 
     //データストア
     var ds = new Ext.data.Store({
@@ -41,61 +41,61 @@ Ext.onReady(function() {
         )
     });
 
-	//グリッド
+    //グリッド
     var sm = new Ext.grid.CheckboxSelectionModel({
     //var sm = new Ext.grid.SmartCheckboxSelectionModel({
-    	singleSelect : false,
-    	//excel : true
+        singleSelect: false,
+        //excel: true
     });
-    
-	var grid = new Ext.grid.GridPanel({
-		id: 'grid-device-cmp',
-		store: ds,
-	    colModel: new Ext.grid.ColumnModel([
-	        sm,
-	        {header: '端末名', width: 160, sortable: true, dataIndex: 'name'},
-	        {header: 'キャリア', width: 80, sortable: true, dataIndex: 'carrier'},
-	        {header: 'タイプ', width: 80,  sortable: true, dataIndex: 'type'},
-	        {header: '発売日', width: 80,  sortable: true, dataIndex: 'release-date'},
-	    ]),
-	    renderTo: 'grid-device',
-	    height: 380,
-	    width: 500,
-	    stripeRows: true,
-	    title: '端末リスト',
-	    frame: true,
-	    sm: sm,
-	    viewConfig : {
-			forceFit : true // 自動的にカラムサイズを調整
-		},	    
-	    loadMask: {msg: "Loading..."},
-	    tbar: [{
-	        text: '選択した端末を追加',
-	        handler: firemobilesimulator.addDevice
-	      }]
-	});
-	
-	ds.load();
+
+    var grid = new Ext.grid.GridPanel({
+        id: 'grid-device-cmp',
+        store: ds,
+        colModel: new Ext.grid.ColumnModel([
+            sm,
+            {header: '端末名', width: 160, sortable: true, dataIndex: 'name'},
+            {header: 'キャリア', width: 80, sortable: true, dataIndex: 'carrier'},
+            {header: 'タイプ', width: 80, sortable: true, dataIndex: 'type'},
+            {header: '発売日', width: 80, sortable: true, dataIndex: 'release-date'}
+        ]),
+        renderTo: 'grid-device',
+        height: 380,
+        width: 500,
+        stripeRows: true,
+        title: '端末リスト',
+        frame: true,
+        sm: sm,
+        viewConfig: {
+            forceFit: true // 自動的にカラムサイズを調整
+        },
+        loadMask: {msg: "Loading..."},
+        tbar: [{
+            text: '選択した端末を追加',
+            handler: firemobilesimulator.addDevice
+        }]
+    });
+
+    ds.load();
 });
 
 firemobilesimulator.addDevice = function() {
-	var postData = "level=5&id=";
-	var idArray = new Array();
-	var sm = Ext.getCmp('grid-device-cmp').getSelectionModel();
-	var records = sm.getSelections();
-	for(var i = 0; i<records.length; i++){
-		var record = records[i];
-		idArray.push(record.id);
-	}
-	postData += idArray.join("_");
-	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
-	var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
-	var result = firemobilesimulator.core.LoadDevices(devices, false);
-	if(result){
-		Ext.Msg.show({
-	    	title : "追加完了",
-	    	msg : "選択した端末がFireMobileSimulatorに追加されました"
-	    });
-	}
-	sm.clearSelections();
+    var postData = "level=5&id=";
+    var idArray = new Array();
+    var sm = Ext.getCmp('grid-device-cmp').getSelectionModel();
+    var records = sm.getSelections();
+    for(var i = 0; i<records.length; i++){
+        var record = records[i];
+        idArray.push(record.id);
+    }
+    postData += idArray.join("_");
+    var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+    var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
+    var result = firemobilesimulator.core.LoadDevices(devices, false);
+    if(result){
+        Ext.Msg.show({
+            title: "追加完了",
+            msg: "選択した端末がFireMobileSimulatorに追加されました"
+        });
+    }
+    sm.clearSelections();
 };
