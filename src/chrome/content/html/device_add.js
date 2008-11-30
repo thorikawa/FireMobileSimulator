@@ -20,58 +20,82 @@
 var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
 
-window.addEventListener("load", function(e){
-	firemobilesimulator.LoadDeviceList();
-	var b = document.getElementById("button_add_device");
-	b.addEventListener("click", function(e){
-		var rs = document.getElementsByName("r");
-		var postData = "level=5&id=";
-		var idArray = new Array();
-		for(var i=0; i<rs.length; i++){
-			var ip = rs[i];
-			var id = ip.value;
-			if(ip.checked){
-				idArray.push(id);
-			}
-		}
-		postData += idArray.join("_");
-		var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
-		var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
-		var result = firemobilesimulator.core.LoadDevices(devices, false);
-		if(result){
-			confirm("選択した端末がFireMobileSimulatorに追加されました");
-		}
-	}, false);
-}, false);
-
-firemobilesimulator.LoadDeviceList = function() {
+Ext.onReady(function() {
 
 	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
 	var filePath = deviceDB + "?level=0";
-	var devices = firemobilesimulator.core.parseDeviceListXML(filePath, null);
-	if(!devices){
-		alert("端末リストを取得できませんでした。");
-		return;
-	}
-	//DOM更新
-	var t = document.getElementById("table_device");
-	devices.forEach(function(device) {
-		var row = document.createElement("tr");
-		["label", "carrier", "type", "release-date"].forEach(function(key){
-			var cell = document.createElement("td");
-			cell.innerHTML = device[key] || "&nbsp;";
-			row.appendChild(cell);
-		});
-		var cell = document.createElement("td");
-		var check = document.createElement("input");
-		check.setAttribute("type", "checkbox");
-		check.setAttribute("name", "r");
-		check.setAttribute("id", "checkbox"+device["device-center-id"]);
-		check.setAttribute("value", device["device-center-id"]);
-		var te = document.createTextNode("追加");
-		cell.appendChild(check);
-		cell.appendChild(te);
-		row.appendChild(cell);
-		t.appendChild(row);
+
+    //データストア
+    var ds = new Ext.data.Store({
+        proxy:  new Ext.data.HttpProxy(
+            {url: filePath}
+        ),
+        reader: new Ext.data.XmlReader(
+            {id: 'Id', record: 'Device'},
+            [
+                {name: 'name', mapping: 'DeviceName'},
+                {name: 'carrier', mapping: 'Carrier'},
+                {name: 'type', mapping: 'Type'},
+                {name: 'release-date', mapping: 'ReleaseDate'}
+            ]
+        )
+    });
+
+	//グリッド
+    var sm = new Ext.grid.CheckboxSelectionModel({
+    //var sm = new Ext.grid.SmartCheckboxSelectionModel({
+    	singleSelect : false,
+    	//excel : true
+    });
+    
+	var grid = new Ext.grid.GridPanel({
+		id: 'grid-device-cmp',
+		store: ds,
+	    colModel: new Ext.grid.ColumnModel([
+	        sm,
+	        {header: '端末名', width: 160, sortable: true, dataIndex: 'name'},
+	        {header: 'キャリア', width: 80, sortable: true, dataIndex: 'carrier'},
+	        {header: 'タイプ', width: 80,  sortable: true, dataIndex: 'type'},
+	        {header: '発売日', width: 80,  sortable: true, dataIndex: 'release-date'},
+	    ]),
+	    renderTo: 'grid-device',
+	    height: 380,
+	    width: 500,
+	    stripeRows: true,
+	    title: '端末リスト',
+	    frame: true,
+	    sm: sm,
+	    viewConfig : {
+			forceFit : true // 自動的にカラムサイズを調整
+		},	    
+	    loadMask: {msg: "Loading..."},
+	    tbar: [{
+	        text: '選択した端末を追加',
+	        handler: firemobilesimulator.addDevice
+	      }]
 	});
+	
+	ds.load();
+});
+
+firemobilesimulator.addDevice = function() {
+	var postData = "level=5&id=";
+	var idArray = new Array();
+	var sm = Ext.getCmp('grid-device-cmp').getSelectionModel();
+	var records = sm.getSelections();
+	for(var i = 0; i<records.length; i++){
+		var record = records[i];
+		idArray.push(record.id);
+	}
+	postData += idArray.join("_");
+	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+	var devices = firemobilesimulator.core.parseDeviceListXML(deviceDB, postData);
+	var result = firemobilesimulator.core.LoadDevices(devices, false);
+	if(result){
+		Ext.Msg.show({
+	    	title : "追加完了",
+	    	msg : "選択した端末がFireMobileSimulatorに追加されました"
+	    });
+	}
+	sm.clearSelections();
 };

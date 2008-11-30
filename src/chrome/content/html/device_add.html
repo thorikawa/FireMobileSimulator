@@ -4,7 +4,12 @@
 	<script type="text/javascript" src="chrome://msim/content/core.js"></script>
 	<script type="text/javascript" src="chrome://msim/content/common/pref.js"></script>
 	<script type="text/javascript" src="chrome://msim/content/common/carrier.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/ext-all.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/source/locale/ext-lang-ja.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/ext-scsm.js"></script>
 	<script type="text/javascript" src="device_add.js"></script>
+	<link rel="stylesheet" type="text/css" href="chrome://msim/content/ext-2.2/resources/css/ext-all.css">
 	<style type="text/css">
 .head{
   font-weight: bold;
@@ -23,19 +28,6 @@
 </head>
 <body>
 <div class="head"><span class="large">FireMobileSimulator</span> : 端末追加</div>
-<form method="GET" id="form_device">
-<table border="1" id="table_device">
-<tr>
-	<th>端末名</th>
-	<th>キャリア</th>
-	<th>タイプ</th>
-	<th>発売日</th>
-	<th>&nbsp;</th>
-</tr>
-</table>
-<input type="hidden" name="action" value="list">
-<input type="hidden" name="xml" value="1">
-<input type="button" id="button_add_device" value="登録">
-</form>
+<div id="grid-device" style="overflow:hidden;" />
 </body>
 </html>
