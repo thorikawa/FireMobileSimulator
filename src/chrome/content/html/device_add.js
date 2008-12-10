@@ -96,8 +96,8 @@ Ext.onReady(function() {
 							msg : "Loading..."
 						},
 						tbar : [
-								// {xtype: 'tbfill'},
-								// {xtype: 'tbfill'},
+								// {xtype : 'tbfill'},
+								// {xtype : 'tbfill'},
 								{
 							text : 'DoCoMo',
 							handler : firemobilesimulator.selectDoCoMo
@@ -124,12 +124,12 @@ Ext.onReady(function() {
 
 			var getInput = function() {
 				return Ext.getCmp('tf-cmp').getValue();
-			}
-			var search = function(input){
+			};
+			var search = function(input) {
 				ds.filter('name', input, true, false);
 			};
 			var is = new IncrementalSearch(getInput, search);
-			ds.on('load',function(){is.checkLoop();});
+			ds.on('load',function() { is.checkLoop(); });
 			ds.load();
 		});
 
@@ -167,7 +167,7 @@ function IncrementalSearch() {
 	this.initialize.apply(this, arguments);
 };
 IncrementalSearch.prototype = {
-	initialize : function(getInputFunc, searchFunc){
+	initialize : function(getInputFunc, searchFunc) {
 		this.getInput = getInputFunc;
 		this.search = searchFunc;
 	},
@@ -199,5 +199,5 @@ IncrementalSearch.prototype = {
 		return function() {
 			func.apply(self, args);
 		};
-	},
+	}
 };

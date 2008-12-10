@@ -42,7 +42,7 @@ firemobilesimulator.core.setDevice = function(id) {
 
 	var pref_prefix = "msim.devicelist." + id;
 	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
-	
+
 	firemobilesimulator.common.pref.setUnicharPref("msim.current.carrier", carrier);
 	var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
 			+ ".useragent");
@@ -73,10 +73,10 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	//dump(deletedId+":"+count+"\n");
 	//dump((deletedId+1)+":"+count+"\n");
-	for (var i=deletedId+1; i<=count; i++) {
+	for (let i=deletedId+1; i<=count; i++) {
 		//dump("[msim]Debug : Id is not the last one. Re-arrange ids.\n");
-		var sPrefPrefix = "msim.devicelist." + i + ".";
-		var ePrefPrefix = "msim.devicelist." + (i-1) + ".";
+		let sPrefPrefix = "msim.devicelist." + i + ".";
+		let ePrefPrefix = "msim.devicelist." + (i-1) + ".";
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
 		});
@@ -90,13 +90,13 @@ firemobilesimulator.core.updateIcon = function() {
 			.getEnumerator("navigator:browser");
 
 	while (windowEnumeration.hasMoreElements()) {
-		var windowObj = windowEnumeration.getNext();
-		var msimButton = windowObj.document.getElementById("msim-button");
-		var menu = windowObj.document.getElementById("msim-menu");
-		var target = [msimButton, menu];
+		let windowObj = windowEnumeration.getNext();
+		let msimButton = windowObj.document.getElementById("msim-button");
+		let menu = windowObj.document.getElementById("msim-menu");
+		let target = [msimButton, menu];
 		target.forEach(function(item) {
 			if (item) {
-				var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+				let id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
 				if (!id) {
 					item.removeAttribute("device");
 				} else {
@@ -111,19 +111,19 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 	var request = new XMLHttpRequest();
 	var xmlDocument = null;
 
-	if(postData){
+	if (postData) {
 		dump("try post:"+postData+"\n");
 		request.open("post", filePath, false);
 		request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 		request.send(postData);
-	}else{
+	} else {
 		dump("try get:"+filePath+"\n");
 		request.open("get", filePath, false);
 		request.send(null);
 	}
 
 	var xmlDocumentNode = request.responseXML;
-	if(!xmlDocumentNode) return;
+	if (!xmlDocumentNode) return;
 	var xmlDocumentElement = xmlDocumentNode.documentElement;
 	if (xmlDocumentNode.nodeName == "parsererror") return;
 
@@ -141,20 +141,20 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 	var i = 0;
 	while ((deviceElement = deviceResults.iterateNext()) != null) {
 		devices[i] = {};
-		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
-			if(key == "extra-header"){
-				var headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
+		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key) {
+			if (key == "extra-header") {
+				let headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
 						deviceElement, resolver,
 						XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-				var headerElement = null;
+				let headerElement = null;
 
 				//ExtraHeaderエレメントの取得
-				var headers = new Array();
-				var j = 0;
+				let headers = new Array();
+				let j = 0;
 				while ((headerElement = headerResults.iterateNext()) != null) {
-					var name = xPathEvaluator.evaluate("Name", headerElement, resolver,
+					let name = xPathEvaluator.evaluate("Name", headerElement, resolver,
 							XPathResult.STRING_TYPE, null).stringValue;
-					var value = xPathEvaluator.evaluate("Value", headerElement,
+					let value = xPathEvaluator.evaluate("Value", headerElement,
 							resolver, XPathResult.STRING_TYPE, null).stringValue;
 					headers[j] = {
 						name : name,
@@ -163,11 +163,11 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 					j++;
 				}
 				devices[i]["headers"] = headers;
-			}else{
-				var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
-				var value = xPathEvaluator.evaluate(tagName, deviceElement,
+			} else {
+				let tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+				let value = xPathEvaluator.evaluate(tagName, deviceElement,
 						resolver, XPathResult.STRING_TYPE, null).stringValue;
-				if(tagName == "Carrier"){
+				if (tagName == "Carrier") {
 					value = firemobilesimulator.core.isValidCarrier(value) ? value : firemobilesimulator.core.getCarrierCode(value);
 				}
 				devices[i][key] = value;
@@ -180,23 +180,20 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 
 firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	var currentId = 0;
-	if (overwrite) {
-		currentId = 0;
-	} else {
-		var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-		currentId = deviceCount;
+	if (!overwrite) {
+		currentId = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 		dump("setCurrentId:"+currentId+"\n");
 	}
 	// update preference
 	overwrite && firemobilesimulator.options.clearAllDeviceSettings();
 	devices.forEach(function(device) {
 		currentId++;
-		var id = currentId;
-		var carrier = device.carrier;
-		for (var key in device) {
-			var value = device[key];
+		let id = currentId;
+		let carrier = device.carrier;
+		for (let key in device) {
+			let value = device[key];
 			if (key == "headers") {
-				var i = 1;
+				let i = 1;
 				dump("length:" + value.length + "\n");
 				dump("value:" + value + "\n");
 				value.forEach(function(header) {
@@ -237,16 +234,11 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	return true;
 };
 
-firemobilesimulator.core.getCarrierCode = function(carrierName){
+firemobilesimulator.core.getCarrierCode = function(carrierName) {
 	var carrierCode = firemobilesimulator.common.carrier[carrierName.toUpperCase()];
-	return carrierCode ? carrierCode : firemobilesimulator.common.carrier.OTHER;
+	return carrierCode || firemobilesimulator.common.carrier.OTHER;
 };
 
-firemobilesimulator.core.isValidCarrier = function(carrierCode){
-	firemobilesimulator.common.carrier.carrierArray.forEach(function(c){
-		if(carrierCode == c){
-			return true;
-		}
-	});
-	return false;
+firemobilesimulator.core.isValidCarrier = function(carrierCode) {
+	return firemobilesimulator.common.carrier.carrierArray.some(function(c) carrierCode == c);
 };
