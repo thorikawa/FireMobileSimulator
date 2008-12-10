@@ -63,8 +63,8 @@
 			</columns>
 			<rows id="msim.options.device.extra-headers.rows">
 				<row>
-					<hbox pack="center" width="150"><label value="header-name2"/></hbox>
-					<hbox pack="center" width="200"><label value="header-value2"/></hbox>
+					<hbox pack="center" width="150"><label value="header-name"/></hbox>
+					<hbox pack="center" width="200"><label value="header-value"/></hbox>
 					<hbox/>
 				</row>
 				<row>

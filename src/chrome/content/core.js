@@ -167,6 +167,9 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 				var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
 				var value = xPathEvaluator.evaluate(tagName, deviceElement,
 						resolver, XPathResult.STRING_TYPE, null).stringValue;
+				if(tagName == "Carrier"){
+					value = firemobilesimulator.core.isValidCarrier(value) ? value : firemobilesimulator.core.getCarrierCode(value);
+				}
 				devices[i][key] = value;
 			}
 		});
@@ -232,4 +235,18 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	//set device count
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", currentId);
 	return true;
+};
+
+firemobilesimulator.core.getCarrierCode = function(carrierName){
+	var carrierCode = firemobilesimulator.common.carrier[carrierName.toUpperCase()];
+	return carrierCode ? carrierCode : firemobilesimulator.common.carrier.OTHER;
+};
+
+firemobilesimulator.core.isValidCarrier = function(carrierCode){
+	firemobilesimulator.common.carrier.carrierArray.forEach(function(c){
+		if(carrierCode == c){
+			return true;
+		}
+	});
+	return false;
 };

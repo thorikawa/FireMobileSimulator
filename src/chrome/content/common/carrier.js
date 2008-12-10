@@ -33,11 +33,12 @@ if (!firemobilesimulator.common.carrier)
 firemobilesimulator.common.carrier.DOCOMO = "DC";
 firemobilesimulator.common.carrier.AU = "AU";
 firemobilesimulator.common.carrier.SOFTBANK = "SB";
+firemobilesimulator.common.carrier.OTHER = "OT";
 
 /**
  * 各キャリアを示す定数配列
  */
-firemobilesimulator.common.carrier.carrierArray = [firemobilesimulator.common.carrier.DOCOMO, firemobilesimulator.common.carrier.AU, firemobilesimulator.common.carrier.SOFTBANK];
+firemobilesimulator.common.carrier.carrierArray = [firemobilesimulator.common.carrier.DOCOMO, firemobilesimulator.common.carrier.AU, firemobilesimulator.common.carrier.SOFTBANK, firemobilesimulator.common.carrier.OTHER];
 
 /**
  * 各キャリアの正式名称を示すマップ
@@ -45,7 +46,8 @@ firemobilesimulator.common.carrier.carrierArray = [firemobilesimulator.common.ca
 firemobilesimulator.common.carrier.carrierName = {
 	DC : "DoCoMo",
 	AU : "au",
-	SB : "SoftBank"
+	SB : "SoftBank",
+	OT : "Other"
 };
 
 /**

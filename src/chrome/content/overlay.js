@@ -102,7 +102,7 @@ firemobilesimulator.overlay.onUnload = function() {
 };
 
 firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
-	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
+	//var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
 
 	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
 					"msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
@@ -129,7 +129,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 					"firemobilesimulator.core.setDevice(" + i + ");");
 			menuItem.setAttribute("type", "radio");
 			menuItem.setAttribute("name", "devicelist");
-			menu.insertBefore(menuItem, optionsSeparator);
+			menu.appendChild(menuItem);
 		}
 	}
 
@@ -153,14 +153,14 @@ firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
 	var menuItems = menu.getElementsByTagName("menuitem");
 
 	while (menuItems.length > permanentMenus.length) {
-		menuItem = menuItems[1];
+		menuItem = menuItems[4]; //注意メニューの構造が変わったら変える
 
 		if (!menuItem.hasAttribute("id")) {
 			menu.removeChild(menuItem);
 		} else {
 			var deleteFlag = true;
 			for (var i = 0; i < permanentMenus.length; i++) {
-				if (menuItem.hasAttribute("id") == permanentMenus[i]) {
+				if (menuItem.getAttribute("id") == permanentMenus[i]) {
 					deleteFlag = false
 				}
 			}
