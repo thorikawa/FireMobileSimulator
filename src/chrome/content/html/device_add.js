@@ -23,115 +23,150 @@ if (!firemobilesimulator)
 
 Ext.onReady(function() {
 
-			var deviceDB = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.config.devicedb.url");
-			var filePath = deviceDB + "?result=medium";
+	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
+	var filePath = deviceDB + "?result=medium";
+	var ds = new Ext.data.Store({
+		proxy : new Ext.data.HttpProxy({
+			url : filePath
+		}),
+		reader : new Ext.data.XmlReader({
+				id : 'Id',
+				record : 'Device'
+			}, [{
+					name : 'name',
+					mapping : 'DeviceName'
+				}, {
+					name : 'carrier',
+					mapping : 'Carrier'
+				}, {
+					name : 'type1',
+					mapping : 'Type1'
+				}, {
+					name : 'release-date',
+					mapping : 'ReleaseDate'
+			}]
+		)
+	});
+	var sm = new Ext.grid.CheckboxSelectionModel({
+		singleSelect : false
+	});
 
-			// データストア
-			var ds = new Ext.data.Store({
-						proxy : new Ext.data.HttpProxy({
-									url : filePath
-								}),
-						reader : new Ext.data.XmlReader({
-									id : 'Id',
-									record : 'Device'
-								}, [{
-											name : 'name',
-											mapping : 'DeviceName'
-										}, {
-											name : 'carrier',
-											mapping : 'Carrier'
-										}, {
-											name : 'type1',
-											mapping : 'Type1'
-										}, {
-											name : 'release-date',
-											mapping : 'ReleaseDate'
-										}])
-					});
+	var tf = new Ext.form.TextField({id : 'tf-cmp'});
 
-			// グリッド
-			var sm = new Ext.grid.CheckboxSelectionModel({
-				singleSelect : false
+	var filteredCarrier;
+	
+	var grid = new Ext.grid.GridPanel({
+		id : 'grid-device-cmp',
+		store : ds,
+		colModel : new Ext.grid.ColumnModel(
+			[sm, {
+				header : '端末名',
+				width : 160,
+				sortable : true,
+				dataIndex : 'name'
+			}, {
+				header : 'キャリア',
+				width : 80,
+				sortable : true,
+				dataIndex : 'carrier'
+			}, {
+				header : 'タイプ',
+				width : 80,
+				sortable : true,
+				dataIndex : 'type1'
+			}, {
+				header : '発売日',
+				width : 80,
+				sortable : true,
+				dataIndex : 'release-date'
+			}]
+		),
+		renderTo : 'grid-device',
+		height : 380,
+		width : 500,
+		stripeRows : true,
+		title : '端末リスト',
+		frame : true,
+		sm : sm,
+		viewConfig : {
+			forceFit : true
+		},
+		loadMask : {
+			msg : "Loading..."
+		},
+		tbar : [{
+			text : 'All',
+			handler : function() {
+				filteredCarrier = null;
+				is.searchNow();
+			}
+		}, {
+			xtype : 'tbseparator'
+		}, {
+			text : 'DoCoMo',
+			handler : function() {
+				filteredCarrier = 'DoCoMo';
+				is.searchNow();
+			}
+		}, {
+			xtype : 'tbseparator'
+		}, {
+			text : 'au',
+			handler : function() {
+				filteredCarrier = 'au';
+				is.searchNow();
+			}
+		}, {
+			xtype : 'tbseparator'
+		}, {
+			text : 'SoftBank',
+			handler : function() {
+				filteredCarrier = 'SoftBank';
+				is.searchNow();
+			}
+		}, {
+			xtype : 'tbseparator'
+		}, tf],
+		bbar : [{
+				text : '選択した端末を追加',
+				handler : firemobilesimulator.addDevice
+			},{
+				xtype : 'tbseparator'
+			}]
+	});
+
+	var getInput = function() {
+		return Ext.getCmp('tf-cmp').getValue();
+	};
+	var search = function(input) {
+		if(!input){
+			if(filteredCarrier){
+				ds.filter('carrier', filteredCarrier);
+			}else{
+				if(ds.isFiltered()){
+					ds.clearFilter();
+				}
+			}
+		}else{
+			if(input){
+				ds.filterBy(function(record, id) {
+					var name = record.get('name');
+					var carrier = record.get('carrier');
+					if((!filteredCarrier || carrier == filteredCarrier) && name.toUpperCase().indexOf(input.toUpperCase()) != -1){
+						return true;
+					}else{
+						return false;
+					}
 				});
-
-			var tf = new Ext.form.TextField({id : 'tf-cmp'});
-
-			var grid = new Ext.grid.GridPanel({
-						id : 'grid-device-cmp',
-						store : ds,
-						colModel : new Ext.grid.ColumnModel([sm, {
-									header : '端末名',
-									width : 160,
-									sortable : true,
-									dataIndex : 'name'
-								}, {
-									header : 'キャリア',
-									width : 80,
-									sortable : true,
-									dataIndex : 'carrier'
-								}, {
-									header : 'タイプ',
-									width : 80,
-									sortable : true,
-									dataIndex : 'type1'
-								}, {
-									header : '発売日',
-									width : 80,
-									sortable : true,
-									dataIndex : 'release-date'
-								}]),
-						renderTo : 'grid-device',
-						height : 380,
-						width : 500,
-						stripeRows : true,
-						title : '端末リスト',
-						frame : true,
-						sm : sm,
-						viewConfig : {
-							forceFit : true
-							// 自動的にカラムサイズを調整
-						},
-						loadMask : {
-							msg : "Loading..."
-						},
-						tbar : [
-								// {xtype : 'tbfill'},
-								// {xtype : 'tbfill'},
-								{
-							text : 'DoCoMo',
-							handler : firemobilesimulator.selectDoCoMo
-						}, {
-							xtype : 'tbseparator'
-						}, {
-							text : 'Au',
-							handler : firemobilesimulator.selectDoCoMo
-						}, {
-							xtype : 'tbseparator'
-						}, {
-							text : 'SoftBank',
-							handler : firemobilesimulator.selectDoCoMo
-						}, {
-							xtype : 'tbseparator'
-						}, tf],
-						bbar : [{
-									text : '選択した端末を追加',
-									handler : firemobilesimulator.addDevice
-								},{
-									xtype : 'tbseparator'
-								}]
-					});
-
-			var getInput = function() {
-				return Ext.getCmp('tf-cmp').getValue();
-			};
-			var search = function(input) {
+			}else{
 				ds.filter('name', input, true, false);
-			};
-			var is = new IncrementalSearch(getInput, search);
-			ds.on('load',function() { is.checkLoop(); });
-			ds.load();
-		});
+			}
+		}
+	};
+	var is = new IncrementalSearch(getInput, search);
+	ds.on('load',function() { is.checkLoop(); });
+	ds.load();
+});
 
 firemobilesimulator.addDevice = function() {
 	var idArray = new Array();
@@ -152,15 +187,11 @@ firemobilesimulator.addDevice = function() {
 	var result = firemobilesimulator.core.LoadDevices(devices, false);
 	if (result) {
 		Ext.Msg.show({
-					title : "追加完了",
-					msg : "選択した端末がFireMobileSimulatorに追加されました"
-				});
+			title : "追加完了",
+			msg : "選択した端末がFireMobileSimulatorに追加されました"
+		});
 	}
 	sm.clearSelections();
-};
-
-firemobilesimulator.selectDoCoMo = function() {
-	dump("selectDoCoMo");
 };
 
 function IncrementalSearch() {
@@ -191,7 +222,10 @@ IncrementalSearch.prototype = {
 		this.checkLoopTimer = setTimeout(this._bind(this.checkLoop),
 				this.interval);
 	},
-
+	searchNow : function() {
+		var input = this.getInput();
+		this.search(input);
+	},
 	// Utils
 	_bind : function(func) {
 		var self = this;
