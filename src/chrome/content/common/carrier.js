@@ -61,7 +61,7 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 	"screen-height",
 	"screen-width",
 	"extra-header",
-	"device-center-id",
+	"device-id",
 	"release-date"
 ];
 
@@ -73,7 +73,7 @@ firemobilesimulator.common.carrier.xmlTagName = {
 	"screen-height"    : "ScreenHeight",
 	"screen-width"     : "ScreenWidth",
 	"extra-header"     : "ExtraHeader",
-	"device-center-id" : "Id",
+	"device-id"        : "Id",
 	"release-date"     : "ReleaseDate"
 };
 firemobilesimulator.common.carrier.Type = {};
