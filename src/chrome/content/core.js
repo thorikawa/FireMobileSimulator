@@ -60,6 +60,7 @@ firemobilesimulator.core.setDevice = function(id) {
 
 firemobilesimulator.core.deleteDevice = function(deletedId) {
 	var prefPrefix = "msim.devicelist." + deletedId + ".";
+	var deletedDeviceId = firemobilesimulator.common.pref.copyUnicharPref(prefPrefix+"device-id");
 	firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 	});
@@ -71,14 +72,26 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 
 	//各端末のidを再計算
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	//dump(deletedId+":"+count+"\n");
-	//dump((deletedId+1)+":"+count+"\n");
 	for (let i=deletedId+1; i<=count; i++) {
-		//dump("[msim]Debug : Id is not the last one. Re-arrange ids.\n");
 		let sPrefPrefix = "msim.devicelist." + i + ".";
 		let ePrefPrefix = "msim.devicelist." + (i-1) + ".";
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
-			firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
+			if (attribute == "extra-header") {
+				var extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
+				extraHeaders.forEach(function(extraHeader){
+					if (extraHeader.value) {
+						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
+						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".value", extraHeader.value);
+						firemobilesimulator.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".name");
+						firemobilesimulator.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".value");
+					}
+				});
+				firemobilesimulator.common.pref.setIntPref(ePrefPrefix + "extra-header.count", extraHeaders.length);
+				firemobilesimulator.common.pref.setIntPref(sPrefPrefix + "extra-header.count", 0);
+			} else {
+				firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
+				firemobilesimulator.common.pref.deletePref(sPrefPrefix+attribute+attribute);
+			}
 		});
 	}
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
@@ -182,7 +195,6 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	var currentId = 0;
 	if (!overwrite) {
 		currentId = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-		dump("setCurrentId:"+currentId+"\n");
 	}
 	// update preference
 	overwrite && firemobilesimulator.options.clearAllDeviceSettings();
@@ -194,8 +206,6 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 			let value = device[key];
 			if (key == "headers") {
 				let i = 1;
-				dump("length:" + value.length + "\n");
-				dump("value:" + value + "\n");
 				value.forEach(function(header) {
 					firemobilesimulator.common.pref.setUnicharPref(
 							"msim.devicelist." + id
@@ -205,16 +215,8 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 							"msim.devicelist." + id
 									+ ".extra-header." + i + ".value",
 							header.value);
-					dump("set:msim.devicelist." + id
-							+ ".extra-header." + i + ".name:" + header.name
-							+ "\n");
-					dump("set:msim.devicelist." + id
-							+ ".extra-header." + i + ".value:" + header.value
-							+ "\n");
 					i++;
 				});
-				dump("set:" + "msim.devicelist." + id
-						+ ".extra-header.count:" + value.length + "\n");
 				firemobilesimulator.common.pref.setIntPref("msim.devicelist."
 								+ id + ".extra-header.count",
 						value.length);
@@ -223,8 +225,6 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 				firemobilesimulator.common.pref.setUnicharPref(
 						"msim.devicelist." + id + "." + key,
 						value);
-				dump("set:msim.devicelist." + id + "." + key
-						+ ":" + value + "\n");
 			}
 		}
 	});
@@ -241,4 +241,49 @@ firemobilesimulator.core.getCarrierCode = function(carrierName) {
 
 firemobilesimulator.core.isValidCarrier = function(carrierCode) {
 	return firemobilesimulator.common.carrier.carrierArray.some(function(c) carrierCode == c);
+};
+
+firemobilesimulator.core.refreshRegisteredDevices = function() {
+	var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+	firemobilesimulator.core.deviceIdArray = new Array();
+	for (var i = 1; i <= deviceCount; i++) {
+		let deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
+		if(deviceId){
+			firemobilesimulator.core.deviceIdArray.push(deviceId);
+		}
+	}
+};
+
+firemobilesimulator.core.getRegisteredDevices = function() {
+	if(!firemobilesimulator.core.deviceIdArray){
+		firemobilesimulator.core.refreshRegisteredDevices();
+	}
+	return firemobilesimulator.core.deviceIdArray;
+};
+
+firemobilesimulator.core.isRegistered = function(deviceId, refreshFlag) {
+	return firemobilesimulator.core.getRegisteredDevices().some(function(_deviceId) {
+		return _deviceId == deviceId;
+	});
+};
+
+firemobilesimulator.core.clearAllDevice = function() {
+	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+	for (var i = 1; i <= count; i++) {
+		var prefPrefix = "msim.devicelist." + i + ".";
+
+		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
+			if (attribute == "extra-header") {
+				firemobilesimulator.common.pref.deleteListPref("msim.devicelist." + i + ".extra-header", ["name", "value"]);
+			} else {
+				firemobilesimulator.common.pref.deletePref(prefPrefix + attribute);
+			}
+		});
+	}
+	firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
+	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
+	firemobilesimulator.common.pref.deletePref("general.useragent.override");
+	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
+	firemobilesimulator.common.pref.deletePref("msim.current.id");
+	firemobilesimulator.core.resetDevice();
 };

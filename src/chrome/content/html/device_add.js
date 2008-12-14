@@ -50,6 +50,9 @@ Ext.onReady(function() {
 	var sm = new Ext.grid.CheckboxSelectionModel({
 		singleSelect : false
 	});
+	sm.on('beforerowselect', function(sm, index, keepExisting, record){
+		return !firemobilesimulator.core.isRegistered(record.id);
+	});
 
 	var tf = new Ext.form.TextField({id : 'tf-cmp'});
 
@@ -129,12 +132,22 @@ Ext.onReady(function() {
 		}, tf],
 		bbar : [{
 				text : '選択した端末を追加',
-				handler : firemobilesimulator.addDevice
+				handler : function() {
+					firemobilesimulator.addDevice();
+					firemobilesimulator.core.refreshRegisteredDevices();
+					grid.getView().refresh();
+				}
 			},{
 				xtype : 'tbseparator'
 			}]
 	});
-
+	grid.getView().getRowClass = function(record, index){
+    	if(firemobilesimulator.core.isRegistered(record.id)){
+    		return 'registered-row';
+    	}else{
+    		return;    		
+    	}
+    };
 	var getInput = function() {
 		return Ext.getCmp('tf-cmp').getValue();
 	};

@@ -43,6 +43,7 @@ firemobilesimulator.common.pref = {
 		var resultArray = new Array(count);
 		for (var i = 1; i <= count; i++) {
 			var o = {};
+			o.id = i;
 			childPreferenceNameArray.forEach(function(childPreferenceName){
 				var childPreferenceValue = firemobilesimulator.common.pref
 					.copyUnicharPref(parentPreferenceName + "." + i + "." + childPreferenceName);

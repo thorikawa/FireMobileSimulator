@@ -297,26 +297,7 @@ firemobilesimulator.options.deviceSelected = function() {
 
 firemobilesimulator.options.clearAllDeviceSettings = function() {
 	if (confirm(document.getElementById("msim-string-bundle").getString("msim_clearAllConfirmation"))) {
-		var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-		for (var i = 1; i <= count; i++) {
-			var prefPrefix = "msim.devicelist." + i + ".";
-
-			dump("target firemobilesimulator.common.pref.x is "
-					+ prefPrefix + "\n");
-			firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
-				if (attribute == "extra-header") {
-					firemobilesimulator.common.pref.deleteListPref("msim.devicelist." + i + ".extra-header", ["name", "value"]);
-				} else {
-					firemobilesimulator.common.pref.deletePref(prefPrefix + attribute);
-				}
-			});
-		}
-		firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
-		firemobilesimulator.common.pref.deletePref("msim.current.carrier");
-		firemobilesimulator.common.pref.deletePref("general.useragent.override");
-		firemobilesimulator.common.pref.deletePref("msim.current.useragent");
-		firemobilesimulator.common.pref.deletePref("msim.current.id");
-		firemobilesimulator.core.resetDevice();
+		firemobilesimulator.core.clearAllDevice();
 	}
 
 	firemobilesimulator.options.initializeDevices();
