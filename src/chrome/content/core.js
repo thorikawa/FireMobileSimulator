@@ -77,7 +77,7 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		let ePrefPrefix = "msim.devicelist." + (i-1) + ".";
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			if (attribute == "extra-header") {
-				var extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
+				let extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
 				extraHeaders.forEach(function(extraHeader){
 					if (extraHeader.value) {
 						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
@@ -199,9 +199,8 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	// update preference
 	overwrite && firemobilesimulator.options.clearAllDeviceSettings();
 	devices.forEach(function(device) {
-		currentId++;
-		let id = currentId;
-		let carrier = device.carrier;
+		var id = ++currentId;
+		var carrier = device.carrier;
 		for (let key in device) {
 			let value = device[key];
 			if (key == "headers") {
@@ -246,7 +245,7 @@ firemobilesimulator.core.isValidCarrier = function(carrierCode) {
 firemobilesimulator.core.refreshRegisteredDevices = function() {
 	var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	firemobilesimulator.core.deviceIdArray = new Array();
-	for (var i = 1; i <= deviceCount; i++) {
+	for (let i = 1; i <= deviceCount; i++) {
 		let deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
 		if(deviceId){
 			firemobilesimulator.core.deviceIdArray.push(deviceId);
@@ -269,8 +268,8 @@ firemobilesimulator.core.isRegistered = function(deviceId, refreshFlag) {
 
 firemobilesimulator.core.clearAllDevice = function() {
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	for (var i = 1; i <= count; i++) {
-		var prefPrefix = "msim.devicelist." + i + ".";
+	for (let i = 1; i <= count; i++) {
+		let prefPrefix = "msim.devicelist." + i + ".";
 
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			if (attribute == "extra-header") {

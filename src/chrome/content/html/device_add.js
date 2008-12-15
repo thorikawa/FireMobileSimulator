@@ -50,14 +50,14 @@ Ext.onReady(function() {
 	var sm = new Ext.grid.CheckboxSelectionModel({
 		singleSelect : false
 	});
-	sm.on('beforerowselect', function(sm, index, keepExisting, record){
+	sm.on('beforerowselect', function(sm, index, keepExisting, record) {
 		return !firemobilesimulator.core.isRegistered(record.id);
 	});
 
 	var tf = new Ext.form.TextField({id : 'tf-cmp'});
 
 	var filteredCarrier;
-	
+
 	var grid = new Ext.grid.GridPanel({
 		id : 'grid-device-cmp',
 		store : ds,
@@ -141,37 +141,35 @@ Ext.onReady(function() {
 				xtype : 'tbseparator'
 			}]
 	});
-	grid.getView().getRowClass = function(record, index){
-    	if(firemobilesimulator.core.isRegistered(record.id)){
-    		return 'registered-row';
-    	}else{
-    		return;    		
-    	}
-    };
+	grid.getView().getRowClass = function(record, index) {
+		if (firemobilesimulator.core.isRegistered(record.id)) {
+			return 'registered-row';
+		}
+		return;
+	};
 	var getInput = function() {
 		return Ext.getCmp('tf-cmp').getValue();
 	};
 	var search = function(input) {
-		if(!input){
-			if(filteredCarrier){
+		if (!input) {
+			if (filteredCarrier) {
 				ds.filter('carrier', filteredCarrier);
-			}else{
-				if(ds.isFiltered()){
+			} else {
+				if (ds.isFiltered()) {
 					ds.clearFilter();
 				}
 			}
-		}else{
-			if(input){
+		} else {
+			if (input) {
 				ds.filterBy(function(record, id) {
 					var name = record.get('name');
 					var carrier = record.get('carrier');
-					if((!filteredCarrier || carrier == filteredCarrier) && name.toUpperCase().indexOf(input.toUpperCase()) != -1){
+					if ((!filteredCarrier || carrier == filteredCarrier) && name.toUpperCase().indexOf(input.toUpperCase()) != -1) {
 						return true;
-					}else{
-						return false;
 					}
+					return false;
 				});
-			}else{
+			} else {
 				ds.filter('name', input, true, false);
 			}
 		}
