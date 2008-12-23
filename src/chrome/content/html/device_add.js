@@ -30,9 +30,9 @@ Ext.onReady(function() {
 		closable : true,
 		showDelay : 50,
 		dismissDelay : 0,
-	    target: 'qrcode',
-	    title: '端末登録ウィザードQRコード',
-	    html: '<img src="http://ke-tai.org//blog/wp-content/uploads/2007/12/wizard_qr.png">',
+		target : 'qrcode',
+		title : '端末登録ウィザードQRコード',
+		html : '<img src="http://ke-tai.org//blog/wp-content/uploads/2007/12/wizard_qr.png" alt="" alt="">'
 	});
 
 	var ex1_hide = Ext.get('explanation1_hide');
@@ -98,12 +98,11 @@ Ext.onReady(function() {
 		dump("filter carrier:"+button.text+"\n");
 		if (state) { //press
 			filteredCarrier = button.text;
-			is.searchNow();
 		} else { //depress
 			filteredCarrier = null;
-			is.searchNow();
 		}
-	}
+		is.searchNow();
+	};
 
 	var addButton = new Ext.Toolbar.Button({
 		id   : "add-button2",
@@ -186,7 +185,7 @@ Ext.onReady(function() {
 			toggleHandler: filterButtonHandler
 		}, {
 			xtype : 'tbspacer'
-		}, "端末名検索: " ,
+		}, "端末名検索: ",
 		tf, {
 			xtype : 'tbspacer'
 		}, {
@@ -215,24 +214,20 @@ Ext.onReady(function() {
 		if (!input) {
 			if (filteredCarrier) {
 				ds.filter('carrier', filteredCarrier);
-			} else {
-				if (ds.isFiltered()) {
-					ds.clearFilter();
+			} else if (ds.isFiltered()) {
+				ds.clearFilter();
+			}
+		} else if (input) {
+			ds.filterBy(function(record, id) {
+				var name = record.get('name');
+				var carrier = record.get('carrier');
+				if ((!filteredCarrier || carrier == filteredCarrier) && name.toUpperCase().indexOf(input.toUpperCase()) != -1) {
+					return true;
 				}
-			}
+				return false;
+			});
 		} else {
-			if (input) {
-				ds.filterBy(function(record, id) {
-					var name = record.get('name');
-					var carrier = record.get('carrier');
-					if ((!filteredCarrier || carrier == filteredCarrier) && name.toUpperCase().indexOf(input.toUpperCase()) != -1) {
-						return true;
-					}
-					return false;
-				});
-			} else {
-				ds.filter('name', input, true, false);
-			}
+			ds.filter('name', input, true, false);
 		}
 	};
 	var is = new IncrementalSearch(getInput, search);
@@ -248,7 +243,7 @@ firemobilesimulator.addDevice = function() {
 		//TODO propertiesファイルから取得する
 		Ext.Msg.alert("エラー", "端末を1つ以上選択してください");
 		return;
-	}else if (records.length > 30) {
+	} else if (records.length > 30) {
 		//TODO propertiesファイルから取得する
 		Ext.Msg.alert("エラー", "1アクションで登録する端末数は30件までにしてください");
 		return;
