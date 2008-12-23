@@ -22,6 +22,41 @@ if (!firemobilesimulator)
 	firemobilesimulator = {};
 
 Ext.onReady(function() {
+	Ext.BLANK_IMAGE_URL = 'ext/resources/images/default/s.gif';
+
+	var q = new Ext.ToolTip({
+		autoWidth : true,
+		autoHeight : true,
+		closable : true,
+		showDelay : 50,
+		dismissDelay : 0,
+	    target: 'qrcode',
+	    title: '端末登録ウィザードQRコード',
+	    html: '<img src="http://ke-tai.org//blog/wp-content/uploads/2007/12/wizard_qr.png">',
+	});
+
+	var ex1_hide = Ext.get('explanation1_hide');
+	var ex1_show = Ext.get('explanation1_show');
+	ex1_show.setStyle('display','none');
+	ex1_hide.on('click', function() {
+		ex1_show.setStyle('display','block');
+		ex1_hide.setStyle('display','none');
+	});
+	ex1_show.on('click', function() {
+		ex1_show.setStyle('display','none');
+		ex1_hide.setStyle('display','block');
+	});
+	var ex2_hide = Ext.get('explanation2_hide');
+	var ex2_show = Ext.get('explanation2_show');
+	ex2_show.setStyle('display','none');
+	ex2_hide.on('click', function() {
+		ex2_show.setStyle('display','block');
+		ex2_hide.setStyle('display','none');
+	});
+	ex2_show.on('click', function() {
+		ex2_show.setStyle('display','none');
+		ex2_hide.setStyle('display','block');
+	});
 
 	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
 	var filePath = deviceDB + "?result=medium";
@@ -60,6 +95,7 @@ Ext.onReady(function() {
 	var tf = new Ext.form.TextField({id : 'tf-cmp'});
 	var filteredCarrier;
 	var filterButtonHandler = function(button, state) {
+		dump("filter carrier:"+button.text+"\n");
 		if (state) { //press
 			filteredCarrier = button.text;
 			is.searchNow();
@@ -69,6 +105,16 @@ Ext.onReady(function() {
 		}
 	}
 
+	var addButton = new Ext.Toolbar.Button({
+		id   : "add-button2",
+		menuAlign : "r",
+		text : '選択した端末を追加2',
+		handler : function() {
+			firemobilesimulator.addDevice();
+			firemobilesimulator.core.refreshRegisteredDevices();
+			grid.getView().refresh();
+		}
+	});
 	var grid = new Ext.grid.GridPanel({
 		id : 'grid-device-cmp',
 		store : ds,
@@ -115,39 +161,46 @@ Ext.onReady(function() {
 		},
 		tbar : [{
 			text : 'DoCoMo',
+			//minWidth : 50,
 			enableToggle : true,
 			allowDepress : true,
 			toggleGroup  : 'carrierButton',
 			toggleHandler: filterButtonHandler
 		}, {
-			xtype : 'tbseparator'
+			xtype : 'tbspacer'
 		}, {
 			text : 'au',
+			//minWidth : 50,
 			enableToggle : true,
 			allowDepress : true,
 			toggleGroup  : 'carrierButton',
 			toggleHandler: filterButtonHandler
 		}, {
-			xtype : 'tbseparator'
+			xtype : 'tbspacer'
 		}, {
 			text : 'SoftBank',
+			//minWidth : 50,
 			enableToggle : true,
 			allowDepress : true,
 			toggleGroup  : 'carrierButton',
 			toggleHandler: filterButtonHandler
 		}, {
-			xtype : 'tbseparator'
-		}, tf],
-		bbar : [{
-				text : '選択した端末を追加',
-				handler : function() {
-					firemobilesimulator.addDevice();
-					firemobilesimulator.core.refreshRegisteredDevices();
-					grid.getView().refresh();
-				}
-			},{
-				xtype : 'tbseparator'
-			}]
+			xtype : 'tbspacer'
+		}, "端末名検索: " ,
+		tf, {
+			xtype : 'tbspacer'
+		}, {
+			//id   : "add-button",
+			menuAlign : "r",
+			text : '選択した端末を追加',
+			handler : function() {
+				firemobilesimulator.addDevice();
+				firemobilesimulator.core.refreshRegisteredDevices();
+				grid.getView().refresh();
+			},
+			cls : "add-button"
+		}],
+		floating : false
 	});
 	grid.getView().getRowClass = function(record, index) {
 		if (firemobilesimulator.core.isRegistered(record.id)) {
