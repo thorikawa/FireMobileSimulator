@@ -8,7 +8,8 @@
 		ondialogaccept="firemobilesimulator.options.dialogs.device.saveDevice()"
 		ondialogcancel="javascript:false;"
 		onload="firemobilesimulator.options.dialogs.device.initializeDevice()"
-		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+		style="overflow: auto;">
 
 	<script type="application/x-javascript" src="chrome://msim/content/core.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/common/pref.js"/>

@@ -6,7 +6,7 @@
 <!ENTITY msim.menu.options.accesskey "o">
 <!ENTITY msim.menu.devicedb.label "最新端末リストから端末を追加">
 <!ENTITY msim.menu.devicedb.accesskey "d">
-<!ENTITY msim.menu.about.label "About">
+<!ENTITY msim.menu.about.label "FireMobileSimulatorについて">
 <!ENTITY msim.menu.about.accesskey "a">
 <!ENTITY msim.options.title "オプション設定">
 <!ENTITY msim.options.general.label "全般">
