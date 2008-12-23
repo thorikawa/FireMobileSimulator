@@ -102,7 +102,7 @@ pref("msim.devicelist.4.extra-header.8.value", "6");
 pref("msim.devicelist.4.extra-header.9.name", "x-up-devcap-titlebar");
 pref("msim.devicelist.4.extra-header.9.value", "0");
 pref("msim.devicelist.4.extra-header.10.name", "accept");
-pref("msim.devicelist.4.extra-header.10.value", 'application/vnd.phonecom.mmc-xml, image/gif, image/jpeg, image/vnd.wap.wbmp, image/bmp, image/x-up-wpng, image/png, multipart/mixed, multipart/related, text/css, text/html, text/plain, text/vnd.wap.wml; type=4365, application/x-pmd, application/x-mpeg, audio/vnd.qcelp, application/x-up-download, text/x-vcard, text/x-vcalendar, application/octet-stream,text/x-hdml,*/*');
+pref("msim.devicelist.4.extra-header.10.value", "application/vnd.phonecom.mmc-xml, image/gif, image/jpeg, image/vnd.wap.wbmp, image/bmp, image/x-up-wpng, image/png, multipart/mixed, multipart/related, text/css, text/html, text/plain, text/vnd.wap.wml; type=4365, application/x-pmd, application/x-mpeg, audio/vnd.qcelp, application/x-up-download, text/x-vcard, text/x-vcalendar, application/octet-stream,text/x-hdml,*/*");
 pref("msim.devicelist.4.extra-header.11.name", "accept-charset");
 pref("msim.devicelist.4.extra-header.11.value", "shift_jis,*");
 pref("msim.devicelist.4.screen-width", "144");
