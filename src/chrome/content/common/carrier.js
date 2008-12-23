@@ -44,10 +44,10 @@ firemobilesimulator.common.carrier.carrierArray = [firemobilesimulator.common.ca
  * 各キャリアの正式名称を示すマップ
  */
 firemobilesimulator.common.carrier.carrierName = {
-	DC : "DoCoMo",
+	DC : "DoCoMo", // "docomo" や "NTT docomo" 等にすべき？
 	AU : "au",
 	SB : "SoftBank",
-	OT : "Other"
+	OT : "Others"
 };
 
 /**
@@ -117,6 +117,7 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent) {
 	return useragent;
 };
 
+//firemobilesimulator.common.carrier.getDocomoUserAgent = function(useragent, id) {
 firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) {
 	var type1 = parent.firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type1");
 	var cache = parent.firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".cache");

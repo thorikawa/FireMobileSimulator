@@ -8,6 +8,7 @@
 
 	<groupbox>
 		<caption label="DoCoMo"/>
+		<!--caption label="NTT docomo"/-->
 		<grid>
 			<rows id="msim.options.pictogram.docomo.rows">
 				<row align="center">
@@ -19,6 +20,7 @@
 
 	<groupbox>
 		<caption label="Au"/>
+		<!--caption label="au"/-->
 		<grid>
 			<rows>
 				<row align="center">

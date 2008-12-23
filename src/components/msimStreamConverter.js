@@ -109,6 +109,7 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 		this.data = mpc2.convert(this.data);
 	} else if (carrier) {
 		dump("[msim]convertPictogram for DoCoMo or SoftBank\n");
+		//dump("[msim]convertPictogram for docomo or SoftBank\n");
 		this.data = mpc.convert(this.data);
 	}
 

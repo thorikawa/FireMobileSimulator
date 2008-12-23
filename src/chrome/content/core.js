@@ -50,6 +50,7 @@ firemobilesimulator.core.setDevice = function(id) {
 		useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
 	}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
 		useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
+		//useragent = firemobilesimulator.common.carrier.getDocomoUserAgent(useragent, id);
 	}
 
 	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override", useragent);

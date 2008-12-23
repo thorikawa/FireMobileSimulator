@@ -106,10 +106,12 @@ myHTTPListener.prototype = {
 							values = values.map(function(value) {
 								if (value.toUpperCase() == "UID=NULLGWDOCOMO") {
 									dump("[msim]send uid:"+uid+" for DoCoMo.\n");
+									//dump("[msim]send uid:"+uid+" for docomo.\n");
 									value = value.substr(0, 3) + "=" + uid;
 									rewriteFlag = true;
 								} else if (value.toUpperCase() == "GUID=ON") {
 									dump("[msim]send guid:"+guid+" for DoCoMo.\n");
+									//dump("[msim]send guid:"+guid+" for docomo.\n");
 									httpChannel.setRequestHeader("X-DCMGUID",
 											guid, false);
 								}
@@ -124,6 +126,7 @@ myHTTPListener.prototype = {
 							.getBoolPref("msim.temp.lcsflag");
 					if (true == lcsFlag) {
 						dump("[msim]add GPS info for DoCoMo\n");
+						//dump("[msim]add GPS info for docomo\n");
 						var lat = firemobilesimulator.common.pref
 								.copyUnicharPref("msim.config.DC.gps.lat");
 						var lon = firemobilesimulator.common.pref
@@ -147,7 +150,7 @@ myHTTPListener.prototype = {
 								"msim.temp.lcsflag", false);
 					}
 
-					// DoCoMo端末はCookie送信を行わない
+					// docomo端末はCookie送信を行わない
 					httpChannel.setRequestHeader("Cookie", null, false);
 
 					if (uri.host == "w1m.docomo.ne.jp") {
@@ -162,6 +165,7 @@ myHTTPListener.prototype = {
 
 					} else if (rewriteFlag) {
 						dump("[msim]rewrite for DoCoMo\n");
+						//dump("[msim]rewrite for docomo\n");
 						rewriteURI(subject, as);
 					}
 				} else if (carrier == "SB") {

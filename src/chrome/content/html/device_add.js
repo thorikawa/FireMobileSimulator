@@ -159,7 +159,7 @@ Ext.onReady(function() {
 			msg : "Loading..."
 		},
 		tbar : [{
-			text : 'DoCoMo',
+			text : 'DoCoMo', //'docomo',
 			//minWidth : 50,
 			enableToggle : true,
 			allowDepress : true,
