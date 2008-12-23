@@ -49,7 +49,7 @@ Protocol.prototype = {
 		dump("[msim]spec:"+spec+"\n");
 		try{
 			uri.spec = spec;
-		}catch(ex){
+		}catch (ex){
 			dump("[msim]uri.spec error.\n")
 			var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 			uri = ios.newURI("chrome://msim/content/html/error.html", null, null);
@@ -59,7 +59,7 @@ Protocol.prototype = {
 
 	newChannel: function(aURI){
 		var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-		if(aURI.asciiSpec.indexOf("device:location") == 0 || aURI.asciiSpec.indexOf("device:gpsone") == 0){
+		if (aURI.asciiSpec.indexOf("device:location") == 0 || aURI.asciiSpec.indexOf("device:gpsone") == 0){
 			return ios.newChannel("chrome://msim/content/html/au_gps.html", null, null);
 		}else{
 			return ios.newChannel("chrome://msim/content/html/error.html", null, null);
@@ -68,7 +68,7 @@ Protocol.prototype = {
 };
 
 var ProtocolFactory = {
-	createInstance: function (outer, iid){
+	createInstance: function(outer, iid){
 		if (outer != null)
 			throw Cr.NS_ERROR_NO_AGGREGATION;
 
@@ -81,7 +81,7 @@ var ProtocolFactory = {
 };
 
 var myModule = {
-	registerSelf: function (compMgr, fileSpec, location, type){
+	registerSelf: function(compMgr, fileSpec, location, type){
 		compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(
 			kPROTOCOL_CID,
@@ -93,7 +93,7 @@ var myModule = {
 		);
 	},
 
-	getClassObject: function (compMgr, cid, iid){
+	getClassObject: function(compMgr, cid, iid){
 		if (!cid.equals(kPROTOCOL_CID))
 			throw Cr.NS_ERROR_NO_INTERFACE;
 
@@ -103,7 +103,7 @@ var myModule = {
 		return ProtocolFactory;
 	},
 
-	canUnload: function (compMgr){
+	canUnload: function(compMgr){
 		return true;
 	}
 };

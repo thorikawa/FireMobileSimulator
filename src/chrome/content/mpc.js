@@ -22,7 +22,7 @@ if (!firemobilesimulator)
 	firemobilesimulator = {};
 if (!firemobilesimulator.mpc)
 	firemobilesimulator.mpc = {};
-	
+
 firemobilesimulator.mpc.factoryMap = {};
 firemobilesimulator.mpc.factoryMap[firemobilesimulator.common.carrier.DOCOMO] = firemobilesimulator.mpc.docomo;
 firemobilesimulator.mpc.factoryMap[firemobilesimulator.common.carrier.AU] = firemobilesimulator.mpc.ezweb;

@@ -32,15 +32,15 @@
 			</rows>
 		</grid>
 	</groupbox>
-    <groupbox>
-        <caption label="&msim.options.import-export;"/>
-        <hbox align="top">
-            <checkbox id="msim.import.overwrite" label="&msim.import.overwrite;"/>
-            <spacer flex="1"/>
-            <vbox>
-            	<button id="msim-import" label="&msim.options.import;" oncommand="parent.firemobilesimulator.options.importDevices()" accesskey="i"/>				
+	<groupbox>
+		<caption label="&msim.options.import-export;"/>
+		<hbox align="top">
+			<checkbox id="msim.import.overwrite" label="&msim.import.overwrite;"/>
+			<spacer flex="1"/>
+			<vbox>
+				<button id="msim-import" label="&msim.options.import;" oncommand="parent.firemobilesimulator.options.importDevices()" accesskey="i"/>
 				<button id="msim-export" label="&msim.options.export;" oncommand="parent.firemobilesimulator.options.exportDevices()" accesskey="x"/>
-            </vbox>
-        </hbox>
-    </groupbox>
+			</vbox>
+		</hbox>
+	</groupbox>
 </page>

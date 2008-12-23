@@ -39,7 +39,7 @@ jsLoader.loadSubScript("chrome://msim/content/mpc.js");
 
 /* text/msim.html -> text/html stream converter */
 function MsimStreamConverter() {
-	this.logger = Components.classes['@mozilla.org/consoleservice;1']
+	this.logger = Components.classes["@mozilla.org/consoleservice;1"]
 			.getService(Components.interfaces.nsIConsoleService);
 }
 
@@ -58,7 +58,7 @@ MsimStreamConverter.prototype.QueryInterface = function(iid) {
 // nsIRequestObserver methods
 MsimStreamConverter.prototype.onStartRequest = function(aRequest, aContext) {
 	dump("[msim]onStartRequest\n");
-	this.data = '';
+	this.data = "";
 	this.uri = aRequest.QueryInterface(Components.interfaces.nsIChannel).URI.spec;
 
 	// Sets the charset if it is available. (For documents loaded from the
@@ -135,7 +135,7 @@ MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 	var data = si.read(aCount);
 
 	var m;
-	if (this.charset == undefined || this.charset == '') {
+	if (this.charset == undefined || this.charset == "") {
 		if (/^<\?xml(?:\s[^>]*?)?\sencoding\s*=\s*["']([^"']*)|<meta(?:\s[^>]*?)?\s(?:http-equiv\s*=\s*(["']?)content-type\2(?:\s[^>]*?)?\scontent\s*=\s*["']?[^;]+(?:;[^;=]+(?:=\s*[^\s;]*)?)*?;\s*charset\s*=\s*([^"'\s;<>]+)|content\s*=\s*(["']?)[^;]+(?:;[^;=]+(?:=\s*[^\s;]*)?)*?;\s*charset\s*=\s*([^"'\s;<>]+)[^"']*?\4(?:\s[^>]*?)?\shttp-equiv\s*=\s*(["']?)content-type\6)/i.test(data)) {
 			m = RegExp.$1 || RegExp.$3 || RegExp.$5;
 			this.charset = m;

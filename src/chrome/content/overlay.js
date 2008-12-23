@@ -29,20 +29,20 @@ firemobilesimulator.overlay.onInitialize = function() {
 
 	firemobilesimulator.overlay.strings = document
 			.getElementById("msim-strings");
-	// initialize UserAgent
+	// initialize user agent
 	var windowContent = window.getBrowser();
 	if (windowContent) {
 		dump("set load2\n");
 		try {
 
-			window.removeEventListener('load',
+			window.removeEventListener("load",
 					firemobilesimulator.overlay.onInitialize, false);
 		} catch (exception) {
 			dump("[msim]removeEventListner error:" + exception + "\n");
 		}
-		//windowContent.addEventListener('load',
+		//windowContent.addEventListener("load",
 		//		firemobilesimulator.overlay.BrowserOnLoad, true);
-		//window.addEventListener('load',
+		//window.addEventListener("load",
 		//		firemobilesimulator.overlay.BrowserOnLoad, true);
 		var appcontent = document.getElementById("appcontent");   // ブラウザ
 		if (appcontent) {
@@ -110,27 +110,25 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var deviceCount = firemobilesimulator.common.pref
 			.getIntPref("msim.devicelist.count");
 	for (var i = 1; i <= deviceCount; i++) {
-		var menuItem = document.createElement("menuitem");
+		var device = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist." + i
+						+ ".label");
+		if (!device) continue;
 
 		var carrier = firemobilesimulator.common.pref
 				.copyUnicharPref("msim.devicelist." + i
 						+ ".carrier");
-		var device = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.devicelist." + i
-						+ ".label");
 		var useragent = firemobilesimulator.common.pref
 				.copyUnicharPref("msim.devicelist." + i
 						+ ".useragent");
 
-		if (device) {
-			menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
-			menuItem.setAttribute("label", carrier + " " + device);
-			menuItem.setAttribute("oncommand",
-					"firemobilesimulator.core.setDevice(" + i + ");");
-			menuItem.setAttribute("type", "radio");
-			menuItem.setAttribute("name", "devicelist");
-			menu.appendChild(menuItem);
-		}
+		var menuItem = menu.appendChild(document.createElement("menuitem"));
+		menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
+		menuItem.setAttribute("label", carrier + " " + device);
+		menuItem.setAttribute("oncommand",
+				"firemobilesimulator.core.setDevice(" + i + ");");
+		menuItem.setAttribute("type", "radio");
+		menuItem.setAttribute("name", "devicelist");
 	}
 
 	var currentMenuId = "msim-device-"
@@ -340,7 +338,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 			firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag",
 					false);
 
-			var anchorTags = ndDocument.getElementsByTagName('a');
+			var anchorTags = ndDocument.getElementsByTagName("a");
 			for (var i = 0; i < anchorTags.length; i++) {
 				var anchorTag = anchorTags[i];
 				var utn = anchorTag.getAttribute("utn");
@@ -359,7 +357,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 			// uid=NULLGWDOCOMOのPOST送信
 			// オープンiエリアの場合のメソッドを強制的にGETに書き換え
 			// ##本当はhttp-on-modify-requestで書き換えたい##
-			var formTags = ndDocument.getElementsByTagName('form');
+			var formTags = ndDocument.getElementsByTagName("form");
 			for (var i = 0; i < formTags.length; i++) {
 				var formTag = formTags[i];
 
@@ -384,7 +382,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 				// uid=NULLGWDOCOMOのPOST送信
 				var method = formTag.getAttribute("method");
 				if (method && method.toUpperCase() == "POST") {
-					var inputTags = formTag.getElementsByTagName('input');
+					var inputTags = formTag.getElementsByTagName("input");
 					for (var j = 0; j < inputTags.length; j++) {
 						var inputTag = inputTags[j];
 						var key = inputTag.getAttribute("name");

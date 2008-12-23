@@ -37,11 +37,11 @@ firemobilesimulator.common.pref = {
 			this.getPrefService2().clearUserPref(preference);
 		}
 	},
-	
+
 	getListPref : function(parentPreferenceName, childPreferenceNameArray){
 		var count = this.getIntPref(parentPreferenceName+".count") || 0;
 		var resultArray = new Array(count);
-		for (var i = 1; i <= count; i++) {
+		for (var i = 1; i <= count; i++){
 			var o = {};
 			o.id = i;
 			childPreferenceNameArray.forEach(function(childPreferenceName){
@@ -53,10 +53,10 @@ firemobilesimulator.common.pref = {
 		}
 		return resultArray;
 	},
-	
+
 	deleteListPref : function(parentPreferenceName, childPreferenceNameArray){
 		var count = this.getIntPref(parentPreferenceName+".count");
-		for (var i = 1; i <= count; i++) {
+		for (var i = 1; i <= count; i++){
 			for(var j = 0; j < childPreferenceNameArray.length; j++){
 				var childPreferenceName = childPreferenceNameArray[j];
 				dump("delete:"+parentPreferenceName+"."+i+"."+childPreferenceName+"\n");

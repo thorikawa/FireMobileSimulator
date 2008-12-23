@@ -125,7 +125,7 @@ firemobilesimulator.mpc.common.utf82unicode = function(bits) {
 	return rbits;
 };
 
-firemobilesimulator.mpc.common.unicode2utf8 = function(bits){
+firemobilesimulator.mpc.common.unicode2utf8 = function(bits) {
 	var rbits = new Array(3);
 	if (bits.length == 2) {
 		rbits[0] = 0xE0 + (bits[0] >> 4);

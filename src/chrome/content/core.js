@@ -78,7 +78,7 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			if (attribute == "extra-header") {
 				let extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
-				extraHeaders.forEach(function(extraHeader){
+				extraHeaders.forEach(function(extraHeader) {
 					if (extraHeader.value) {
 						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
 						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".value", extraHeader.value);
@@ -127,7 +127,7 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 	if (postData) {
 		dump("try post:"+postData+"\n");
 		request.open("post", filePath, false);
-		request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		request.send(postData);
 	} else {
 		dump("try get:"+filePath+"\n");
@@ -247,14 +247,14 @@ firemobilesimulator.core.refreshRegisteredDevices = function() {
 	firemobilesimulator.core.deviceIdArray = new Array();
 	for (let i = 1; i <= deviceCount; i++) {
 		let deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
-		if(deviceId){
+		if(deviceId) {
 			firemobilesimulator.core.deviceIdArray.push(deviceId);
 		}
 	}
 };
 
 firemobilesimulator.core.getRegisteredDevices = function() {
-	if(!firemobilesimulator.core.deviceIdArray){
+	if(!firemobilesimulator.core.deviceIdArray) {
 		firemobilesimulator.core.refreshRegisteredDevices();
 	}
 	return firemobilesimulator.core.deviceIdArray;

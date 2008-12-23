@@ -48,7 +48,7 @@ firemobilesimulator.common.util.openURL = function(url) {
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-firemobilesimulator.common.util.getParamsFromPath = function(path, func){
+firemobilesimulator.common.util.getParamsFromPath = function(path, func) {
 	var params = {};
 	var qindex = path.indexOf("?");
 	if (qindex >= 0) {
@@ -63,12 +63,12 @@ firemobilesimulator.common.util.getParamsFromPath = function(path, func){
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-firemobilesimulator.common.util.getParamsFromQuery = function(q, func){
+firemobilesimulator.common.util.getParamsFromQuery = function(q, func) {
 	if (!func || !func instanceof Function) func = decodeURI;
 	//dump("##getParamsFromQuery start\n");
 	var params = {};
 	var values = q.split("&");
-	values.forEach(function (v, i) {
+	values.forEach(function(v, i) {
 		//dump("###"+i+"\n");
 		var eindex = v.indexOf("=");
 		if (eindex == -1) {
@@ -92,7 +92,7 @@ firemobilesimulator.common.util.getParamsFromQuery = function(q, func){
  * @param {} lat
  * @param {} lon
  */
-firemobilesimulator.common.util.Point = function(lat,lon){
+firemobilesimulator.common.util.Point = function(lat, lon) {
 	this.lat=lat;
 	this.lon=lon;
 };
@@ -106,25 +106,25 @@ firemobilesimulator.common.util.Point.prototype = {
 	DATUM_TOKYO : "1",
 	UNIT_DMS : "0",
 	UNIT_DEGREE : "1",
-	toDms : function (){
+	toDms : function() {
 		if (this.unit == this.UNIT_DEGREE) {
 			this.lat = firemobilesimulator.common.util.degree2dms(this.lat);
 			this.lon = firemobilesimulator.common.util.degree2dms(this.lon);
 			this.unit = this.UNIT_DMS;
 		}
 	},
-	toDegree : function(){
+	toDegree : function() {
 		if (this.unit == this.UNIT_DMS) {
 			this.lat = firemobilesimulator.common.util.dms2degree(this.lat);
 			this.lon = firemobilesimulator.common.util.dms2degree(this.lon);
 			this.unit = this.UNIT_DEGREE;
 		}
 	},
-	toWgs : function(){
+	toWgs : function() {
 		dump("Point.toWgs() Error:Not implemented.Do nothing.\n");
 	},
 	//wgs84測地系で与えられたdegreeを、tokyo測地系に変換する
-	toTokyo : function(){
+	toTokyo : function() {
 		if (this.datum == this.DATUM_WGS) {
 			this.toDegree();
 			//cf.http://homepage3.nifty.com/Nowral/02_DATUM/02_DATUM.html#HowTo
@@ -140,7 +140,7 @@ firemobilesimulator.common.util.Point.prototype = {
  * @param {} dms
  * @return {}
  */
-firemobilesimulator.common.util.dms2degree = function(dms){
+firemobilesimulator.common.util.dms2degree = function(dms) {
 	if (!/[-+]?(\d+)\.(\d+)\.(\d+\.\d+)/.test(dms)) {
 		return null;
 	}
@@ -156,7 +156,7 @@ firemobilesimulator.common.util.dms2degree = function(dms){
  * @param {} degree
  * @return {}
  */
-firemobilesimulator.common.util.degree2dms = function(degree){
+firemobilesimulator.common.util.degree2dms = function(degree) {
 	var n = 1000;
 	var u = Math.floor(degree*3600*n + 0.5);
 	var s = parseInt(u/n) % 60;
@@ -172,7 +172,7 @@ firemobilesimulator.common.util.degree2dms = function(degree){
  * @param {} pad 埋める文字列
  * @param {} len 埋める長さ
  */
-String.prototype.padding = function(pad, len){
+String.prototype.padding = function(pad, len) {
 	var newString = this.valueOf();
 	while (newString.length<len) {
 		newString = pad+newString;
@@ -180,7 +180,7 @@ String.prototype.padding = function(pad, len){
 	return new String(newString);
 };
 
-firemobilesimulator.common.util.getYYYYMMDDHHmm = function(){
+firemobilesimulator.common.util.getYYYYMMDDHHmm = function() {
 	var now = new Date();
 	var y = (now.getFullYear()).toString();
 	var m = (now.getMonth()+1).toString().padding("0",2);
@@ -190,7 +190,7 @@ firemobilesimulator.common.util.getYYYYMMDDHHmm = function(){
 	return y+m+d+h+min;
 };
 
-firemobilesimulator.common.util.getHiddenTag = function(params){
+firemobilesimulator.common.util.getHiddenTag = function(params) {
 	var r = "";
 	for (var i in params) {
 		if (i.toUpperCase() == "UID" && params[i].toUpperCase() == "NULLGWDOCOMO") {

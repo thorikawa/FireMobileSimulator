@@ -53,9 +53,9 @@
 			</row>
 		</rows>
 	</grid>
-	
-    <groupbox>
-        <caption label="&msim.options.device.extra-headers;"/>
+
+	<groupbox>
+		<caption label="&msim.options.device.extra-headers;"/>
 		<grid>
 			<columns>
 				<column/>
@@ -79,6 +79,6 @@
 				</row>
 			</rows>
 		</grid>
-    </groupbox>
-    
+	</groupbox>
+
 </dialog>

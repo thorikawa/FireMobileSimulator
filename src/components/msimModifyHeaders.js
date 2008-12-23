@@ -38,7 +38,7 @@ myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
 		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-		
+
 		if (id) {
 			var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
 			var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
@@ -201,7 +201,7 @@ myHTTPListener.prototype = {
 						httpChannel.setRequestHeader(extraHeader.name, extraHeader.value, false);
 					}
 				});
-				
+
 				return;
 			} else if (topic == "http-on-examine-response"
 					|| topic == "http-on-examine-merged-response") {

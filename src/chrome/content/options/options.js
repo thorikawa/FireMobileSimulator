@@ -369,60 +369,51 @@ firemobilesimulator.options.exportDevices = function() {
 		var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
 				.createInstance(Components.interfaces.nsIFileOutputStream);
 		var xmlDocument = document.implementation.createDocument("", "", null);
-		var rootElement = xmlDocument.createElement("FireMobileSimulator");
+		var rootElement = xmlDocument.appendChild(xmlDocument.createElement("FireMobileSimulator"));
 		var xmlSerializer = new XMLSerializer();
 
 		if (!file.exists()) {
 			file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00644);
 		}
 
-		var eDeviceList = xmlDocument.createElement("DeviceList");
-
+		var eDeviceList = rootElement.appendChild(xmlDocument.createElement("DeviceList"));
+		rootElement.appendChild(eDeviceList);
 		var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 		for (var i = 1; i <= deviceCount; i++) {
 
-			var eDevice = xmlDocument.createElement("Device");
-			rootElement.appendChild(eDevice);
+			var eDevice = eDeviceList.appendChild(xmlDocument.createElement("Device"));
 
-			firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key){
-				if(key == "extra-header"){
+			firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key) {
+				if(key == "extra-header") {
 					var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + i
 									+ ".extra-header", ["name", "value"]);
 					var eExtraHeaders = xmlDocument.createElement("ExtraHeaders");
 					extraHeaders.forEach(function(extraHeader) {
-						var eExtraHeader = xmlDocument.createElement("Header");
-						var eHeaderName = xmlDocument.createElement("Name");
-						var eHeaderValue = xmlDocument.createElement("Value");
+						var eExtraHeader = eExtraHeaders.appendChild(xmlDocument.createElement("Header"));
+						var eHeaderName = eExtraHeader.appendChild(xmlDocument.createElement("Name"));
+						var eHeaderValue = eExtraHeader.appendChild(xmlDocument.createElement("Value"));
 						eHeaderName.appendChild(xmlDocument
 								.createTextNode(extraHeader.name));
 						eHeaderValue.appendChild(xmlDocument
 								.createTextNode(extraHeader.value));
-						eExtraHeader.appendChild(eHeaderName);
-						eExtraHeader.appendChild(eHeaderValue);
-						eExtraHeaders.appendChild(eExtraHeader);
 					});
 					eDevice.appendChild(eExtraHeaders);
 				}else{
 					var tagName = firemobilesimulator.common.carrier.xmlTagName[key];
 					dump("key:"+key+"\n");
 					dump("tagName:"+tagName+"\n");
-					if(tagName){
+					if(tagName) {
 						dump("createelement.\n");
 						var value = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + "." + key);
 						dump("msim.devicelist." + i + "." + key+"\n");
-						var ele = xmlDocument.createElement(tagName);
+						var ele = eDevice.appendChild(xmlDocument.createElement(tagName));
 						ele.appendChild(xmlDocument.createTextNode(value));
-						eDevice.appendChild(ele);
 					}else{
 						dump("[msim]Error:No TagName.\n");
 					}
 				}
 			});
-			eDeviceList.appendChild(eDevice);
 		}
-
-		rootElement.appendChild(eDeviceList);
-		xmlDocument.appendChild(rootElement);
 
 		outputStream.init(file, 0x04 | 0x08 | 0x20, 00644, null);
 		// 日本語を含むUTF-8対応
@@ -431,7 +422,7 @@ firemobilesimulator.options.exportDevices = function() {
 		outputStream.write(xmlContent, xmlContent.length);
 		outputStream.close();
 	}
-	confirm(stringBundle.getFormattedString("msim_exportCompleted"));
+	confirm(document.getElementById("msim-string-bundle").getFormattedString("msim_exportCompleted"));
 	return;
 };
 
