@@ -39,7 +39,7 @@
 			</row>
 			<row id="msim.options.device.type.row" align="center">
 				<label control="msim.options.device.type" value="&msim.options.device.type;"/>
-				<menulist>
+				<menulist id="msim.options.device.type.menulist">
 					<menupopup id="msim.options.device.type.menupopup"></menupopup>
 				</menulist>
 			</row>

@@ -32,6 +32,7 @@
 			</rows>
 		</grid>
 	</groupbox>
+	<!--
 	<groupbox>
 		<caption label="&msim.options.import-export;"/>
 		<hbox align="top">
@@ -43,4 +44,5 @@
 			</vbox>
 		</hbox>
 	</groupbox>
+	-->
 </page>

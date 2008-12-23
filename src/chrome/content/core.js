@@ -47,9 +47,9 @@ firemobilesimulator.core.setDevice = function(id) {
 	var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
 			+ ".useragent");
 	if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
-		useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent,
-				firemobilesimulator.common.pref
-						.copyUnicharPref("msim.config.SB.serial"));
+		useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
+	}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
+		useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
 	}
 
 	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override", useragent);

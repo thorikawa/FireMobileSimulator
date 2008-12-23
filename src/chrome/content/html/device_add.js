@@ -36,6 +36,9 @@ Ext.onReady(function() {
 					name : 'name',
 					mapping : 'DeviceName'
 				}, {
+					name : 'code',
+					mapping : 'DeviceShortName'
+				}, {
 					name : 'carrier',
 					mapping : 'Carrier'
 				}, {
@@ -68,6 +71,11 @@ Ext.onReady(function() {
 				sortable : true,
 				dataIndex : 'name'
 			}, {
+				header : '端末略称',
+				width : 160,
+				sortable : true,
+				dataIndex : 'code'
+			}, {
 				header : 'キャリア',
 				width : 80,
 				sortable : true,
@@ -86,7 +94,7 @@ Ext.onReady(function() {
 		),
 		renderTo : 'grid-device',
 		height : 380,
-		width : 500,
+		width : 600,
 		stripeRows : true,
 		title : '端末リスト',
 		frame : true,

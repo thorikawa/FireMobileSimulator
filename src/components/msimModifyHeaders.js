@@ -38,7 +38,7 @@ myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
 		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-
+		
 		if (id) {
 			var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
 			var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
@@ -46,8 +46,8 @@ myHTTPListener.prototype = {
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 
-				dump("name:"+httpChannel.name+"\n");
-				dump("name:"+httpChannel.URI.asciiSpec+"\n");
+				dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
+				dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");
 				httpChannel.setRequestHeader("x-msim-use", "on", false);
 
 				var uri = httpChannel.URI
@@ -175,11 +175,6 @@ myHTTPListener.prototype = {
 									.copyUnicharPref("msim.config.AU.uid"),
 							false);
 
-					// accept-charsetヘッダを設定しないと、Googleなどは自動的にUTF-8文字列を送信してきてしまう
-					// TODO:できれば端末ごとにaccept-charsetのヘッダも設定できるようにしたい。
-					httpChannel.setRequestHeader("accept-charset",
-							"shift_jis,*", false);
-
 					if (uri.host == "movie.ezweb.ne.jp") {
 						dump("host is mos. rewrite URI.\n");
 						var path = uri.path;
@@ -197,16 +192,16 @@ myHTTPListener.prototype = {
 								+ ".extra-header", ["name", "value"]);
 				extraHeaders.forEach(function(extraHeader){
 					if (extraHeader.value) {
-						dump("[msim]set http header:"+extraHeader.name+":"+extraHeader.value+"\n");
+						//dump("[msim]set http header:"+extraHeader.name+":"+extraHeader.value+"\n");
 						httpChannel.setRequestHeader(extraHeader.name, extraHeader.value, false);
 					}
 				});
-
 				return;
 			} else if (topic == "http-on-examine-response"
 					|| topic == "http-on-examine-merged-response") {
 				// cacheから読み込まれるときは、http-on-examine-merged-responseがnotifyされる
 				// dump("msim:topic is "+topic+"\n");
+				dump("[msim]content-type:"+subject.contentType+"\n");
 				var newContentType = "";
 				var pictogramConverterEnabled = firemobilesimulator.common.pref
 						.getBoolPref("msim.config." + carrier
@@ -216,10 +211,9 @@ myHTTPListener.prototype = {
 				} else {
 					newContentType = "text/html";
 				}
-
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 				["application/xhtml+xml", "text/vnd.wap.wml", "text/x-hdml",
-						"text/html"].forEach(function(contentType) {
+						"text/html", "application/vnd.wap.xhtml+xml"].forEach(function(contentType) {
 					if (contentType == subject.contentType) {
 						subject.contentType = newContentType;
 					}

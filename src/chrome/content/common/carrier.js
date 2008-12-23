@@ -78,15 +78,19 @@ firemobilesimulator.common.carrier.xmlTagName = {
 	"device-id"        : "Id",
 	"cache"            : "Cache"
 };
+
 firemobilesimulator.common.carrier.Type = {};
+
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO] = {
 	DOCOMO_FOMA     : "FOMA",
 	DOCOMO_MOVA     : "mova"
 };
+
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.AU] = {
 	AU_WAP1         : "WAP1.0",
 	AU_WAP2         : "WAP2.0"
 };
+
 firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.SOFTBANK] = {
 	SOFTBANK_C2     : "C2",
 	SOFTBANK_C3     : "C3",
@@ -95,12 +99,14 @@ firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.SOFTB
 	SOFTBANK_P4_2   : "P4_2",
 	SOFTBANK_P5     : "P5",
 	SOFTBANK_P6     : "P6",
+	SOFTBANK_P7     : "P7",
 	SOFTBANK_W      : "W",
 	SOFTBANK_3GC    : "3GC",
 	SOFTBANK_IPHONE : "iPhone"
 };
 
-firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, serial) {
+firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent) {
+	var serial = parent.firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.serial");
 	var notifySerial = parent.firemobilesimulator.common.pref.getBoolPref("msim.config.SB.notifyserial");
 	var replacement  = "";
 	if (true == notifySerial) {
@@ -108,6 +114,20 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent, se
 	}
 	useragent = useragent.replace("[/Serial]", replacement);
 	dump("[msim]SB UA:" + useragent + "\n");
+	return useragent;
+};
+
+firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) {
+	var type1 = parent.firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type1");
+	var cache = parent.firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".cache");
+	if (firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO].DOCOMO_FOMA == type1) {
+		//TODO ;TB;WxxHxxの部分も動的に組み立てられるようにする
+		useragent = useragent + "(c" + cache + ";TB;W24H12)";
+	}else if (firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO].DOCOMO_MOVA == type1) {
+		//TODO /TB/WxxHxxの部分も動的に組み立てられるようにする
+		useragent = useragent + "/c" + cache + "/TB/W24H12)";
+	}
+	dump("[msim]DC UA:" + useragent + "\n");
 	return useragent;
 };
 
