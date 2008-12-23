@@ -58,8 +58,16 @@ Ext.onReady(function() {
 	});
 
 	var tf = new Ext.form.TextField({id : 'tf-cmp'});
-
 	var filteredCarrier;
+	var filterButtonHandler = function(button, state) {
+		if (state) { //press
+			filteredCarrier = button.text;
+			is.searchNow();
+		} else { //depress
+			filteredCarrier = null;
+			is.searchNow();
+		}
+	}
 
 	var grid = new Ext.grid.GridPanel({
 		id : 'grid-device-cmp',
@@ -106,35 +114,27 @@ Ext.onReady(function() {
 			msg : "Loading..."
 		},
 		tbar : [{
-			text : 'All',
-			handler : function() {
-				filteredCarrier = null;
-				is.searchNow();
-			}
-		}, {
-			xtype : 'tbseparator'
-		}, {
 			text : 'DoCoMo',
-			handler : function() {
-				filteredCarrier = 'DoCoMo';
-				is.searchNow();
-			}
+			enableToggle : true,
+			allowDepress : true,
+			toggleGroup  : 'carrierButton',
+			toggleHandler: filterButtonHandler
 		}, {
 			xtype : 'tbseparator'
 		}, {
 			text : 'au',
-			handler : function() {
-				filteredCarrier = 'au';
-				is.searchNow();
-			}
+			enableToggle : true,
+			allowDepress : true,
+			toggleGroup  : 'carrierButton',
+			toggleHandler: filterButtonHandler
 		}, {
 			xtype : 'tbseparator'
 		}, {
 			text : 'SoftBank',
-			handler : function() {
-				filteredCarrier = 'SoftBank';
-				is.searchNow();
-			}
+			enableToggle : true,
+			allowDepress : true,
+			toggleGroup  : 'carrierButton',
+			toggleHandler: filterButtonHandler
 		}, {
 			xtype : 'tbseparator'
 		}, tf],
@@ -192,7 +192,12 @@ firemobilesimulator.addDevice = function() {
 	var sm = Ext.getCmp('grid-device-cmp').getSelectionModel();
 	var records = sm.getSelections();
 	if (records.length <= 0) {
+		//TODO propertiesファイルから取得する
 		Ext.Msg.alert("エラー", "端末を1つ以上選択してください");
+		return;
+	}else if (records.length > 30) {
+		//TODO propertiesファイルから取得する
+		Ext.Msg.alert("エラー", "1アクションで登録する端末数は30件までにしてください");
 		return;
 	}
 	for (var i = 0; i < records.length; i++) {
@@ -206,7 +211,7 @@ firemobilesimulator.addDevice = function() {
 	var result = firemobilesimulator.core.LoadDevices(devices, false);
 	if (result) {
 		Ext.Msg.show({
-			title : "追加完了",
+			title : "登録完了",
 			msg : "選択した端末がFireMobileSimulatorに追加されました"
 		});
 	}
