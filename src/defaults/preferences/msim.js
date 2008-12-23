@@ -171,7 +171,7 @@ pref("msim.devicelist.7.extra-header.10.name", "accept-language");
 pref("msim.devicelist.7.extra-header.10.value", "ja-JP;q=1.0");
 pref("msim.devicelist.7.screen-width", "480");
 pref("msim.devicelist.7.screen-height", "854");
-pref("msim.devicelist.7.device-id", "730");
+pref("msim.devicelist.7.device-id", "720");
 pref("msim.devicelist.8.label", "iPhone 3G");
 pref("msim.devicelist.8.carrier", "SB");
 pref("msim.devicelist.8.useragent", "Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0_1 like Mac OS X; ja-jp) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5B108 Safari/525.20");

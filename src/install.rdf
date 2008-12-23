@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>{77cc852e-6b45-11dd-929f-d30256d89593}</em:id>
     <em:name>FireMobileSimulator</em:name>
-    <em:version>1.0.0pre</em:version>
+    <em:version>1.0.0</em:version>
     <em:creator>Takahiro Horikawa</em:creator>
     <em:aboutURL>chrome://msim/content/about.xul</em:aboutURL>
     <em:optionsURL>chrome://msim/content/options/options.xul</em:optionsURL>
