@@ -22,7 +22,7 @@
 <!DOCTYPE overlay SYSTEM "chrome://msim/locale/msim.dtd">
 <overlay id="msim-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript" src="core.js"></script>
+	<script type="application/x-javascript;version=1.7" src="core.js"></script>
 	<script type="application/x-javascript" src="common/pref.js"></script>
 	<script type="application/x-javascript" src="common/carrier.js"></script>
 	<script type="application/x-javascript" src="common/util.js"></script>

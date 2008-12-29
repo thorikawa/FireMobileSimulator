@@ -9,7 +9,7 @@
 		title="&msim.options.title;"
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script type="application/x-javascript" src="chrome://msim/content/core.js"/>
+	<script type="application/x-javascript;version=1.7" src="chrome://msim/content/core.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/common/pref.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/common/carrier.js"/>
 	<script type="application/x-javascript" src="chrome://msim/content/options/options.js"/>
