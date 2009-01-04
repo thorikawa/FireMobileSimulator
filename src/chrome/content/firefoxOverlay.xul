@@ -27,7 +27,6 @@
 	<script type="application/x-javascript" src="common/carrier.js"></script>
 	<script type="application/x-javascript" src="common/util.js"></script>
 	<script type="application/x-javascript" src="overlay.js"></script>
-	<script type="application/x-javascript" src="core.js"></script>
 	<script type="application/x-javascript" src="mpc/common.js"></script>
 	<script type="application/x-javascript" src="mpc/docomo.js"></script>
 	<script type="application/x-javascript" src="mpc/ezweb.js"></script>
