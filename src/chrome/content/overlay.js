@@ -351,6 +351,11 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 					dump("setlcs for a tag\n");
 					anchorTag.addEventListener("click", setLcsFunction, false);
 				}
+				
+				var accesskey = anchorTag.getAttribute("accesskey");
+				if (null != accesskey) {
+					ndDocument.addEventListener("keyup", function () { dump("click accesskey"); anchorTag.click() }, false);
+				}
 			}
 
 			// formのUTN送信
