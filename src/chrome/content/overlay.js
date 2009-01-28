@@ -354,7 +354,24 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 				
 				var accesskey = anchorTag.getAttribute("accesskey");
 				if (null != accesskey) {
-					ndDocument.addEventListener("keyup", function () { dump("click accesskey"); anchorTag.click() }, false);
+					dump("===start===\n");
+					for(var j in anchorTag){
+						dump(j+"\n");
+					}
+					dump(accesskey+"\n");
+					if(accesskey.match(/^\d$/)){
+						dump("set\n")
+						accesskey = parseInt(accesskey);
+						ndDocument.addEventListener("keyup", function (e) {
+							dump(e.keyCode+"\n");
+							dump(accesskey+"\n")
+							if(e.keyCode == (accesskey+0x30)){
+								dump("match!!");
+								anchorTag.onclick()
+							}
+						}, false);
+					}
+					
 				}
 			}
 
