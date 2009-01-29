@@ -341,6 +341,9 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 			var anchorTags = ndDocument.getElementsByTagName("a");
 			for (var i = 0; i < anchorTags.length; i++) {
 				var anchorTag = anchorTags[i];
+				for(var y in anchorTag){
+					dump("##"+y+"\n");
+				}
 				var utn = anchorTag.getAttribute("utn");
 				if (null != utn) {
 					anchorTag.addEventListener("click", setUtnFunction, false);
@@ -354,24 +357,23 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 				
 				var accesskey = anchorTag.getAttribute("accesskey");
 				if (null != accesskey) {
-					dump("===start===\n");
-					for(var j in anchorTag){
-						dump(j+"\n");
-					}
-					dump(accesskey+"\n");
-					if(accesskey.match(/^\d$/)){
-						dump("set\n")
-						accesskey = parseInt(accesskey);
-						ndDocument.addEventListener("keyup", function (e) {
-							dump(e.keyCode+"\n");
-							dump(accesskey+"\n")
-							if(e.keyCode == (accesskey+0x30)){
-								dump("match!!");
-								anchorTag.onclick()
+					if(accesskey.match(/^(\d|\*|\#)$/)){
+						accesskey = accesskey.charCodeAt(0);
+						ndDocument.addEventListener("keyup", function (accesskey, anchorTag) {
+							return function (e) {
+								if(e.keyCode == accesskey){
+									dump("anchorTag:"+anchorTag+"\n");
+									for(z in anchorTag){
+										dump(" "+z+"\n");
+									}
+									dump("onclick:"+anchorTag.onclick);
+									anchorTag.onclick || anchorTag.onclick();
+									ndDocument.location.href = anchorTag.getAttribute("href");
+								}
 							}
-						}, false);
+						}(accesskey, anchorTag)
+						, false);
 					}
-					
 				}
 			}
 
