@@ -282,6 +282,7 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 				}
 			}
 
+			//auのみDOMロード後に絵文字変換を行う
 			var pictogramConverterEnabled = firemobilesimulator.common.pref
 					.getBoolPref("msim.config." + carrier
 							+ ".pictogram.enabled");
@@ -307,6 +308,24 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 
 				}
 			}
+			
+			//accesskey対応
+			ndDocument.addEventListener("keyup", function (e) {
+				var anchorTags = this.getElementsByTagName("a");
+				for (var i = 0; i < anchorTags.length; i++) {
+					var anchorTag = anchorTags[i];
+					var accesskey = anchorTag.getAttribute("accesskey");
+					if (accesskey && accesskey.match(/^(\d|\*|\#)$/)) {
+						accesskey = accesskey.charCodeAt(0);
+						if(e.keyCode == accesskey){
+							anchorTag.focus();
+							var evt = document.createEvent("MouseEvents");
+							evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+							anchorTag.dispatchEvent(evt);
+						}
+					}	
+				}
+			}, false);
 		}
 
 		if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
@@ -341,9 +360,6 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 			var anchorTags = ndDocument.getElementsByTagName("a");
 			for (var i = 0; i < anchorTags.length; i++) {
 				var anchorTag = anchorTags[i];
-				for(var y in anchorTag){
-					dump("##"+y+"\n");
-				}
 				var utn = anchorTag.getAttribute("utn");
 				if (null != utn) {
 					anchorTag.addEventListener("click", setUtnFunction, false);
@@ -354,29 +370,26 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 					dump("setlcs for a tag\n");
 					anchorTag.addEventListener("click", setLcsFunction, false);
 				}
-				
-				var accesskey = anchorTag.getAttribute("accesskey");
-				if (null != accesskey) {
-					if(accesskey.match(/^(\d|\*|\#)$/)){
-						accesskey = accesskey.charCodeAt(0);
-						ndDocument.addEventListener("keyup", function (accesskey, anchorTag) {
-							return function (e) {
-								if(e.keyCode == accesskey){
-									dump("anchorTag:"+anchorTag+"\n");
-									for(z in anchorTag){
-										dump(" "+z+"\n");
-									}
-									dump("onclick:"+anchorTag.onclick);
-									anchorTag.onclick || anchorTag.onclick();
-									ndDocument.location.href = anchorTag.getAttribute("href");
-								}
-							}
-						}(accesskey, anchorTag)
-						, false);
-					}
-				}
 			}
 
+			//accesskey対応
+			ndDocument.addEventListener("keyup", function (e) {
+				var anchorTags = this.getElementsByTagName("a");
+				for (var i = 0; i < anchorTags.length; i++) {
+					var anchorTag = anchorTags[i];
+					var accesskey = anchorTag.getAttribute("accesskey");
+					if (accesskey && accesskey.match(/^(\d|\*|\#)$/)) {
+						accesskey = accesskey.charCodeAt(0);
+						if(e.keyCode == accesskey){
+							anchorTag.focus();
+							var evt = document.createEvent("MouseEvents");
+							evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+							anchorTag.dispatchEvent(evt);
+						}
+					}	
+				}
+			}, false);
+						
 			// formのUTN送信
 			// uid=NULLGWDOCOMOのPOST送信
 			// オープンiエリアの場合のメソッドを強制的にGETに書き換え
@@ -421,6 +434,25 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 					}
 				}
 			}
+		}
+		if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
+			//accesskey対応
+			ndDocument.addEventListener("keyup", function (e) {
+				var anchorTags = this.getElementsByTagName("a");
+				for (var i = 0; i < anchorTags.length; i++) {
+					var anchorTag = anchorTags[i];
+					var accesskey = anchorTag.getAttribute("accesskey") || anchorTag.getAttribute("directkey");
+					if (accesskey && accesskey.match(/^(\d|\*|\#)$/)) {
+						accesskey = accesskey.charCodeAt(0);
+						if(e.keyCode == accesskey){
+							anchorTag.focus();
+							var evt = document.createEvent("MouseEvents");
+							evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+							anchorTag.dispatchEvent(evt);
+						}
+					}	
+				}
+			}, false);
 		}
 	}
 };

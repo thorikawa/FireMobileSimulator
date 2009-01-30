@@ -46,8 +46,8 @@ myHTTPListener.prototype = {
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 
-				dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
-				dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");
+				// dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
+				// dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");
 				httpChannel.setRequestHeader("x-msim-use", "on", false);
 
 				var uri = httpChannel.URI
@@ -205,7 +205,7 @@ myHTTPListener.prototype = {
 					|| topic == "http-on-examine-merged-response") {
 				// cacheから読み込まれるときは、http-on-examine-merged-responseがnotifyされる
 				// dump("msim:topic is "+topic+"\n");
-				dump("[msim]content-type:"+subject.contentType+"\n");
+				// dump("[msim]content-type:"+subject.contentType+"\n");
 				var newContentType = "";
 				var pictogramConverterEnabled = firemobilesimulator.common.pref
 						.getBoolPref("msim.config." + carrier
@@ -224,7 +224,7 @@ myHTTPListener.prototype = {
 				});
 			}
 		} else if (topic == "app-startup") {
-			dump("msim:topic is app-startup.\n");
+			// dump("msim:topic is app-startup.\n");
 			var os = Cc["@mozilla.org/observer-service;1"]
 					.getService(Ci.nsIObserverService);
 			os.addObserver(this, "http-on-modify-request", false);
