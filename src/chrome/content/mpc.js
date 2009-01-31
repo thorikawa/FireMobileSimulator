@@ -28,6 +28,6 @@ firemobilesimulator.mpc.factoryMap[firemobilesimulator.common.carrier.DOCOMO] = 
 firemobilesimulator.mpc.factoryMap[firemobilesimulator.common.carrier.AU] = firemobilesimulator.mpc.ezweb;
 firemobilesimulator.mpc.factoryMap[firemobilesimulator.common.carrier.SOFTBANK] = firemobilesimulator.mpc.softbank;
 
-firemobilesimulator.mpc.factory = function(carrier) {
+firemobilesimulator.mpc.factory = function (carrier) {
 	return new firemobilesimulator.mpc.factoryMap[carrier];
 };

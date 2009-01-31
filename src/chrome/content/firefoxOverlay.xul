@@ -32,6 +32,11 @@
 	<script type="application/x-javascript" src="mpc/ezweb.js"></script>
 	<script type="application/x-javascript" src="mpc/softbank.js"></script>
 	<script type="application/x-javascript" src="mpc.js"></script>
+	<script type="application/x-javascript" src="contentHandler/common.js"></script>
+	<script type="application/x-javascript" src="contentHandler/docomo.js"></script>
+	<script type="application/x-javascript" src="contentHandler/au.js"></script>
+	<script type="application/x-javascript" src="contentHandler/softbank.js"></script>
+	<script type="application/x-javascript" src="contentHandler.js"></script>
 
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="msim-strings" src="chrome://msim/locale/msim.properties"/>
