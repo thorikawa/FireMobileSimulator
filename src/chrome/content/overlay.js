@@ -102,7 +102,8 @@ firemobilesimulator.overlay.onUnload = function() {
 };
 
 firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
-	//var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
+	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
+	//dump(optionsSeparator);
 
 	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
 					"msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
@@ -122,7 +123,8 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 				.copyUnicharPref("msim.devicelist." + i
 						+ ".useragent");
 
-		var menuItem = menu.appendChild(document.createElement("menuitem"));
+		//var menuItem = menu.appendChild(document.createElement("menuitem"));
+		var menuItem = menu.insertBefore(document.createElement("menuitem"), optionsSeparator);
 		menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
 		menuItem.setAttribute("label", carrier + " " + device);
 		menuItem.setAttribute("oncommand",
@@ -151,7 +153,7 @@ firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
 	var menuItems = menu.getElementsByTagName("menuitem");
 
 	while (menuItems.length > permanentMenus.length) {
-		menuItem = menuItems[4]; //注意メニューの構造が変わったら変える
+		menuItem = menuItems[3]; //注意メニューの構造が変わったら変える
 
 		if (!menuItem.hasAttribute("id")) {
 			menu.removeChild(menuItem);

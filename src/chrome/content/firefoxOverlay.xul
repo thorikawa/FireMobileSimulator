@@ -45,11 +45,12 @@
 	<menupopup id="menu_ToolsPopup">
 		<menu id="msim-menu" class="menu-iconic" accesskey="&msim.menu.accesskey;" insertafter="devToolsSeparator" label="&msim.label;">
 			<menupopup id="msim-popup-menu" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'menu');">
+				<menuitem id="msim-default-menu" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
 				<menuitem id="msim-options-menu" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
 				<menuitem id="msim-devicedb-menu" accesskey="&msim.menu.devicedb.accesskey;" label="&msim.menu.devicedb.label;" oncommand="firemobilesimulator.overlay.openDeviceDB();"/>
-				<menuitem id="msim-about-menu" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 				<menuseparator id="msim-separator1-menu"/>
-				<menuitem id="msim-default-menu" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
+				<menuseparator id="msim-separator2-menu"/>
+				<menuitem id="msim-about-menu" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</menu>
 	</menupopup>
@@ -57,11 +58,12 @@
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="msim-button" label="&msim.label;" tooltiptext="&msim.label;" type="menu" onmouseover="firemobilesimulator.overlay.openToolbarButton(this);">
 			<menupopup id="msim-popup-toolbar" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'toolbar');">
+				<menuitem id="msim-default-toolbar" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
 				<menuitem id="msim-options-toolbar" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
 				<menuitem id="msim-devicedb-toolbar" accesskey="&msim.menu.devicedb.accesskey;" label="&msim.menu.devicedb.label;" oncommand="firemobilesimulator.overlay.openDeviceDB();"/>
-				<menuitem id="msim-about-toolbar" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 				<menuseparator id="msim-separator1-toolbar"/>
-				<menuitem id="msim-default-toolbar" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
+				<menuseparator id="msim-separator2-toolbar"/>
+				<menuitem id="msim-about-toolbar" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
 			</menupopup>
 		</toolbarbutton>
 	</toolbarpalette>
