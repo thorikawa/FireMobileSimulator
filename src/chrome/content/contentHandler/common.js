@@ -48,6 +48,11 @@ firemobilesimulator.contentHandler.common = {
 	
 	createAccessKeyFunction : function (keyNameArray) {
 		return function(e) {
+			if(this.activeElement && (this.activeElement.tagName == "INPUT" || this.activeElement.tagName == "TEXTAREA")){
+				dump("[msim]skip accesskey.\n")
+				return;
+			}
+
 			var anchorTags = this.getElementsByTagName("a");
 			for (var i = 0; i < anchorTags.length; i++) {
 				var anchorTag = anchorTags[i];
