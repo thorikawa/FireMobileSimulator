@@ -1,21 +1,22 @@
-/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 ***** 
- * FireMobileFimulator is a Firefox add-on that simulate web browsers of 
- * japanese mobile phones.
- * Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK ***** */
+/*******************************************************************************
+ * ***** BEGIN LICENSE BLOCK Version: GPL 3.0 FireMobileFimulator is a Firefox
+ * add-on that simulate web browsers of japanese mobile phones. Copyright (C)
+ * 2008 Takahiro Horikawa <horikawa.takahiro@gmail.com>
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>. ***** END LICENSE
+ * BLOCK *****
+ */
 
 var firemobilesimulator;
 if (!firemobilesimulator)
@@ -24,38 +25,21 @@ if (!firemobilesimulator.core)
 	firemobilesimulator.core = {};
 
 firemobilesimulator.core.resetDevice = function(e) {
-	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
-	firemobilesimulator.common.pref.deletePref("general.useragent.override");
-	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
-	firemobilesimulator.common.pref.deletePref("msim.current.id");
+    var tab = gBrowser.selectedTab; 
+    tab.setAttribute("firemobilesimulator-device-id", null); 
 	firemobilesimulator.core.updateIcon();
 };
 
 firemobilesimulator.core.setDevice = function(id) {
-
-	//dump("[msim]setDevice:" + carrier + ",id:" + id + "\n");
+	dump("[msim]setDevice:" + id + "\n");
 
 	if (!id) {
 		dump("[msim]Error : the attribute which you have selected is insufficient.\n");
 		return;
 	}
 
-	var pref_prefix = "msim.devicelist." + id;
-	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
-
-	firemobilesimulator.common.pref.setUnicharPref("msim.current.carrier", carrier);
-	var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
-			+ ".useragent");
-	if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
-		useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
-	}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
-		useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
-		//useragent = firemobilesimulator.common.carrier.getDocomoUserAgent(useragent, id);
-	}
-
-	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override", useragent);
-	firemobilesimulator.common.pref.setUnicharPref("msim.current.useragent", useragent);
-	firemobilesimulator.common.pref.setUnicharPref("msim.current.id", id);
+    var tab = gBrowser.selectedTab; 
+    tab.setAttribute("firemobilesimulator-device-id", id); 
 	firemobilesimulator.core.updateIcon();
 };
 
@@ -66,12 +50,12 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 	});
 
-	//既に使われている端末だったら設定をリセット
+	// 既に使われている端末だったら設定をリセット
 	if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId) {
 		firemobilesimulator.core.resetDevice();
 	}
 
-	//各端末のidを再計算
+	// 各端末のidを再計算
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	for (let i=deletedId+1; i<=count; i++) {
 		let sPrefPrefix = "msim.devicelist." + i + ".";
@@ -150,7 +134,7 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 			null);
 	if (deviceResults.length == 0) return;
 
-	//XMLから端末情報を順次解析
+	// XMLから端末情報を順次解析
 	var devices = new Array();
 	var i = 0;
 	while ((deviceElement = deviceResults.iterateNext()) != null) {
@@ -162,7 +146,7 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 						XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
 				let headerElement = null;
 
-				//ExtraHeaderエレメントの取得
+				// ExtraHeaderエレメントの取得
 				let headers = new Array();
 				let j = 0;
 				while ((headerElement = headerResults.iterateNext()) != null) {
@@ -229,7 +213,7 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 		}
 	});
 
-	//set device count
+	// set device count
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", currentId);
 	return true;
 };
@@ -281,9 +265,6 @@ firemobilesimulator.core.clearAllDevice = function() {
 		});
 	}
 	firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
-	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
 	firemobilesimulator.common.pref.deletePref("general.useragent.override");
-	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
-	firemobilesimulator.common.pref.deletePref("msim.current.id");
 	firemobilesimulator.core.resetDevice();
 };

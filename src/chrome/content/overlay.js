@@ -133,15 +133,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 		menuItem.setAttribute("name", "devicelist");
 	}
 
-	var currentMenuId = "msim-device-"
-			+ suffix
-			+ "-"
-			+ firemobilesimulator.common.pref
-					.copyUnicharPref("msim.current.id");
-	var currentMenu = document.getElementById(currentMenuId);
-	if (!currentMenu) {
-		currentMenu = document.getElementById("msim-default-" + suffix);
-	}
+	var currentMenu = document.getElementById("msim-default-" + suffix);
 	currentMenu.setAttribute("checked", true);
 };
 
@@ -186,9 +178,11 @@ firemobilesimulator.overlay.openAbout = function() {
 
 firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 	dump("[msim]BrowserOnLoad is fired.\n");
-	var carrier = firemobilesimulator.common.pref
-			.copyUnicharPref("msim.current.carrier");
-	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+
+	var tab = gBrowser.selectedTab; 
+	var id = tab.getAttribute("firemobilesimulator-device-id");
+	var pref_prefix = "msim.devicelist." + id;
+	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
 
 	if (carrier) {
 		var ndDocument = objEvent.originalTarget;

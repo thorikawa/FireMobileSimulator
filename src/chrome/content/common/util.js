@@ -200,3 +200,26 @@ firemobilesimulator.common.util.getHiddenTag = function(params) {
 	}
 	return r;
 };
+
+firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
+	var tab = null;
+	if (httpChannel.notificationCallbacks) {
+		var interfaceRequestor = httpChannel.notificationCallbacks
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+		var targetDoc = interfaceRequestor
+				.getInterface(Components.interfaces.nsIDOMWindow).document;
+
+		var webNav = httpChannel.notificationCallbacks
+				.getInterface(Components.interfaces.nsIWebNavigation);
+		var mainWindow = webNav.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                   .rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                   .getInterface(Components.interfaces.nsIDOMWindow);
+
+		var gBrowser = mainWindow.getBrowser();
+		var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(targetDoc);
+		if (targetBrowserIndex != -1) {
+			tab = gBrowser.tabContainer.childNodes[targetBrowserIndex];
+		}
+	}
+	return tab;
+}

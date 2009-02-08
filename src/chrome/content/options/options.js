@@ -76,16 +76,10 @@ firemobilesimulator.options.editDevice = function() {
 	var retVals = {};
 	if (selectedItem) {
 		var id = selectedItem.getAttribute("id");
-		if (window.openDialog(
+		window.openDialog(
 				"chrome://msim/content/options/dialogs/device.xul",
 				"msim-device-dialog", "centerscreen,chrome,modal,resizable",
-				"edit", id, retVals)) {
-			if (retVals.id) {
-				if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == retVals.id) {
-					firemobilesimulator.core.setDevice(retVals.id);
-				}
-			}
-		}
+				"edit", id, retVals);
 	} else {
 		dump("[msim]Error : Device is not selected.\n");
 	}
@@ -237,21 +231,6 @@ firemobilesimulator.options.storeOptions = function() {
 				.getElementById("msim-textbox-softbank-uid").value;
 		firemobilesimulator.options.optionsDataString["msim.config.SB.serial"] = pageDocument
 				.getElementById("msim-textbox-softbank-serial").value;
-		var carrier = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.current.carrier");
-		if (carrier == firemobilesimulator.common.carrier.SOFTBANK) {
-			dump("[msim]Debug : Current Carrier is SoftBank. Replace User-Agent.\n");
-			var id = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.current.id");
-			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + id + ".useragent");
-			var newUserAgent = firemobilesimulator.common.carrier
-					.getSoftBankUserAgent(
-							useragent,
-							firemobilesimulator.options.optionsDataString["msim.config.SB.serial"]);
-			firemobilesimulator.options.optionsDataString["general.useragent.override"] = newUserAgent;
-			firemobilesimulator.options.optionsDataString["msim.current.useragent"] = newUserAgent;
-		}
 	} else if (iFrameSrc.indexOf("devices") != -1) {
 		// Nothing to do
 	} else if (iFrameSrc.indexOf("gps") != -1) {

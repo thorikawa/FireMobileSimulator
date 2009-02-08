@@ -37,17 +37,39 @@ function myHTTPListener() {
 myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
-		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-		
+		if (topic == "app-startup") {
+			dump("msim:topic is app-startup.\n");
+			var os = Cc["@mozilla.org/observer-service;1"]
+					.getService(Ci.nsIObserverService);
+			os.addObserver(this, "http-on-modify-request", false);
+			os.addObserver(this, "http-on-examine-response", false);
+			os.addObserver(this, "http-on-examine-merged-response", false);
+			return;
+		}
+
+		var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
+		var id = null;
+		var tab = firemobilesimulator.common.util.getTabFromHttpChannel(httpChannel);
+		if (tab) {
+			id = tab.getAttribute("firemobilesimulator-device-id");
+		}
 		if (id) {
-			var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
+			var pref_prefix = "msim.devicelist." + id;
+			var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+			var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
+					+ ".useragent");
+			if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
+				useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
+			}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
+				useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
+			}
+
 			var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
 
 			if (topic == "http-on-modify-request") {
-				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 
-				// dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
-				// dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");
+				//dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
+				//dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");
 				httpChannel.setRequestHeader("x-msim-use", "on", false);
 
 				var uri = httpChannel.URI
@@ -70,26 +92,21 @@ myHTTPListener.prototype = {
 					var utnFlag = firemobilesimulator.common.pref
 							.getBoolPref("msim.temp.utnflag");
 					if (true == utnFlag) {
-						var userAgent = firemobilesimulator.common.pref
-								.copyUnicharPref("msim.current.useragent");
-
 						// DoCoMo2.0
-						var userAgentTmp = userAgent
+						var userAgentTmp = useragent
 								.match(/DoCoMo\/2\.0[^(]+\((?:[^;]*;)*[^)]*(?=\))/);
 						if (userAgentTmp) {
 							dump("##add utn match1 for DoCoMo2.0##\n");
-							userAgent = userAgentTmp[0] + ";ser" + ser + ";icc"
+							useragent = userAgentTmp[0] + ";ser" + ser + ";icc"
 									+ icc + ")";
 						}
 
 						// DoCoMo1.0
-						userAgentTmp = userAgent.match(/DoCoMo\/1\.0\/.+/);
+						userAgentTmp = useragent.match(/DoCoMo\/1\.0\/.+/);
 						if (userAgentTmp) {
 							dump("##add utn match for DoCoMo1.0##\n");
-							userAgent = userAgentTmp[0] + "/ser" + ser;
+							useragent = userAgentTmp[0] + "/ser" + ser;
 						}
-						httpChannel.setRequestHeader("User-Agent", userAgent,
-								false);
 					}
 
 					// パラメータ解析&UID&GUID送信
@@ -191,6 +208,7 @@ myHTTPListener.prototype = {
 					}
 				}
 
+				httpChannel.setRequestHeader("User-Agent",useragent,false);
 				// set extra http headers
 				var extraHeaders = firemobilesimulator.common.pref.getListPref("msim.devicelist." + id
 								+ ".extra-header", ["name", "value"]);
@@ -223,14 +241,6 @@ myHTTPListener.prototype = {
 					}
 				});
 			}
-		} else if (topic == "app-startup") {
-			// dump("msim:topic is app-startup.\n");
-			var os = Cc["@mozilla.org/observer-service;1"]
-					.getService(Ci.nsIObserverService);
-			os.addObserver(this, "http-on-modify-request", false);
-			os.addObserver(this, "http-on-examine-response", false);
-			os.addObserver(this, "http-on-examine-merged-response", false);
-			return;
 		}
 	},
 
