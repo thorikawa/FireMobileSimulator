@@ -25,14 +25,14 @@ if (!firemobilesimulator.contentHandler)
 
 firemobilesimulator.contentHandler.au = {
 	filter : function (ndDocument, deviceId) {
-		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);		
+		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);
 		// HDML暫定対応
 		var hdmls = ndDocument.getElementsByTagName("hdml");
 		if (hdmls.length >= 1) {
 			var nodisplays = hdmls[0].getElementsByTagName("nodisplay");
-			for (var i = 0; i < nodisplays.length; i++) {
+			for (var i = 0, l = nodisplays.length; i < l; i++) {
 				var actions = nodisplays[i].getElementsByTagName("action");
-				for (var j = 0; j < actions.length; j++) {
+				for (var j = 0, m = actions.length; j < m; j++) {
 					var task = actions[j].getAttribute("task");
 					var dest = actions[j].getAttribute("dest");
 					if (task.toUpperCase() == "GO" && dest) {
@@ -43,16 +43,16 @@ firemobilesimulator.contentHandler.au = {
 				}
 			}
 		}
-	
+
 		// WML暫定対応
 		var oneventTags = ndDocument.getElementsByTagName("wml:onevent");
-		for (var i = 0; i < oneventTags.length; i++) {
+		for (var i = 0, l = oneventTags.length; i < l; i++) {
 			dump("wml:onevent found:" + i + "\n");
 			var onevent = oneventTags[i];
 			var type = onevent.getAttribute("type");
 			if (type == "onenterforward") {
 				var goTags = onevent.getElementsByTagName("wml:go");
-				for (var j = 0; j < goTags.length; j++) {
+				for (var j = 0, m = goTags.length; j < m; j++) {
 					dump("wml:go found:" + j + "\n");
 					var go = goTags[j];
 					var href = go.getAttribute("href");
@@ -64,10 +64,10 @@ firemobilesimulator.contentHandler.au = {
 			}
 		}
 		var wmlAnchorTags = ndDocument.getElementsByTagName("wml:anchor");
-		for (var i = 0; i < wmlAnchorTags.length; i++) {
+		for (var i = 0, l = wmlAnchorTags.length; i < l; i++) {
 			var anchor = wmlAnchorTags[i];
 			var spawnTags = anchor.getElementsByTagName("wml:spawn");
-			for (var j = 0; j < spawnTags.length; j++) {
+			for (var j = 0, m = spawnTags.length; j < m; j++) {
 				var spawn = spawnTags[j];
 				var href = spawn.getAttribute("href");
 				if (href) {
@@ -81,7 +81,7 @@ firemobilesimulator.contentHandler.au = {
 				}
 			}
 		}
-	
+
 		//auのみDOMロード後に絵文字変換を行う
 		var pictogramConverterEnabled = firemobilesimulator.common.pref
 				.getBoolPref("msim.config.AU.pictogram.enabled");
@@ -90,7 +90,7 @@ firemobilesimulator.contentHandler.au = {
 			var mpc = firemobilesimulator.mpc.factory(firemobilesimulator.common.carrier.AU);
 			mpc.setImagePath("chrome://msim/content/emoji");
 			var imgs = ndDocument.getElementsByTagName("img");
-			for (var i = 0; i < imgs.length; i++) {
+			for (var i = 0, l = imgs.length; i < l; i++) {
 				var iconno = imgs[i].getAttribute("localsrc")
 						|| imgs[i].getAttribute("icon");
 				if (iconno && !isNaN(iconno)) {
@@ -104,10 +104,10 @@ firemobilesimulator.contentHandler.au = {
 												.getImageSrc(iconno));
 					}
 				}
-	
+
 			}
 		}
-		
+
 		//accesskey対応
 		ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey"]), false);
 	}

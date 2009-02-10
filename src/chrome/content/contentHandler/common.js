@@ -28,13 +28,13 @@ firemobilesimulator.contentHandler.common = {
 		if (ndDocument.body) {
 			//フォントを等幅に統一
 			ndDocument.body.style.fontFamily = "monospace";
-	
+
 			//表示領域サイズの制御（現在は横幅のみ）
 			var forceScreenWidth = firemobilesimulator.common.pref
 					.getBoolPref("msim.config.general.force-screen-width");
 			var forceScreenHeight = firemobilesimulator.common.pref
 					.getBoolPref("msim.config.general.force-screen-height");
-	
+
 			if (forceScreenWidth) {
 				var width = firemobilesimulator.common.pref
 						.copyUnicharPref("msim.devicelist." + deviceId + ".screen-width")
@@ -45,35 +45,35 @@ firemobilesimulator.contentHandler.common = {
 			}
 		}
 	},
-	
+
 	createAccessKeyFunction : function (keyNameArray) {
 		return function(e) {
-			if(this.activeElement && (this.activeElement.tagName == "INPUT" || this.activeElement.tagName == "TEXTAREA")){
-				dump("[msim]skip accesskey.\n")
-				return;
+			if (this.activeElement) {
+				var tagName = this.activeElement.tagName.toUpperCase();
+				if (tagName == "INPUT" || tagName == "TEXTAREA") {
+					dump("[msim]skip accesskey.\n");
+					return;
+				}
 			}
 
 			var anchorTags = this.getElementsByTagName("a");
-			for (var i = 0; i < anchorTags.length; i++) {
+			for (var i = 0, l = anchorTags.length; i < l; i++) {
 				var anchorTag = anchorTags[i];
 				var accesskey;
-				for (var j = 0; j < keyNameArray.length; j++) {
+				for (var j = 0, m = keyNameArray.length; j < m; j++) {
 					accesskey = anchorTag.getAttribute(keyNameArray[j]);
-					if(accesskey){
+					if (accesskey) {
 						break;
 					}
 				}
-				if (accesskey && accesskey.match(/^(\d|\*|\#)$/)) {
-					accesskey = accesskey.charCodeAt(0);
-					if (e.charCode == accesskey) {
-						anchorTag.focus();
-						var evt = document.createEvent("MouseEvents");
-						evt.initMouseEvent("click", true, true, window, 0,
-								0, 0, 0, 0, false, false, false, false, 0,
-								null);
-						anchorTag.dispatchEvent(evt);
-						break;
-					}
+				if (/^[\d*#]$/.test(accesskey) && e.charCode == accesskey.charCodeAt(0)) {
+					anchorTag.focus();
+					var evt = document.createEvent("MouseEvents");
+					evt.initMouseEvent("click", true, true, window, 0,
+							0, 0, 0, 0, false, false, false, false, 0,
+							null);
+					anchorTag.dispatchEvent(evt);
+					break;
 				}
 			}
 		};

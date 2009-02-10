@@ -18,9 +18,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 var firemobilesimulator;
-if(!firemobilesimulator) firemobilesimulator = {};
-if(!firemobilesimulator.common) firemobilesimulator.common = {};
-if(!firemobilesimulator.common.util) firemobilesimulator.common.util = {};
+if (!firemobilesimulator) firemobilesimulator = {};
+if (!firemobilesimulator.common) firemobilesimulator.common = {};
+if (!firemobilesimulator.common.util) firemobilesimulator.common.util = {};
 
 // Opens the URL in a new tab
 firemobilesimulator.common.util.openURL = function(url) {
@@ -136,19 +136,21 @@ firemobilesimulator.common.util.Point.prototype = {
 };
 
 /**
- * dms(時分秒)をdegree(度)に変換する
+ * dms(度分秒)をdegree(度)に変換する
  * @param {} dms
  * @return {}
  */
 firemobilesimulator.common.util.dms2degree = function(dms) {
-	if (!/[-+]?(\d+)\.(\d+)\.(\d+\.\d+)/.test(dms)) {
+	var m = /([-+]?)(\d+)\.(\d+)\.(\d+\.\d+)/.exec(dms);
+	//var m = /^([-+]?)(\d+)\.(\d+)\.(\d+\.\d+)$/.exec(dms);
+	if (!m) {
 		return null;
 	}
-	var dms1 = parseInt(RegExp.$1);
-	var dms2 = parseInt(RegExp.$2);
-	var dms3 = parseFloat(RegExp.$3);
-	var degree = dms1+dms2/60+dms3/3600;
-	return degree;
+	var dir  = m[1] == "-" ? -1 : 1;
+	var dms1 = parseInt(m[2], 10);
+	var dms2 = parseInt(m[3], 10);
+	var dms3 = parseFloat(m[4], 10);
+	return dir * (dms1 + dms2/60 + dms3/3600);
 };
 
 /**
@@ -212,8 +214,8 @@ firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
 		var webNav = httpChannel.notificationCallbacks
 				.getInterface(Components.interfaces.nsIWebNavigation);
 		var mainWindow = webNav.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-                   .rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                   .getInterface(Components.interfaces.nsIDOMWindow);
+				.rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIDOMWindow);
 
 		var gBrowser = mainWindow.getBrowser();
 		var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(targetDoc);
@@ -222,4 +224,4 @@ firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
 		}
 	}
 	return tab;
-}
+};

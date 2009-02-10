@@ -25,7 +25,7 @@ if (!firemobilesimulator.contentHandler)
 
 firemobilesimulator.contentHandler.softbank = {
 	filter : function (ndDocument, deviceId) {
-		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);		
+		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);
 		ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey", "directkey"]), false);
 	}
 };
