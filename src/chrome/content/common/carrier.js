@@ -126,7 +126,7 @@ firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) 
 		useragent = useragent + "(c" + cache + ";TB;W24H12)";
 	}else if (firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO].DOCOMO_MOVA == type1) {
 		//TODO /TB/WxxHxxの部分も動的に組み立てられるようにする
-		useragent = useragent + "/c" + cache + "/TB/W24H12)";
+		useragent = useragent + "/c" + cache + "/TB/W24H12";
 	}
 	//dump("[msim]DC UA:" + useragent + "\n");
 	return useragent;
