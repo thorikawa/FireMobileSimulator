@@ -57,22 +57,22 @@ firemobilesimulator.mpc.softbank.prototype = {
 		var re3 = /&#([0-9]{5});/g;
 		var _this = this;
 		//Unicodeの16進数値文字参照をimgタグ形式に変換
-		dump("SoftBank Unicode 16\n");
+		//dump("SoftBank Unicode 16\n");
 		str = str.replace(re2, function(whole, s1){
 			var sdec = _this.u2web(parseInt(s1,16));
 			if (sdec) {
-				dump("is SoftBank Pictogram:"+s1+"\n");
+				//dump("is SoftBank Pictogram:"+s1+"\n");
 				return _this.s_options_encode(sdec);
 			} else {
 				return whole;
 			}
 		});
 		//Unicodeの10進数値文字参照をimgタグ形式に変換
-		dump("SoftBank Unicode 10\n");
+		//dump("SoftBank Unicode 10\n");
 		str = str.replace(re3, function(whole, s1){
 			var sdec = _this.u2web(s1);
 			if (sdec) {
-				dump("is SoftBank Pictogram:"+s1+"\n");
+				//dump("is SoftBank Pictogram:"+s1+"\n");
 				return _this.s_options_encode(sdec);
 			}else {
 				return whole;
@@ -80,7 +80,7 @@ firemobilesimulator.mpc.softbank.prototype = {
 		});
 
 		// バイナリをimgタグ形式に変換
-		dump("[mpc]SoftBank binary match start\n");
+		//dump("[mpc]SoftBank binary match start\n");
 		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 		var r = "";
 		while (hexstrings.hasNextCharacter()) {

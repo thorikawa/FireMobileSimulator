@@ -40,7 +40,6 @@ firemobilesimulator.mpc.docomo.prototype = {
 	 * @return string
 	 */
 	convert : function(str) {
-		dump("[mpc]DoCoMo convert start.charset = "+this.charset+"\n");
 		//dump("[mpc]docomo convert start.charset = "+this.charset+"\n");
 
 		// 10進数値文字参照をバイナリに変換(絵文字以外も対象としてよし)
@@ -50,7 +49,7 @@ firemobilesimulator.mpc.docomo.prototype = {
 
 		// Unicodeの16進をSJIS文字コードに変換して、さらにバイナリマッチとやるのは面倒なので、
 		// いきなりimgタグに変換する
-		dump("[mpc]DoCoMo Unicode16match start\n");
+		//dump("[mpc]DoCoMo Unicode16match start\n");
 		//dump("[mpc]docomo Unicode16match start\n");
 		var re1 = /&#x([a-f0-9]{2})([a-f0-9]{2});/ig;
 		var _this = this;
@@ -72,7 +71,7 @@ firemobilesimulator.mpc.docomo.prototype = {
 		//TODO: Auから呼び出される場合は違う判定にすべきかどうか？
 		//TODO: 基本絵文字のみに限定する
 		if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
-			dump("[mpc]DoCoMo SJIS10match start\n");
+			//dump("[mpc]DoCoMo SJIS10match start\n");
 			//dump("[mpc]docomo SJIS10match start\n");
 			var regNumericReferenceDec = /&#([0-9]{5});/g;
 			str = str.replace(regNumericReferenceDec, function(whole, s1) {
@@ -91,7 +90,6 @@ firemobilesimulator.mpc.docomo.prototype = {
 		}
 
 		// バイナリをimgタグ形式に変換
-		dump("[mpc]DoCoMo binary match start\n");
 		//dump("[mpc]docomo binary match start\n");
 		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 		var r = "";
@@ -116,8 +114,7 @@ firemobilesimulator.mpc.docomo.prototype = {
 					}
 				}
 			} else {
-				dump("[mpc]DoCoMo Unknown charset [" + this.charset + "].\n");
-				//dump("[mpc]docomo Unknown charset [" + this.charset + "].\n");
+				dump("[mpc]docomo Unknown charset [" + this.charset + "].\n");
 				return str;
 			}
 		}

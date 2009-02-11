@@ -824,7 +824,7 @@ firemobilesimulator.mpc.ezweb.prototype = {
 	},
 
 	convert : function(str) {
-		dump("[mpc]Au convert start.charset = " + this.charset + "\n");
+		//dump("[mpc]Au convert start.charset = " + this.charset + "\n");
 
 		var _this = this;
 
@@ -838,16 +838,16 @@ firemobilesimulator.mpc.ezweb.prototype = {
 			var decs = [dec1, dec2];
 			if (_this.isPictogramSJISDecs(decs)) {
 				// decsはSJISの文字コード
-				dump("au SJIS 16 match\n");
+				//dump("au SJIS 16 match\n");
 				return _this
 						.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else if (_this.isPictogramUnicodeDecs(decs)) {
 				// decsはUnicode
-				dump("au Unicode 16 match\n");
+				//dump("au Unicode 16 match\n");
 				return _this
 						.e_options_encode(_this.getIconMapUnicode()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else {
-				dump("au 16 no match\n")
+				//dump("au 16 no match\n")
 				// return String.fromCharCode(dec1) + String.fromCharCode(dec2);
 				return whole;
 			}
@@ -855,7 +855,7 @@ firemobilesimulator.mpc.ezweb.prototype = {
 		// SJIS10進数値参照を、SJIS文字コードに変換
 		var re2 = /\&\#([0-9]{5});/g;
 		str = str.replace(re2, function(whole, s1) {
-			dump("[mpc]au regmatch10:" + s1 + "\n");
+			//dump("[mpc]au regmatch10:" + s1 + "\n");
 			var bin;
 			var sdec = parseInt(s1, 10);
 			var decs;
@@ -868,16 +868,16 @@ firemobilesimulator.mpc.ezweb.prototype = {
 			}
 			if (_this.isPictogramSJISDecs(decs)) {
 				// decsはSJISの文字コード
-				dump("au SJIS 10 match\n");
+				//dump("au SJIS 10 match\n");
 				return _this
 						.e_options_encode(_this.getIconMapSJIS()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else if (_this.isPictogramUnicodeDecs(decs)) {
 				// decsはUnicode
-				dump("au Unicode 10 match\n");
+				//dump("au Unicode 10 match\n");
 				return _this
 						.e_options_encode(_this.getIconMapUnicode()[firemobilesimulator.mpc.common.bits2dec(decs)]);
 			} else {
-				dump("au 10 no match\n");
+				//dump("au 10 no match\n");
 				// return String.fromCharCode(dec1) + String.fromCharCode(dec2);
 				return whole;
 			}
@@ -887,7 +887,7 @@ firemobilesimulator.mpc.ezweb.prototype = {
 		var r = "";
 		var hexstrings = new firemobilesimulator.mpc.common.HexStrings(firemobilesimulator.mpc.common.unpack(str), this.charset);
 
-		dump("[mpc]Au binary match start\n");
+		//dump("[mpc]Au binary match start\n");
 		while (hexstrings.hasNextCharacter()) {
 			var decs = hexstrings.getNextCharacterDecs();
 			// 絵文字変換処理
