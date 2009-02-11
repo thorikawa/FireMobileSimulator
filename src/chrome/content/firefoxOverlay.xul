@@ -72,7 +72,7 @@
 		<statusbarpanel
 			class="msim-status-panel"
 			id="msim-status-panel"
-			onmousedown=';'
+			popup="msim-popup-status"
 			context="msim-popup-status"
 			status="enabled">
 			<image id="msim-status-image" />

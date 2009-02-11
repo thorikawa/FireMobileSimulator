@@ -16,7 +16,8 @@
 			</rows>
 		</grid>
 	</groupbox>
-
+	
+	<!--
 	<groupbox>
 		<caption label="&msim.options.general.quit.label;"/>
 		<grid>
@@ -27,6 +28,7 @@
 			</rows>
 		</grid>
 	</groupbox>
+	-->
 
 	<separator/>
 	<hbox>

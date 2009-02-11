@@ -109,8 +109,8 @@ firemobilesimulator.options.initializeGeneral = function() {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	pageDocument.getElementById("msim-checkbox-general-force-screen-width").checked = firemobilesimulator.common.pref
 			.getBoolPref("msim.config.general.force-screen-width");
-	pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked = firemobilesimulator.common.pref
-			.getBoolPref("msim.config.general.reset-device-onquit");
+	//pageDocument.getElementById("msim-checkbox-general-reset-device-onquit").checked = firemobilesimulator.common.pref
+	//		.getBoolPref("msim.config.general.reset-device-onquit");
 };
 
 // Initializes the general page
@@ -212,9 +212,8 @@ firemobilesimulator.options.storeOptions = function() {
 		dump("[msim]store general.\n");
 		firemobilesimulator.options.optionsDataBoolean["msim.config.general.force-screen-width"] = pageDocument
 				.getElementById("msim-checkbox-general-force-screen-width").checked;
-		firemobilesimulator.options.optionsDataBoolean["msim.config.general.reset-device-onquit"] = pageDocument
-				.getElementById("msim-checkbox-general-reset-device-onquit").checked;
-		// Nothing to do
+		//firemobilesimulator.options.optionsDataBoolean["msim.config.general.reset-device-onquit"] = pageDocument
+		//		.getElementById("msim-checkbox-general-reset-device-onquit").checked;
 	} else if (iFrameSrc.indexOf("idno") != -1) {
 		dump("[msim]store idno.\n");
 		firemobilesimulator.options.optionsDataString["msim.config.DC.uid"] = pageDocument

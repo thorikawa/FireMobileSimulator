@@ -76,23 +76,19 @@ MsimStreamConverter.prototype.onStartRequest = function(aRequest, aContext) {
 // This is RequestObserver's method
 MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 		aStatusCode) {
-	dump("[msim]onStopRequest\n");
+	//dump("[msim]onStopRequest\n");
 
 	var id = null;
 	var tab = firemobilesimulator.common.util.getTabFromHttpChannel(this.channel);
-	dump(tab+"\n");
 	if (tab) {
-		dump("getTabId\n");
-		//id = tab.getAttribute("firemobilesimulator-device-id");
 		var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
 		id = ss.getTabValue(tab, "firemobilesimulator-device-id");
-		dump("["+id+"]\n");
 	}
 	var pref_prefix = "msim.devicelist." + id;
 	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
 
 	//絵文字変換
-	dump("[msim]convert pictogram in msimStreamConverter.js\n");
+	//dump("[msim]convert pictogram in msimStreamConverter.js\n");
 	var mpc = firemobilesimulator.mpc.factory(carrier);
 	mpc.setImagePath("chrome://msim/content/emoji");
 
@@ -114,14 +110,14 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 	mpc.charset = mpccharset;
 
 	if (firemobilesimulator.common.carrier.AU == carrier) {
-		dump("[msim]convertPictogram for AU\n");
+		//dump("[msim]convertPictogram for AU\n");
 		this.data = mpc.convert(this.data);
 		var mpc2 = firemobilesimulator.mpc.factory(firemobilesimulator.common.carrier.DOCOMO);
 		mpc2.setImagePath("chrome://msim/content/emoji");
 		mpc2.charset = mpccharset;
 		this.data = mpc2.convert(this.data);
 	} else if (carrier) {
-		dump("[msim]convertPictogram for DoCoMo or SoftBank\n");
+		//dump("[msim]convertPictogram for DoCoMo or SoftBank\n");
 		//dump("[msim]convertPictogram for docomo or SoftBank\n");
 		this.data = mpc.convert(this.data);
 	}
@@ -140,7 +136,7 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 // nsIStreamListener methods
 MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 		aInputStream, aOffset, aCount) {
-	dump("[msim]onDataAvailable\n");
+	//dump("[msim]onDataAvailable\n");
 	var si = Cc["@mozilla.org/scriptableinputstream;1"].createInstance();
 	si = si.QueryInterface(Ci.nsIScriptableInputStream);
 	si.init(aInputStream);
@@ -151,13 +147,12 @@ MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 		if (/^<\?xml(?:\s[^>]*?)?\sencoding\s*=\s*["']([^"']*)|<meta(?:\s[^>]*?)?\s(?:http-equiv\s*=\s*(["']?)content-type\2(?:\s[^>]*?)?\scontent\s*=\s*["']?[^;]+(?:;[^;=]+(?:=\s*[^\s;]*)?)*?;\s*charset\s*=\s*([^"'\s;<>]+)|content\s*=\s*(["']?)[^;]+(?:;[^;=]+(?:=\s*[^\s;]*)?)*?;\s*charset\s*=\s*([^"'\s;<>]+)[^"']*?\4(?:\s[^>]*?)?\shttp-equiv\s*=\s*(["']?)content-type\6)/i.test(data)) {
 			m = RegExp.$1 || RegExp.$3 || RegExp.$5;
 			this.charset = m;
-			dump("[msim]guessed charset is " + m + "\n");
+			//dump("[msim]guessed charset is " + m + "\n");
 		} else {
 			dump("[msim]No encoding match found");
 		}
 	} else {
-		dump("[msim]Already got charset: " + this.charset
-				+ "\n");
+		//dump("[msim]Already got charset: " + this.charset + "\n");
 	}
 
 	this.data += data;
@@ -167,7 +162,7 @@ MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 // old name (before bug 242184)...
 MsimStreamConverter.prototype.AsyncConvertData = function(aFromType, aToType,
 		aListener, aCtxt) {
-	dump("[msim]AsyncConvertData\n");
+	//dump("[msim]AsyncConvertData\n");
 	this.asyncConvertData(aFromType, aToType, aListener, aCtxt);
 };
 

@@ -83,10 +83,10 @@ firemobilesimulator.overlay.onUnload = function() {
 
 	dump("[msim]windowcount:" + windowCount.toString() + "\n");
 	if (windowCount == 0) {
-		var resetOnQuit = firemobilesimulator.common.pref
-				.getBoolPref("msim.config.general.reset-device-onquit");
-		if (resetOnQuit)
-			firemobilesimulator.core.resetDevice();
+		//完全終了時
+		//var resetOnQuit = firemobilesimulator.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
+		//if (resetOnQuit)
+		//	firemobilesimulator.core.resetDevice();
 	}
 
 	try {
@@ -134,7 +134,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	var currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
 	var currentMenu = document.getElementById("msim-default-" + suffix);
-	if (currentId) {
+	if (currentÎd) {
 		currentMenu = document.getElementById("msim-device-" + suffix + "-" + currentId);
 	}
 	currentMenu.setAttribute("checked", true);
@@ -247,11 +247,24 @@ firemobilesimulator.overlay.rewrite = function () {
 
 	var statusImage = document.getElementById("msim-status-image");
 	var statusLabel = document.getElementById("msim-status-label");
+	var msimButton = document.getElementById("msim-button");
+	var menu = document.getElementById("msim-menu");
+	var target = [msimButton, menu];
 	
 	if (id) {
+		target.forEach(function(item) {
+			if (item) {
+				item.setAttribute("device", "on");
+			}
+		});
 		statusImage.setAttribute("device", "on")
 	} else {
-		statusImage.setAttribute("device", "off")
+		target.forEach(function(item) {
+			if (item) {
+				item.removeAttribute("device");
+			}
+		});
+		statusImage.removeAttribute("device")
 	}
 	statusLabel.setAttribute("value", name);
 }

@@ -25,7 +25,8 @@ if (!firemobilesimulator.core)
 
 firemobilesimulator.core.resetDevice = function(e) {
     var tab = gBrowser.selectedTab; 
-    tab.setAttribute("firemobilesimulator-device-id", null); 
+	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+	ss.setTabValue(tab, "firemobilesimulator-device-id", null);
     firemobilesimulator.overlay.rewrite();
 };
 
@@ -38,7 +39,6 @@ firemobilesimulator.core.setDevice = function(id) {
 	}
 
 	var tab = gBrowser.selectedTab; 
-	//tab.setAttribute("firemobilesimulator-device-id", id);
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	ss.setTabValue(tab, "firemobilesimulator-device-id", id);
 
@@ -84,6 +84,10 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
 };
 
+/**
+ * @deprecated
+ * @see firemobilesimulator.overlay.rewrite
+ */
 firemobilesimulator.core.updateIcon = function() {
 	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator)
