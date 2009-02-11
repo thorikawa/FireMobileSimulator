@@ -51,7 +51,9 @@ myHTTPListener.prototype = {
 		var id = null;
 		var tab = firemobilesimulator.common.util.getTabFromHttpChannel(httpChannel);
 		if (tab) {
-			id = tab.getAttribute("firemobilesimulator-device-id");
+			//id = tab.getAttribute("firemobilesimulator-device-id");
+			var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
+			id = ss.getTabValue(tab, "firemobilesimulator-device-id");
 		}
 		if (id) {
 			var pref_prefix = "msim.devicelist." + id;

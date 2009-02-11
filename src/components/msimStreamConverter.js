@@ -19,6 +19,9 @@
 
 /* components defined in this file */
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
 const MSIMSTREAM_CONVERT_CONVERSION = "?from=text/msim.html&to=*/*";
 const MSIMSTREAM_CONVERTER_CONTRACTID = "@mozilla.org/streamconv;1"
 		+ MSIMSTREAM_CONVERT_CONVERSION;
@@ -40,19 +43,18 @@ jsLoader.loadSubScript("chrome://msim/content/common/util.js");
 
 /* text/msim.html -> text/html stream converter */
 function MsimStreamConverter() {
-	this.logger = Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService);
+	this.logger = Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
 }
 
 MsimStreamConverter.prototype.QueryInterface = function(iid) {
 
-	if (iid.equals(Components.interfaces.nsISupports)
-			|| iid.equals(Components.interfaces.nsIStreamConverter)
-			|| iid.equals(Components.interfaces.nsIStreamListener)
-			|| iid.equals(Components.interfaces.nsIRequestObserver))
+	if (iid.equals(Ci.nsISupports)
+			|| iid.equals(Ci.nsIStreamConverter)
+			|| iid.equals(Ci.nsIStreamListener)
+			|| iid.equals(Ci.nsIRequestObserver))
 		return this;
 
-	throw Components.results.NS_ERROR_NO_INTERFACE;
+	throw Cr.NS_ERROR_NO_INTERFACE;
 
 };
 
@@ -60,11 +62,11 @@ MsimStreamConverter.prototype.QueryInterface = function(iid) {
 MsimStreamConverter.prototype.onStartRequest = function(aRequest, aContext) {
 	dump("[msim]onStartRequest\n");
 	this.data = "";
-	this.uri = aRequest.QueryInterface(Components.interfaces.nsIChannel).URI.spec;
+	this.uri = aRequest.QueryInterface(Ci.nsIChannel).URI.spec;
 
 	// Sets the charset if it is available. (For documents loaded from the
 	// filesystem, this is not set.)
-	this.charset = aRequest.QueryInterface(Components.interfaces.nsIChannel).contentCharset;
+	this.charset = aRequest.QueryInterface(Ci.nsIChannel).contentCharset;
 	this.channel = aRequest;
 	this.channel.contentType = "text/html";
 
@@ -81,7 +83,9 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 	dump(tab+"\n");
 	if (tab) {
 		dump("getTabId\n");
-		id = tab.getAttribute("firemobilesimulator-device-id");
+		//id = tab.getAttribute("firemobilesimulator-device-id");
+		var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
+		id = ss.getTabValue(tab, "firemobilesimulator-device-id");
 		dump("["+id+"]\n");
 	}
 	var pref_prefix = "msim.devicelist." + id;
@@ -122,8 +126,7 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 		this.data = mpc.convert(this.data);
 	}
 
-	var sis = Components.classes["@mozilla.org/io/string-input-stream;1"]
-			.createInstance(Components.interfaces.nsIStringInputStream);
+	var sis = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
 	sis.setData(this.data, this.data.length);
 
 	// Pass the data to the main content listener
@@ -138,9 +141,8 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 		aInputStream, aOffset, aCount) {
 	dump("[msim]onDataAvailable\n");
-	var si = Components.classes["@mozilla.org/scriptableinputstream;1"]
-			.createInstance();
-	si = si.QueryInterface(Components.interfaces.nsIScriptableInputStream);
+	var si = Cc["@mozilla.org/scriptableinputstream;1"].createInstance();
+	si = si.QueryInterface(Ci.nsIScriptableInputStream);
 	si.init(aInputStream);
 	var data = si.read(aCount);
 
@@ -193,7 +195,7 @@ var MsimStreamConverterFactory = new Object();
 
 MsimStreamConverterFactory.createInstance = function(outer, iid) {
 	if (outer != null)
-		throw Components.results.NS_ERROR_NO_AGGREGATION;
+		throw Cr.NS_ERROR_NO_AGGREGATION;
 
 	if (iid.equals(Components.interfaces.nsISupports)
 			|| iid.equals(Components.interfaces.nsIStreamConverter)

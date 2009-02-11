@@ -68,4 +68,27 @@
 		</toolbarbutton>
 	</toolbarpalette>
 
+	<statusbar id="status-bar">
+		<statusbarpanel
+			class="msim-status-panel"
+			id="msim-status-panel"
+			onmousedown=';'
+			context="msim-popup-status"
+			status="enabled">
+			<image id="msim-status-image" />
+			<label id="msim-status-label" value="" />
+		</statusbarpanel>
+	</statusbar>
+
+	<popupset>
+		<menupopup id="msim-popup-status" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'status');">
+			<menuitem id="msim-default-status" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
+			<menuitem id="msim-options-status" accesskey="&msim.menu.options.accesskey;" label="&msim.menu.options.label;" oncommand="firemobilesimulator.overlay.openOptions();"/>
+			<menuitem id="msim-devicedb-status" accesskey="&msim.menu.devicedb.accesskey;" label="&msim.menu.devicedb.label;" oncommand="firemobilesimulator.overlay.openDeviceDB();"/>
+			<menuseparator id="msim-separator1-status"/>
+			<menuseparator id="msim-separator2-status"/>
+			<menuitem id="msim-about-status" accesskey="&msim.menu.about.accesskey;" label="&msim.menu.about.label;" oncommand="firemobilesimulator.overlay.openAbout();"/>
+		</menupopup>
+	</popupset>
+
 </overlay>

@@ -208,9 +208,17 @@ firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
 	if (httpChannel.notificationCallbacks) {
 		var interfaceRequestor = httpChannel.notificationCallbacks
 				.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
-		var targetDoc = interfaceRequestor
-				.getInterface(Components.interfaces.nsIDOMWindow).document;
-
+		try {
+			var targetDoc = interfaceRequestor
+					.getInterface(Components.interfaces.nsIDOMWindow).document;
+		} catch (e) {
+			//dump("[msim]can't get targetDoc\n");
+			//dump(e.result+"\n");
+			//dump(e.name+"\n");
+			//dump(e.message+"\n");
+			//dump(e.location+"\n");
+			return;
+		}
 		var webNav = httpChannel.notificationCallbacks
 				.getInterface(Components.interfaces.nsIWebNavigation);
 		var mainWindow = webNav.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
