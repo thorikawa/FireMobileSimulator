@@ -134,7 +134,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	var currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
 	var currentMenu = document.getElementById("msim-default-" + suffix);
-	if (currentÎd) {
+	if (currentId) {
 		currentMenu = document.getElementById("msim-device-" + suffix + "-" + currentId);
 	}
 	currentMenu.setAttribute("checked", true);
