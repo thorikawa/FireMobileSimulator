@@ -130,7 +130,7 @@ firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 		menuItem.setAttribute("name", "devicelist");
 	}
 
-	var tab = gBrowser.selectedTab; 
+	var tab = gBrowser.selectedTab;
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	var currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
 	var currentMenu = document.getElementById("msim-default-" + suffix);
@@ -237,7 +237,7 @@ firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
 };
 
 firemobilesimulator.overlay.rewrite = function () {
-	var tab = gBrowser.selectedTab; 
+	var tab = gBrowser.selectedTab;
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	//var id = tab.getAttribute("firemobilesimulator-device-id");
 	var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
@@ -250,24 +250,24 @@ firemobilesimulator.overlay.rewrite = function () {
 	var msimButton = document.getElementById("msim-button");
 	var menu = document.getElementById("msim-menu");
 	var target = [msimButton, menu];
-	
+
 	if (id) {
 		target.forEach(function(item) {
 			if (item) {
 				item.setAttribute("device", "on");
 			}
 		});
-		statusImage.setAttribute("device", "on")
+		statusImage.setAttribute("device", "on");
 	} else {
 		target.forEach(function(item) {
 			if (item) {
 				item.removeAttribute("device");
 			}
 		});
-		statusImage.removeAttribute("device")
+		statusImage.removeAttribute("device");
 	}
 	statusLabel.setAttribute("value", name);
-}
+};
 /*
  * firemobilesimulator.overlay.onInitialize = function(e) {
  * firemobilesimulator.overlay.onInitialize(e); };

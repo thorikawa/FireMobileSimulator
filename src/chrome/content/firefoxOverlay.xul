@@ -75,8 +75,8 @@
 			popup="msim-popup-status"
 			context="msim-popup-status"
 			status="enabled">
-			<image id="msim-status-image" />
-			<label id="msim-status-label" value="" />
+			<image id="msim-status-image"/>
+			<label id="msim-status-label" value=""/>
 		</statusbarpanel>
 	</statusbar>
 
