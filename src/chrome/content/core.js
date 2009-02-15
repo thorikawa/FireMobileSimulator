@@ -24,7 +24,8 @@ if (!firemobilesimulator.core)
 	firemobilesimulator.core = {};
 
 firemobilesimulator.core.resetDevice = function(e) {
-	var tab = gBrowser.selectedTab;
+	var browser = gBrowser || parent.gBrowser;
+	var tab = browser.selectedTab;
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 	ss.setTabValue(tab, "firemobilesimulator-device-id", null);
 	firemobilesimulator.overlay.rewrite();
@@ -91,12 +92,13 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
 		var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
 		dump("getId:"+id+"\n");
-		if (id > deleteId) {
+		if (id > deletedId) {
 			ss.setTabValue(tab, "firemobilesimulator-device-id", id-1);
-		}else if (id == deleteId) {
+		}else if (id == deletedId) {
 			ss.setTabValue(tab, "firemobilesimulator-device-id", null);
 		}
 	}
+	parent.firemobilesimulator.overlay.rewrite();
 }
 
 };
