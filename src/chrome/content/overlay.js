@@ -100,7 +100,6 @@ firemobilesimulator.overlay.onUnload = function() {
 
 firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
 	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
-	//dump(optionsSeparator);
 
 	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
 					"msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
@@ -239,7 +238,6 @@ firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
 firemobilesimulator.overlay.rewrite = function () {
 	var tab = gBrowser.selectedTab;
 	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-	//var id = tab.getAttribute("firemobilesimulator-device-id");
 	var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
 	var pref_prefix = "msim.devicelist." + id;
 	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
@@ -276,10 +274,9 @@ firemobilesimulator.overlay.rewrite = function () {
  * firemobilesimulator.overlay.onUnload(e); };
  */
 
-window.addEventListener("load", firemobilesimulator.overlay.onInitialize,
-				false);
+window.addEventListener("load", firemobilesimulator.overlay.onInitialize, false);
 window.addEventListener("unload", firemobilesimulator.overlay.onUnload, false);
-document.addEventListener("SSTabRestoring", function(evt) {
+document.addEventListener("SSTabRestoring", function (e) {
 	firemobilesimulator.overlay.rewrite();
 }, false);
 

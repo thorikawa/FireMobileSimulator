@@ -52,11 +52,6 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
 	});
 
-	// 既に使われている端末だったら設定をリセット
-	if (firemobilesimulator.common.pref.copyUnicharPref("msim.current.id") == deletedId) {
-		firemobilesimulator.core.resetDevice();
-	}
-
 	// 各端末のidを再計算
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	for (let i=deletedId+1; i<=count; i++) {
@@ -82,6 +77,28 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 		});
 	}
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
+	
+	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Components.interfaces.nsIWindowMediator)
+			.getEnumerator("navigator:browser");
+	while (windowEnumeration.hasMoreElements()) {
+		var win = windowEnumeration.getNext();
+		var tabCount = win.getBrowser().browsers.length;
+		dump("tabCount:"+tabCount+"\n");
+		for (var i=0; i<tabCount; i++) {
+			//var tab = win.getBrowser().getBrowserAtIndex(i);
+			var tab = win.getBrowser().tabContainer.childNodes[i];
+		var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+		var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+		dump("getId:"+id+"\n");
+		if (id > deleteId) {
+			ss.setTabValue(tab, "firemobilesimulator-device-id", id-1);
+		}else if (id == deleteId) {
+			ss.setTabValue(tab, "firemobilesimulator-device-id", null);
+		}
+	}
+}
+
 };
 
 /**

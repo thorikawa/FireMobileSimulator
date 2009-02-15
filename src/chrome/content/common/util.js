@@ -205,19 +205,42 @@ firemobilesimulator.common.util.getHiddenTag = function(params) {
 
 firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
 	var tab = null;
-	if (httpChannel.notificationCallbacks) {
-		var interfaceRequestor = httpChannel.notificationCallbacks
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+	var callbacks = httpChannel.notificationCallbacks;
+	if (callbacks) {
+		if (callbacks instanceof Components.interfaces.nsIXMLHttpRequest) {
+			//dump("&&&&&[msim]is XMLHttpRequest.\n");
+			//var ch = callbacks.channel;
+			//dump("uri:"+ch.URI.asciiSpec+"\n");
+			return null;
+		}
+
+		/*
+		if (!(callbacks instanceof Components.interfaces.nsIDocShell)) {
+			dump("#####[msim]isn't docShell.\n");
+			dump(callbacks+"\n");
+			dump("uri:"+httpChannel.URI.asciiSpec+"\n");
+			return null;
+		}else {
+			dump("$$$$$[msim]is docShell.\n");
+			dump(callbacks+"\n");
+			dump("uri:"+httpChannel.URI.asciiSpec+"\n");
+		}
+		*/
+
+		var interfaceRequestor = callbacks.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+		var docShell = null;
 		try {
+			docShell = interfaceRequestor.getInterface(Components.interfaces.nsIDocShell);
 			var targetDoc = interfaceRequestor
 					.getInterface(Components.interfaces.nsIDOMWindow).document;
+			//dump("docShell:"+docShell+"\n");
+			//dump("docShell's URI:"+docShell.currentURI.asciiSpec+"\n")
 		} catch (e) {
-			//dump("[msim]can't get targetDoc\n");
-			//dump(e.result+"\n");
-			//dump(e.name+"\n");
-			//dump(e.message+"\n");
-			//dump(e.location+"\n");
-			return;
+			//fav.iconとか<link rel=prefetch>のリクエストの場合、getInterfaceできない模様
+			//dump("if:"+interfaceRequestor+"\n");
+			dump("[msim][Error]"+e+"\n");
+			dump("[msim]targetURI:"+httpChannel.URI.asciiSpec+"\n");
+			return null;
 		}
 		var webNav = httpChannel.notificationCallbacks
 				.getInterface(Components.interfaces.nsIWebNavigation);
@@ -228,6 +251,7 @@ firemobilesimulator.common.util.getTabFromHttpChannel = function (httpChannel) {
 		var gBrowser = mainWindow.getBrowser();
 		var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(targetDoc);
 		if (targetBrowserIndex != -1) {
+			//dump("get tab info.index:"+targetBrowserIndex+"\n");
 			tab = gBrowser.tabContainer.childNodes[targetBrowserIndex];
 		}
 	}
