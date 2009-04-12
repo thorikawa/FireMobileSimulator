@@ -115,9 +115,8 @@ myHTTPListener.prototype = {
 					var parts = as.split("?");
 					var params = {};
 					if (parts.length == 2) {
-						var values = parts[1].split("&");
-						params = firemobilesimulator.common.util
-								.getParamsFromQuery(parts[1]);
+						var sharps = parts[1].split('#');
+						var values = sharps.shift().split("&");
 
 						if (uri.scheme != "https") {
 							// HTTPSではUID送信とiモードID送信は行わない
@@ -137,7 +136,7 @@ myHTTPListener.prototype = {
 								return value;
 							});
 						}
-						qs = values.join("&");
+						qs = new Array(values.join("&")).concat(sharps).join('#');
 						as = parts[0] + "?" + qs;
 					}
 
