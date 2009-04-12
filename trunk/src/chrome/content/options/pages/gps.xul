@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://msim/skin/options.css" type="text/css"?>
+
+<!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
+
+<page onload="parent.firemobilesimulator.options.initializeOptions()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<groupbox>
+		<caption label="DoCoMo"/>
+		<!--caption label="NTT docomo"/-->
+		<grid>
+			<rows id="msim.options.gps.docomo.rows">
+				<row align="center">
+					<label control="msim-textbox-docomo-gps-areacode" value="エリアコード" style="width:120px"/>
+					<textbox id="msim-textbox-docomo-gps-areacode" value="" size="30"/>
+				</row>
+				<row align="center">
+					<label control="msim-textbox-docomo-gps-areaname" value="エリア名"/>
+					<textbox id="msim-textbox-docomo-gps-areaname" value="" size="30"/>
+				</row>
+				<row align="center">
+					<label control="msim-textbox-docomo-gps-lat" value="緯度"/>
+					<textbox id="msim-textbox-docomo-gps-lat" value="" size="30"/>
+				</row>
+				<row align="center">
+					<label control="msim-textbox-docomo-gps-lon" value="経度"/>
+					<textbox id="msim-textbox-docomo-gps-lon" value="" size="30"/>
+				</row>
+				<row align="center">
+					<label control="msim-textbox-docomo-gps-alt" value="高度"/>
+					<textbox id="msim-textbox-docomo-gps-alt" value="" size="30"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<groupbox>
+		<caption label="Au"/>
+		<!--caption label="au"/-->
+		<grid>
+			<rows>
+				<row align="center">
+					<label control="msim-textbox-au-gps-lat" value="緯度" style="width:120px"/>
+					<textbox id="msim-textbox-au-gps-lat" value="" size="30"/>
+				</row>
+				<row align="center">
+					<label control="msim-textbox-au-gps-lon" value="経度"/>
+					<textbox id="msim-textbox-au-gps-lon" value="" size="30"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+<!--
+	<groupbox>
+		<caption label="SoftBank"/>
+		<grid>
+			<rows>
+			</rows>
+		</grid>
+	</groupbox>
+-->
+
+	<separator/>
+	<hbox>
+		<spacer flex="1"/>
+	</hbox>
+</page>

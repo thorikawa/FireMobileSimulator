@@ -1,0 +1,29 @@
+<html>
+<head>
+	<script type="text/javascript" src="../src/chrome/content/common/carrier.js"></script>
+	<script type="text/javascript" src="../src/chrome/content/mpc/common.js"></script>
+	<script type="text/javascript" src="../src/chrome/content/mpc/docomo.js"></script>
+	<script type="text/javascript" src="../src/chrome/content/mpc/softbank.js"></script>
+	<script type="text/javascript" src="../src/chrome/content/mpc/ezweb.js"></script>
+	<script type="text/javascript" src="../src/chrome/content/mpc.js"></script>
+</head>
+<body onload="a();">
+<h3>Au Unicode16進数値参照で絵文字を表記する</h3>
+<script type="text/javascript">
+function a(){
+	var emojis = ["あ&#xE488;い", "a&#xE481;b", "test&#xE511;emoji"];
+
+	var carrier = AU;
+	var mpc = firemobilesimulator.mpc.factory(carrier);
+	mpc.setImagePath("../src/chrome/content/emoji");
+	mpc.charset = firemobilesimulator.mpc.common.MPC_UTF8;
+
+	emojis.forEach(function (emoji) {
+		document.write(emoji+":");
+		document.write(mpc.convert(emoji));
+		document.write("<br/>");
+	});
+}
+</script>
+</body>
+</html>

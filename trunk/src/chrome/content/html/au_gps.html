@@ -1,0 +1,24 @@
+<html>
+<head>
+<script type="text/javascript" src="chrome://msim/content/common/pref.js"></script>
+<script type="text/javascript" src="chrome://msim/content/common/util.js"></script>
+<script type="text/javascript" src="chrome://msim/content/html/au_gps.js"></script>
+<script type="text/javascript">
+	window.onload=
+	function init(){
+		var params = firemobilesimulator.common.util.getParamsFromPath(location.href);
+		firemobilesimulator.auLocationInit(params);
+	};
+</script>
+</head>
+<body>
+<div id="au_location_body">
+<div>GPS情報通知します</div>
+<div>よろしいですか？</div>
+<div><input type="button" id="okbutton" value="はい"></div>
+<div><input type="button" id="ngbutton" value="いいえ"></div>
+<!--未実装の為コメントアウト-->
+<!--<div>※本確認画面が不要な場合はGPS情報通知設定をON(確認画面なし)に設定してください</div>-->
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<html>
+<head>
+<script type="text/javascript" src="chrome://msim/content/common/pref.js"></script>
+<script type="text/javascript" src="chrome://msim/content/common/util.js"></script>
+<script type="text/javascript" src="dc_openiarea.js"></script>
+<script type="text/javascript">
+	window.onload=
+	function init(){
+		var params = firemobilesimulator.common.util.getParamsFromPath(location.href);
+		firemobilesimulator.openiareaInit(params);
+	};
+</script>
+</head>
+<body>
+<div id="firemobilesimulator-openiarea-body"></div>
+<div>※情報を送信しない場合はバックボタンで戻ってください。</div>
+<div><a href="#">ご利用にあたって</a></div>
+<hr>
+<div align="center">NTT docomo</div>
+</body>
+</html>

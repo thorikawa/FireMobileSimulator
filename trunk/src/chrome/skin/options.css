@@ -1,0 +1,13 @@
+@import url("chrome://global/skin/");
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#msim-options-dialog
+{
+    height: 35em !important;
+    width: 50em !important;
+}
+
+#msim-page-list
+{
+    width: 10em !important;
+}

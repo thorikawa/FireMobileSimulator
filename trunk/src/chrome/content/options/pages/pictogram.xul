@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://msim/skin/options.css" type="text/css"?>
+
+<!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
+
+<page onload="parent.firemobilesimulator.options.initializeOptions()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<groupbox>
+		<caption label="DoCoMo"/>
+		<!--caption label="NTT docomo"/-->
+		<grid>
+			<rows id="msim.options.pictogram.docomo.rows">
+				<row align="center">
+					<checkbox id="msim-textbox-docomo-pictogram-enabled" label="絵文字をimgタグに変換する"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<groupbox>
+		<caption label="Au"/>
+		<!--caption label="au"/-->
+		<grid>
+			<rows>
+				<row align="center">
+					<checkbox id="msim-textbox-au-pictogram-enabled" label="絵文字をimgタグに変換する"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<groupbox>
+		<caption label="SoftBank"/>
+		<grid>
+			<rows>
+				<row align="center">
+					<checkbox id="msim-textbox-softbank-pictogram-enabled" label="絵文字をimgタグに変換する"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<separator/>
+	<hbox>
+		<spacer flex="1"/>
+	</hbox>
+</page>

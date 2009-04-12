@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>FireMobileSimulator:端末追加</title>
+	<script type="text/javascript;version=1.7" src="chrome://msim/content/core.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/common/pref.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/common/carrier.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/ext-all.js"></script>
+	<script type="text/javascript" src="chrome://msim/content/ext-2.2/source/locale/ext-lang-ja.js"></script>
+	<script type="text/javascript" src="device_add.js"></script>
+	<link rel="stylesheet" type="text/css" href="chrome://msim/content/ext-2.2/resources/css/ext-all.css">
+	<style type="text/css">
+#tf-cmp{
+	-moz-border-top-colors: #5F5F5F #CFCFCF -moz-Field;
+	-moz-border-bottom-colors: #9F9F9F #EEE -moz-Field;
+	-moz-border-right-colors: #7F7F7F #EEE -moz-Field;
+	-moz-border-left-colors: #7F7F7F #EFEFEF -moz-Field;
+	-moz-border-radius: 11.5px;
+	background: url("chrome://global/skin/icons/search-textbox.png") -moz-Field no-repeat right center;
+	-moz-background-clip: border !important;
+}
+
+.x-btn-center button{
+	border: 1px solid gray !important;
+	background-color: #eeeeee;
+	color: black;
+	-moz-border-radius: 5px;
+}
+
+.add-button button{
+	background-color: #ccccee !important;
+}
+
+body{
+	font-family: arial,tahoma,helvetica,sans-serif;
+	font-size: small;
+	font-size-adjust: none;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: normal;
+	padding-left: 20px;
+}
+
+.explanation{
+	line-height: 1.5em;
+	font-size: small;
+	margin-top: 10px;
+}
+.explanation ol{
+	padding-left: 25px;
+	list-style-type: decimal;
+}
+.explanation .notice{
+	font-size: x-small;
+}
+
+.head{
+	font-weight: bold;
+	background-color: white;
+	color: gray;
+	text-align: left;
+	font-size: 20pt;
+	margin-top: 1px;
+}
+
+.large{
+	font-size: 30pt;
+}
+
+.registered-row .x-grid3-cell-inner{
+	background-color: gray;
+}
+
+.registered-row .x-grid3-row-checker{
+	background-image: none;
+}
+	</style>
+</head>
+<body>
+<div class="head"><span class="large">FireMobileSimulator</span> : 端末追加</div>
+<div style="font-size:large;">FireMobileSimulatorに任意の端末を追加することができます。</div>
+<div class="explanation">
+	<span id="explanation1_hide" style="color:navy;text-decoration:underline;">▶追加方法</span>
+	<div id="explanation1_show">
+	<span style="color:navy;text-decoration:underline;">▼追加方法</span>
+		<ol>
+			<li>下の表から追加したい端末を選びます。</li>
+			<li>追加したい端末の行をクリックします。
+				<div class="notice">※グレーの端末は既に登録済の端末です</div>
+				<div class="notice">※一度に登録可能な端末は30件までです</div>
+			</li>
+			<li>「選択した端末を追加」のボタンをクリックします。</li>
+			<li>登録完了のダイアログが表示されれば完了です。</li>
+		</ol>
+	</div>
+</div>
+<div class="explanation">
+	<span id="explanation2_hide">
+		<span style="color:navy;text-decoration:underline;">▶追加したい端末が存在しない場合</span>
+	</span>
+	<div id="explanation2_show">
+		<span style="color:navy;text-decoration:underline;">▼追加したい端末が存在しない場合</span>
+		<ol>
+			<li>端末をお持ちの場合は、ke-tai.orgが提供している<a href="http://ke-tai.org/moblist/wizard.php">端末登録ウィザード</a><span id="qrcode">（<a href="#">QRコード</a>）</span>に端末からアクセスし、登録作業を行ってください。</li>
+			<li>端末をお持ちでない場合や、端末情報を編集したい場合は、PCで<a href="http://ke-tai.org/moblist/">端末スペック一覧</a>にアクセスして編集を行ってください。</li>
+		</ol>
+		<div class="notice">※その他端末スペック一覧の詳細については<a href="http://ke-tai.org/index.php?%B7%C8%C2%D3%C3%BC%CB%F6%A5%B9%A5%DA%A5%C3%A5%AF%B0%EC%CD%F7">ke-tai.org Wikiの「端末スペック一覧について」</a>を参照してください。</div>
+	</div>
+</div>
+<div id="grid-device" style="overflow:hidden;margin-top:10px;"></div>
+<hr>
+<div style="color: blue;"><a href="http://d.hatena.ne.jp/thorikawa/" target="_blank">&copy;Takahiro Horikawa</a>&nbsp;&nbsp;<span style="color:black;"> mailto:<a href="mailto:horikawa.takahiro@gmail.com">horikawa.takahiro@gmail.com</a></span></div>
+<div>OfficialWebSite:<a href="http://firemobilesimulator.org/" target="_blank">FireMobileSimulator.org<img src="chrome://msim/skin/msim_icon.png" style="height:20px;" alt=""></a></div>
+<div>special thanks to <a href="http://ke-tai.org/" target="_blank"><img src="http://ke-tai.org/blog/wp-content/themes/limau-orange-01/images/logo.gif" style="height:40px;" alt=""></a></div>
+</body>
+</html>

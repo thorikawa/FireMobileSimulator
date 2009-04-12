@@ -1,0 +1,29 @@
+/* This is just an example.  You shouldn't do this. */
+#msim-button
+{
+    list-style-image: url("chrome://msim/skin/msim_off.png");
+}
+
+#msim-button[device="on"]
+{
+    list-style-image: url("chrome://msim/skin/msim_on.png");
+}
+
+#msim-menu
+{
+    list-style-image: url("chrome://msim/skin/msim_off.png");
+}
+
+#msim-menu[device="on"]
+{
+    list-style-image: url("chrome://msim/skin/msim_on.png");
+}
+
+[iconsize="small"] #msim-toolbar-button
+{
+  -moz-image-region: rect( 0px 40px 16px 24px);
+}
+[iconsize="small"] #msim-toolbar-button:hover
+{
+  -moz-image-region: rect(24px 40px 40px 24px);
+}

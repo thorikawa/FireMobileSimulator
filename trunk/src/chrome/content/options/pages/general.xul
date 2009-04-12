@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://msim/skin/options.css" type="text/css"?>
+
+<!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
+
+<page onload="parent.firemobilesimulator.options.initializeOptions()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<groupbox>
+		<caption label="&msim.options.general.display.label;"/>
+		<grid>
+			<rows id="msim.options.general.quit.rows">
+				<row align="center">
+					<checkbox id="msim-checkbox-general-force-screen-width" label="&msim.options.general.display.force-screen-width.label;"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<groupbox>
+		<caption label="&msim.options.general.quit.label;"/>
+		<grid>
+			<rows id="msim.options.general.quit.rows">
+				<row align="center">
+					<checkbox id="msim-checkbox-general-reset-device-onquit" label="&msim.options.general.quit.reset-device-onquit.label;"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+
+	<separator/>
+	<hbox>
+		<spacer flex="1"/>
+	</hbox>
+</page>

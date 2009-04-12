@@ -1,0 +1,42 @@
+<html>
+<head>
+	<title>DoCoMo位置情報テスト</title>
+<head>
+<body>
+<div><a href="../env.cgi" lcs>FOMA GPSテスト</a></div>
+<div><a href="../env.cgi?" lcs>FOMA GPSテスト(?付)</a></div>
+<div><a href="../env.cgi?hoge=foo&uid=NULLGWDOCOMO&guid=ON" lcs>FOMA GPSテスト(Query付)</a></div>
+<div><a href="../env.cgi" lcs utn>FOMA GPSテスト(UTN同時送信)</a></div>
+<div><a href="../env.cgi?hoge=foo&uid=NULLGWDOCOMO&guid=ON" lcs utn>FOMA GPSテスト(UTN同時送信/Query付き)</a></div>
+<div><a href="http://w1m.docomo.ne.jp/cp/iarea?ecode=OPENAREACODE&msn=OPENAREAKEY&nl=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&arg1=USR%3DTARO">オープンiエリア送信テスト(aタグ/posinfoなし)</a></div>
+<div><a href="http://w1m.docomo.ne.jp/cp/iarea?ecode=OPENAREACODE&msn=OPENAREAKEY&nl=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&arg1=USR%3DTARO%26uid%3DNULLGWDOCOMO">オープンiエリア送信テスト(aタグ/uid送信)</a></div>
+<div><a href="http://w1m.docomo.ne.jp/cp/iarea?ecode=OPENAREACODE&msn=OPENAREAKEY&nl=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&arg1=USR%3DTARO&posinfo=1">オープンiエリア送信テスト(aタグ/posinfo=1)</a></div>
+<div><a href="http://w1m.docomo.ne.jp/cp/iarea?ecode=OPENAREACODE&msn=OPENAREAKEY&nl=http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi&arg1=USR%3DTARO&posinfo=2">オープンiエリア送信テスト(aタグ/posinfo=2)</a></div>
+<form method="POST" action="http://w1m.docomo.ne.jp/cp/iarea">
+	<input type="hidden" name="ecode" value="OPENAREACODE">
+	<input type="hidden" name="msn" value="OPENAREAKEY">
+	<input type="hidden" name="nl" value="http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi">
+	<input type="hidden" name="arg1" value="aaa=123">
+	<input type="hidden" name="arg2" value="bbb=xyz">
+	<input type="submit" name="ok" value="オープンiエリア送信(formタグ/posinfoなし)">
+</form>
+<form method="POST" action="http://w1m.docomo.ne.jp/cp/iarea">
+	<input type="hidden" name="ecode" value="OPENAREACODE">
+	<input type="hidden" name="msn" value="OPENAREAKEY">
+	<input type="hidden" name="nl" value="http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi">
+	<input type="hidden" name="arg1" value="aaa=123">
+	<input type="hidden" name="arg2" value="bbb=xyz">
+	<input type="hidden" name="posinfo" value="1">
+	<input type="submit" name="ok" value="オープンiエリア送信(formタグ/posinfo=1)">
+</form>
+<form method="POST" action="http://w1m.docomo.ne.jp/cp/iarea">
+	<input type="hidden" name="ecode" value="OPENAREACODE">
+	<input type="hidden" name="msn" value="OPENAREAKEY">
+	<input type="hidden" name="nl" value="http://poly.s49.xrea.com/dev.ohirune.net/firefox/fms/test/env.cgi">
+	<input type="hidden" name="arg1" value="aaa=123">
+	<input type="hidden" name="arg2" value="bbb=xyz">
+	<input type="hidden" name="posinfo" value="2">
+	<input type="submit" name="ok" value="オープンiエリア送信(formタグ/posinfo=2)">
+</form>
+</body>
+</html>

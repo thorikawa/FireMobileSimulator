@@ -1,0 +1,27 @@
+<html>
+<head>
+	<title>DoCoMoUID等送信テスト</title>
+<head>
+<body>
+<div><a href="../env.cgi?uid=NULLGWDOCOMO&guid=ON" utn>UTN送信テスト(小文字)</a></div>
+<div><a href="../env.cgi?uid=NULLGWDOCOMO&guid=ON" UTN>UTN送信テスト(大文字)</a></div>
+<div><a href="../env.cgi?uid=NULLGWDOCOMO&guid=ON">UID&iモードID送信テスト</a></div>
+<div><a href="../env.cgi?UiD=nullGWdocomo&GUID=on">UID&iモードID送信テスト</a></div>
+<form method="POST" action="../env.cgi" utn>
+	<input type="hidden" name="uid" value="NULLGWDOCOMO">
+	<input type="hidden" name="guid" value="ON">
+	<input type="submit" value="UTN送信テスト">
+</form>
+<form method="POST" action="../env.cgi">
+	<input type="hidden" name="uid" value="NULLGWDOCOMO">
+	<input type="hidden" name="guid" value="ON">
+	<input type="submit" value="UID送信テスト">
+</form>
+<form method="POST" action="../env.cgi">
+	<input type="hidden" name="UiD" value="nullGWdocomo">
+	<input type="hidden" name="GUID" value="on">
+	<input type="submit" value="UID送信テスト">
+</form>
+画像表示：<img src="a.jpg?uid=NULLGWDOCOMO" />
+</body>
+</html>
