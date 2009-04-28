@@ -18,7 +18,7 @@ pref("msim.config.DC.gps.lat", "+35.40.58.968");
 pref("msim.config.DC.gps.lon", "+139.41.12.966");
 pref("msim.config.DC.gps.alt", "+64.000");
 pref("msim.config.DC.pictogram.enabled", true);
-pref("msim.config.AU.uid", "050msimmsim000_vr.ezweb.ne.jp");
+pref("msim.config.AU.uid", "05000000000000_vr.ezweb.ne.jp");
 pref("msim.config.AU.gps.lat", "+35.40.58.96");
 pref("msim.config.AU.gps.lon", "+139.41.12.96");
 pref("msim.config.AU.pictogram.enabled", true);
