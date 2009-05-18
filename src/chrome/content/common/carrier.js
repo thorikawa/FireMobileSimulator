@@ -120,7 +120,7 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent) {
 //firemobilesimulator.common.carrier.getDocomoUserAgent = function(useragent, id) {
 firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) {
 	var type1 = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type1");
-	var cache = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".cache");
+	var cache = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".cache") || 100;
 	if (firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.DOCOMO].DOCOMO_FOMA == type1) {
 		//TODO ;TB;WxxHxxの部分も動的に組み立てられるようにする
 		useragent = useragent + "(c" + cache + ";TB;W24H12)";

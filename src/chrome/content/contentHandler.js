@@ -27,6 +27,7 @@ firemobilesimulator.contentHandler.factoryMap = {};
 firemobilesimulator.contentHandler.factoryMap[firemobilesimulator.common.carrier.DOCOMO] = firemobilesimulator.contentHandler.docomo;
 firemobilesimulator.contentHandler.factoryMap[firemobilesimulator.common.carrier.AU] = firemobilesimulator.contentHandler.au;
 firemobilesimulator.contentHandler.factoryMap[firemobilesimulator.common.carrier.SOFTBANK] = firemobilesimulator.contentHandler.softbank;
+firemobilesimulator.contentHandler.factoryMap[firemobilesimulator.common.carrier.OTHER] = firemobilesimulator.contentHandler.common; 
 
 firemobilesimulator.contentHandler.factory = function (carrier) {
 	return firemobilesimulator.contentHandler.factoryMap[carrier];

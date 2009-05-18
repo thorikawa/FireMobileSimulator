@@ -51,7 +51,7 @@ firemobilesimulator.contentHandler.docomo = {
 		firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag", false);
 
 		var anchorTags = ndDocument.getElementsByTagName("a");
-		for (var i = 0, l = anchorTags.length; i++) {
+		for (var i = 0, l = anchorTags.length; i < l; i++) {
 			var anchorTag = anchorTags[i];
 			var utn = anchorTag.getAttribute("utn");
 			if (null != utn) {
