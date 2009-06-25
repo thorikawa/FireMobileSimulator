@@ -22,6 +22,8 @@ if (!firemobilesimulator)
 	firemobilesimulator = {};
 
 Ext.onReady(function() {
+
+    Ext.Ajax.timeout = 600000;
 	Ext.BLANK_IMAGE_URL = 'ext/resources/images/default/s.gif';
 
 	var q = new Ext.ToolTip({
@@ -59,7 +61,7 @@ Ext.onReady(function() {
 	});
 
 	var deviceDB = firemobilesimulator.common.pref.copyUnicharPref("msim.config.devicedb.url");
-	var filePath = deviceDB + "?result=medium";
+	var filePath = deviceDB;
 	var ds = new Ext.data.Store({
 		proxy : new Ext.data.HttpProxy({
 			url : filePath
