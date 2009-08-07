@@ -34,3 +34,7 @@
 <!ENTITY msim.import.overwrite "既存の端末情報をクリアしてインポートする">
 <!ENTITY msim.options.device.extra-headers "HTTP Header">
 <!ENTITY msim.options.device.extra-headers.add "行を追加する">
+<!ENTITY msim.options.limitHost.label "ホスト制限設定">
+<!ENTITY msim.options.limitHost.valid.label "指定したホストだけで動作するようにする">
+<!ENTITY msim.options.limitHost.host.label "ホスト設定">
+<!ENTITY msim.options.limitHost.host "ホスト">

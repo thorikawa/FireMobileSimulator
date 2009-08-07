@@ -30,6 +30,7 @@ var jsLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
 jsLoader.loadSubScript("chrome://msim/content/common/pref.js");
 jsLoader.loadSubScript("chrome://msim/content/common/carrier.js");
 jsLoader.loadSubScript("chrome://msim/content/common/util.js");
+jsLoader.loadSubScript("chrome://msim/content/core.js");
 
 function myHTTPListener() {
 };
@@ -37,7 +38,77 @@ function myHTTPListener() {
 myHTTPListener.prototype = {
 
 	observe : function(subject, topic, data) {
-		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+	
+		//dump("topic:"+topic+"  \n");
+		
+		try{
+			if(subject!=null){
+				var limithost_valid = firemobilesimulator.common.pref.getBoolPref("msim.limitHost.valid");
+				//dump("limitHost:"+limithost_valid+"\n");
+				
+				if(limithost_valid){
+					var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
+					var host = httpChannel.URI.host;
+					var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+					var limitHosts = firemobilesimulator.common.pref.getListPref("msim.limitHost",new Array("value"));
+					var limitHost = true;
+					for (var i = 0; i < limitHosts.length; i++){
+					//dump("limitHost:"+limitHosts[i]["value"]+"\n");
+						try{
+							if(limitHosts[i]["value"] !="" && host.match(limitHosts[i]["value"])){
+								
+								limitHost = false;
+							}
+						}catch( e ){
+							dump("exception:"+e+"  \n");
+						}
+					}
+					//dump("limitHost:"+host+"\n");
+					
+					if(limitHost){
+						
+						if (id) {
+
+							//idを保存
+							firemobilesimulator.common.pref.setUnicharPref("msim.limitHost.reset_id",id);
+							
+							//既にセットされているユーザーエージェントをリセット
+							//firefoxデフォルトのUAのとり方がわからない・・・
+							var agent_original = "Mozilla/5.0 (Windows; U; Windows NT 5.1; ja; rv:1.9.0.10)";
+		  					httpChannel.setRequestHeader("User-Agent",agent_original,false);
+							
+							//デバイスをリセットする
+							firemobilesimulator.core.resetDevice();
+							var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+
+							return ;
+						
+						}
+
+					
+					}else{
+						//保存したidに戻す
+						if(!id){
+							var reset_id = firemobilesimulator.common.pref.copyUnicharPref("msim.limitHost.reset_id");
+							firemobilesimulator.core.setDevice(reset_id);
+							
+							//既にセットされているUAを変更する
+							try{
+								var agent = firemobilesimulator.common.pref.copyUnicharPref("general.useragent.override");
+								httpChannel.setRequestHeader("User-Agent",agent,false);
+							}catch( e ){
+								dump("exception:"+e+"  \n");
+							}
+							
+							var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+						}
+					}
+				}
+			}
+		}catch( e ){
+			dump("exception:"+e+"  \n");
+		}
+		
 		
 		if (id) {
 			var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
@@ -53,18 +124,32 @@ myHTTPListener.prototype = {
 				var uri = httpChannel.URI
 
 				if (carrier == "DC") {
+					
 					var rewriteFlag = false;
 					var as = uri.asciiSpec;
 					var qs = "";
 
-					var uid = firemobilesimulator.common.pref
+					var uid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-uid");
+					var ser = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-ser");
+					var icc = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-icc");
+					var guid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-guid");
+					
+					if(!uid){
+						var uid = firemobilesimulator.common.pref
 							.copyUnicharPref("msim.config.DC.uid");
-					var ser = firemobilesimulator.common.pref
+					}
+					if(!ser){
+						var ser = firemobilesimulator.common.pref
 							.copyUnicharPref("msim.config.DC.ser");
-					var icc = firemobilesimulator.common.pref
+					}
+					if(!icc){
+						var icc = firemobilesimulator.common.pref
 							.copyUnicharPref("msim.config.DC.icc");
-					var guid = firemobilesimulator.common.pref
+					}
+					if(!guid){
+						var guid = firemobilesimulator.common.pref
 							.copyUnicharPref("msim.config.DC.guid");
+					}
 
 					// UTN
 					var utnFlag = firemobilesimulator.common.pref
@@ -170,13 +255,18 @@ myHTTPListener.prototype = {
 				} else if (carrier == "SB") {
 					var type = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type");
 					if(type != "iPhone"){
-						httpChannel.setRequestHeader("x-jphone-uid",firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.uid"),false);
+						var sbUid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".softbank-uid");
+						if(!sbUid){
+							var sbUid = firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.uid");
+						}
+						httpChannel.setRequestHeader("x-jphone-uid",sbUid,false);
 					}
 				} else if (carrier == "AU") {
-					httpChannel.setRequestHeader("x-up-subno",
-							firemobilesimulator.common.pref
-									.copyUnicharPref("msim.config.AU.uid"),
-							false);
+					var auUid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".au-uid");
+					if(!auUid){
+						var auUid = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.uid");
+					}
+					httpChannel.setRequestHeader("x-up-subno",auUid,false);
 
 					if (uri.host == "movie.ezweb.ne.jp") {
 						dump("host is mos. rewrite URI.\n");

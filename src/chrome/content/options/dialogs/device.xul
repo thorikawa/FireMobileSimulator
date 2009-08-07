@@ -20,65 +20,147 @@
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="msim-string-bundle" src="chrome://msim/locale/msim.properties"/>
 	</stringbundleset>
-	<grid>
-		<columns>
-			<column/>
-			<column/>
-		</columns>
-		<rows id="msim.options.device.rows">
-			<row align="center">
-				<label control="msim.options.device.label" value="&msim.options.device.device;" width="150"/>
-				<textbox id="msim.options.device.label" width="270"/>
-			</row>
-			<row id="msim.options.device.carrier.row" align="center">
-				<label control="msim.options.device.carrier" value="&msim.options.device.carrier;"/>
-			</row>
-			<row id="msim.options.device.useragent.row" align="center">
-				<label control="msim.options.device.useragent" value="&msim.options.device.useragent;"/>
-				<textbox id="msim.options.device.useragent"/>
-			</row>
-			<row id="msim.options.device.type.row" align="center">
-				<label control="msim.options.device.type" value="&msim.options.device.type;"/>
-				<menulist id="msim.options.device.type.menulist">
-					<menupopup id="msim.options.device.type.menupopup"></menupopup>
-				</menulist>
-			</row>
-			<row id="msim.options.device.screen-width.row" align="center">
-				<label control="msim.options.device.screen-width" value="&msim.options.device.screen-width;"/>
-				<textbox id="msim.options.device.screen-width"/>
-			</row>
-			<row id="msim.options.device.screen-height.row" align="center">
-				<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;"/>
-				<textbox id="msim.options.device.screen-height"/>
-			</row>
-		</rows>
-	</grid>
+	
+	
+	<tabbox id="deviceEdit" flex="1">
 
-	<groupbox>
-		<caption label="&msim.options.device.extra-headers;"/>
+	<tabs id="tabsElement">
+        <tab id="deviceTab" label="device info" />
+        <tab id="idTab" label="id settings" />
+
+    </tabs>
+    <tabpanels flex="1">
+	<tabpanel id="deviceTab" orient="vertical">
+	
 		<grid>
 			<columns>
 				<column/>
 				<column/>
-				<column/>
 			</columns>
-			<rows id="msim.options.device.extra-headers.rows">
-				<row>
-					<hbox pack="center" width="150"><label value="header-name"/></hbox>
-					<hbox pack="center" width="200"><label value="header-value"/></hbox>
-					<hbox/>
+			<rows id="msim.options.device.rows">
+				<row align="center">
+					<label control="msim.options.device.label" value="&msim.options.device.device;" width="150"/>
+					<textbox id="msim.options.device.label" width="270"/>
 				</row>
-				<row>
-					<button
-						id="msim.options.device.extra-headers.add"
-						label="&msim.options.device.extra-headers.add;"
-						oncommand="firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById('msim.options.device.extra-headers.rows'));window.sizeToContent();"
-						accesskey="x"/>
-					<hbox/>
-					<hbox/>
+				<row id="msim.options.device.carrier.row" align="center">
+					<label control="msim.options.device.carrier" value="&msim.options.device.carrier;"/>
+				</row>
+				<row id="msim.options.device.useragent.row" align="center">
+					<label control="msim.options.device.useragent" value="&msim.options.device.useragent;"/>
+					<textbox id="msim.options.device.useragent"/>
+				</row>
+				<row id="msim.options.device.type.row" align="center">
+					<label control="msim.options.device.type" value="&msim.options.device.type;"/>
+					<menulist id="msim.options.device.type.menulist">
+						<menupopup id="msim.options.device.type.menupopup"></menupopup>
+					</menulist>
+				</row>
+				<row id="msim.options.device.screen-width.row" align="center">
+					<label control="msim.options.device.screen-width" value="&msim.options.device.screen-width;"/>
+					<textbox id="msim.options.device.screen-width"/>
+				</row>
+				<row id="msim.options.device.screen-height.row" align="center">
+					<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;"/>
+					<textbox id="msim.options.device.screen-height"/>
 				</row>
 			</rows>
 		</grid>
-	</groupbox>
+		
+		<groupbox>
+			<caption label="&msim.options.device.extra-headers;"/>
+			<grid>
+				<columns>
+					<column/>
+					<column/>
+					<column/>
+				</columns>
+				<rows id="msim.options.device.extra-headers.rows">
+					<row>
+						<hbox pack="center" width="150"><label value="header-name"/></hbox>
+						<hbox pack="center" width="200"><label value="header-value"/></hbox>
+						<hbox/>
+					</row>
+					<row>
+						<button
+							id="msim.options.device.extra-headers.add"
+							label="&msim.options.device.extra-headers.add;"
+							oncommand="firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById('msim.options.device.extra-headers.rows'));window.sizeToContent();"
+							accesskey="x"/>
+						<hbox/>
+						<hbox/>
+					</row>
+				</rows>
+			</grid>
+		</groupbox>
+		
+	
+	
+	</tabpanel>
+	<tabpanel id="idTab" orient="vertical">
+	
+		<groupbox>
+			<caption label="DoCoMo"/>
+			<!--caption label="NTT docomo"/-->
+			<grid>
+				<rows id="msim.options.device.rows">
+					<row align="center">
+						<label control="msim-textbox-docomo-uid" value="UID" style="width:120px"/>
+						<textbox id="msim-textbox-docomo-uid" value="" size="30"/>
+					</row>
+					<row align="center">
+						<label control="msim-textbox-docomo-ser" value="端末製造番号"/>
+						<textbox id="msim-textbox-docomo-ser" value="" size="30"/>
+					</row>
+					<row align="center">
+						<label control="msim-textbox-docomo-icc" value="FOMAカード製造番号"/>
+						<textbox id="msim-textbox-docomo-icc" value="" size="30"/>
+					</row>
+					<row align="center">
+						<label control="msim-textbox-docomo-guid" value="iモードID"/>
+						<textbox id="msim-textbox-docomo-guid" value="" size="30"/>
+					</row>
+				</rows>
+			</grid>
+		</groupbox>
+
+		<groupbox>
+			<caption label="Au"/>
+			<!--caption label="au"/-->
+			<grid>
+				<rows>
+					<row align="center">
+						<label control="msim-textbox-au-uid" value="UID" style="width:120px"/>
+						<textbox id="msim-textbox-au-uid" value="" size="30"/>
+					</row>
+				</rows>
+			</grid>
+		</groupbox>
+
+		<groupbox>
+			<caption label="SoftBank"/>
+			<grid>
+				<rows>
+					<row align="center">
+						<label control="msim-textbox-softbank-uid" value="UID" style="width:120px"/>
+						<textbox id="msim-textbox-softbank-uid" value="" size="30"/>
+					</row>
+					<row align="center">
+						<label control="msim-textbox-softbank-serial" value="端末製造番号"/>
+						<textbox id="msim-textbox-softbank-serial" value="" size="30"/>
+					</row>
+				</rows>
+			</grid>
+		</groupbox>
+	
+	
+	</tabpanel>
+	</tabpanels>
+	</tabbox>
+
+	
+
+	
+	
+	
 
 </dialog>

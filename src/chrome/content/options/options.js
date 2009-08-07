@@ -47,6 +47,25 @@ firemobilesimulator.options.addDevice = function() {
 	}
 };
 
+// Adds a limitHost
+firemobilesimulator.options.addLimitHost = function() {
+	var retVals = {};
+	if (window.openDialog("chrome://msim/content/options/dialogs/limitHost.xul",
+	                      "msim-limitHost-dialog", "centerscreen,chrome,modal,resizable", "add",
+	                      null, retVals)) {
+		if (retVals.id) {
+			var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+			var listBox = pageDocument.getElementById("msim-listbox");
+			var listItem = listBox.appendItem(retVals.host,retVals.host);
+			listItem.setAttribute("id", retVals.id);
+			listBox.ensureElementIsVisible(listItem);
+			listBox.selectItem(listItem);
+		}
+	} else {
+		dump("canceld?\n");
+	}
+};
+
 // Handles changing the options page
 firemobilesimulator.options.changePage = function(pageList) {
 	firemobilesimulator.options.storeOptions();
@@ -65,6 +84,20 @@ firemobilesimulator.options.deleteDevice = function() {
 		var deletedId = parseInt(selectedItem.getAttribute("id"));
 		firemobilesimulator.core.deleteDevice(deletedId);
 		deviceBox.removeChild(selectedItem);
+	}
+};
+
+// Deletes a limitHost
+firemobilesimulator.options.deleteLimitHost = function() {
+	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+	var listBox = pageDocument.getElementById("msim-listbox");
+	var selectedItem = listBox.selectedItem;
+	if (selectedItem
+			&& confirm(document.getElementById("msim-string-bundle")
+			                   .getString("msim_deleteLimitHostConfirmation"))) {
+		var deletedId = parseInt(selectedItem.getAttribute("id"));
+		firemobilesimulator.core.deleteLimitHost(deletedId);
+		firemobilesimulator.options.initializeLimitHost();
 	}
 };
 
@@ -91,6 +124,27 @@ firemobilesimulator.options.editDevice = function() {
 	}
 };
 
+// Edits a limitHost
+firemobilesimulator.options.editLimitHost = function() {
+	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+	var listBox = pageDocument.getElementById("msim-listbox");
+	var selectedItem = listBox.selectedItem;
+	var retVals = {};
+	if (selectedItem) {
+		var id = selectedItem.getAttribute("id");
+		if (window.openDialog("chrome://msim/content/options/dialogs/limitHost.xul",
+	                      "msim-limitHost-dialog", "centerscreen,chrome,modal,resizable", "edit",
+	                      id, retVals)) {
+			
+			if (retVals.id) {
+				selectedItem.setAttribute("label",retVals.host);
+			}
+	    }
+	} else {
+		dump("[msim]Error : Device is not selected.\n");
+	}
+};
+
 // Initializes the options dialog box
 firemobilesimulator.options.initializeOptions = function() {
 	var selectedPage = document.getElementById("msim-page-list").selectedItem
@@ -107,6 +161,8 @@ firemobilesimulator.options.initializeOptions = function() {
 		firemobilesimulator.options.initializeGps();
 	} else if (selectedPage.indexOf("pictogram") != -1) {
 		firemobilesimulator.options.initializePictogram();
+	} else if (selectedPage.indexOf("limitHost") != -1) {
+		firemobilesimulator.options.initializeLimitHost();
 	}
 };
 
@@ -178,6 +234,35 @@ firemobilesimulator.options.initializeDevices = function() {
 	}
 
 	firemobilesimulator.options.deviceSelected();
+};
+
+// Initializes the limitHost page
+firemobilesimulator.options.initializeLimitHost = function() {
+	dump("firemobilesimulator.options.initializeLimitHost\n");
+	
+	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+
+	pageDocument.getElementById("msim-checkbox-limitHost-valid").checked = firemobilesimulator.common.pref
+			.getBoolPref("msim.limitHost.valid");
+			
+	var listBox = pageDocument.getElementById("msim-listbox");
+
+	while (listBox.lastChild.tagName != "listhead") {
+		dump("removeList:" + listBox.lastChild.tagName + "\n");
+		listBox.removeChild(listBox.lastChild);
+	}
+
+	var cnt = firemobilesimulator.common.pref.getIntPref("msim.limitHost.count");
+	for (var i = 1; i <= cnt; i++) {
+		var host = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.limitHost." + i + ".value");
+		if (host) {
+			var listItem = listBox.appendItem(host, host);
+			listItem.setAttribute("id", i);
+		}
+	}
+	
+	firemobilesimulator.options.limitHostSelected();
 };
 
 // Saves the user's options
@@ -278,6 +363,10 @@ firemobilesimulator.options.storeOptions = function() {
 				.getElementById("msim-textbox-au-pictogram-enabled").checked;
 		firemobilesimulator.options.optionsDataBoolean["msim.config.SB.pictogram.enabled"] = pageDocument
 				.getElementById("msim-textbox-softbank-pictogram-enabled").checked;
+	} else if (iFrameSrc.indexOf("limitHost") != -1) {
+		dump("[msim]store limitHost.\n");
+		firemobilesimulator.options.optionsDataBoolean["msim.limitHost.valid"] = pageDocument
+				.getElementById("msim-checkbox-limitHost-valid").checked;
 	}
 };
 
@@ -287,6 +376,20 @@ firemobilesimulator.options.deviceSelected = function() {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 	var deviceBox = pageDocument.getElementById("msim-listbox");
 	var selectedItem = deviceBox.selectedItem;
+	var editButton = pageDocument.getElementById("msim-edit");
+	if (selectedItem) {
+		editButton.disabled = false;
+	} else {
+		editButton.disabled = true;
+	}
+};
+
+// Called whenever the limitHost box is selected
+firemobilesimulator.options.limitHostSelected = function() {
+	dump("something limitHost selected\n");
+	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
+	var listBox = pageDocument.getElementById("msim-listbox");
+	var selectedItem = listBox.selectedItem;
 	var editButton = pageDocument.getElementById("msim-edit");
 	if (selectedItem) {
 		editButton.disabled = false;

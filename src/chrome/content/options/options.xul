@@ -25,6 +25,7 @@
 			<listitem label="&msim.options.devices.label;" value="chrome://msim/content/options/pages/devices.xul" accesskey="d"/>
 			<listitem label="&msim.options.gps.label;" value="chrome://msim/content/options/pages/gps.xul" accesskey="d"/>
 			<listitem label="&msim.options.pictogram.label;" value="chrome://msim/content/options/pages/pictogram.xul" accesskey="p"/>
+			<listitem label="&msim.options.limitHost.label;" value="chrome://msim/content/options/pages/limitHost.xul" accesskey="p"/>
 		</listbox>
 		<vbox flex="1">
 			<iframe flex="1" id="msim-options-iframe" src="chrome://msim/content/options/pages/general.xul"/>

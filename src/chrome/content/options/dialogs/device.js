@@ -80,12 +80,43 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 				.copyUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.id
 						+ ".screen-height");
-
+		
 		var count = firemobilesimulator.options.dialogs.device
 				.appendExtraHeaderRows(
 						document.getElementById("msim.options.device.extra-headers.rows"),
 						firemobilesimulator.options.dialogs.device.id);
 		if(count == 0) firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById("msim.options.device.extra-headers.rows"));
+		
+		
+		document.getElementById("msim-textbox-docomo-uid").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".docomo-uid");
+		document.getElementById("msim-textbox-docomo-ser").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".docomo-ser");
+		document.getElementById("msim-textbox-docomo-icc").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".docomo-icc");
+		document.getElementById("msim-textbox-docomo-guid").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".docomo-guid");
+		document.getElementById("msim-textbox-au-uid").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".au-uid");
+		document.getElementById("msim-textbox-softbank-uid").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".softbank-uid");
+		document.getElementById("msim-textbox-softbank-serial").value = firemobilesimulator.common.pref
+				.copyUnicharPref("msim.devicelist."
+						+ firemobilesimulator.options.dialogs.device.id
+						+ ".softbank-serial");
+
 	}
 };
 
@@ -166,6 +197,22 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		}
 		dump("set:" + "msim.devicelist." + saveId + ".extra-header.count:" + headerId + "\n");
 		firemobilesimulator.common.pref.setIntPref("msim.devicelist." + saveId + ".extra-header.count", headerId);
+		
+		
+		var docomoUid = document.getElementById("msim-textbox-docomo-uid").value;
+		var docomoSer = document.getElementById("msim-textbox-docomo-ser").value;
+		var docomoIcc = document.getElementById("msim-textbox-docomo-icc").value;
+		var docomoGuid = document.getElementById("msim-textbox-docomo-guid").value;
+		var auUid = document.getElementById("msim-textbox-au-uid").value;
+		var softbankUid = document.getElementById("msim-textbox-softbank-uid").value;
+		var softbankSerial = document.getElementById("msim-textbox-softbank-serial").value;
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".docomo-uid", docomoUid);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".docomo-ser", docomoSer);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".docomo-icc", docomoIcc);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".docomo-guid", docomoGuid);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".au-uid", auUid);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".softbank-uid", softbankUid);
+		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".softbank-serial", softbankSerial);
 
 	}
 	return true;

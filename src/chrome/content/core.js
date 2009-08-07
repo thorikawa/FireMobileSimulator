@@ -98,6 +98,23 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
 };
 
+firemobilesimulator.core.deleteLimitHost = function(deletedId) {
+	
+	var prefKey = "msim.limitHost." + deletedId + ".value";
+	firemobilesimulator.common.pref.deletePref(prefKey);
+
+	//idを再計算
+	var count = firemobilesimulator.common.pref.getIntPref("msim.limitHost.count");
+	for (let i=deletedId+1; i<=count; i++) {
+		let sPrefKey = "msim.limitHost." + i + ".value";
+		let ePrefKey = "msim.limitHost." + (i-1) + ".value";
+		
+		firemobilesimulator.common.pref.setUnicharPref(ePrefKey, firemobilesimulator.common.pref.copyUnicharPref(sPrefKey));
+		firemobilesimulator.common.pref.deletePref(sPrefKey);
+	}
+	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
+};
+
 firemobilesimulator.core.updateIcon = function() {
 	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator)
