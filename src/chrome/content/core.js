@@ -23,15 +23,13 @@ if (!firemobilesimulator)
 if (!firemobilesimulator.core)
 	firemobilesimulator.core = {};
 
-firemobilesimulator.core.resetDevice = function(e) {
+firemobilesimulator.core.resetDevice = function (e) {
 	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
-	firemobilesimulator.common.pref.deletePref("general.useragent.override");
-	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
 	firemobilesimulator.common.pref.deletePref("msim.current.id");
 	firemobilesimulator.core.updateIcon();
 };
 
-firemobilesimulator.core.setDevice = function(id) {
+firemobilesimulator.core.setDevice = function (id) {
 
 	//dump("[msim]setDevice:" + carrier + ",id:" + id + "\n");
 
@@ -44,22 +42,11 @@ firemobilesimulator.core.setDevice = function(id) {
 	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
 
 	firemobilesimulator.common.pref.setUnicharPref("msim.current.carrier", carrier);
-	var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix
-			+ ".useragent");
-	if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
-		useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
-	}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
-		useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
-		//useragent = firemobilesimulator.common.carrier.getDocomoUserAgent(useragent, id);
-	}
-
-	firemobilesimulator.common.pref.setUnicharPref("general.useragent.override", useragent);
-	firemobilesimulator.common.pref.setUnicharPref("msim.current.useragent", useragent);
 	firemobilesimulator.common.pref.setUnicharPref("msim.current.id", id);
 	firemobilesimulator.core.updateIcon();
 };
 
-firemobilesimulator.core.deleteDevice = function(deletedId) {
+firemobilesimulator.core.deleteDevice = function (deletedId) {
 	var prefPrefix = "msim.devicelist." + deletedId + ".";
 	var deletedDeviceId = firemobilesimulator.common.pref.copyUnicharPref(prefPrefix+"device-id");
 	firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
@@ -98,7 +85,7 @@ firemobilesimulator.core.deleteDevice = function(deletedId) {
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
 };
 
-firemobilesimulator.core.deleteLimitHost = function(deletedId) {
+firemobilesimulator.core.deleteLimitHost = function (deletedId) {
 	
 	var prefKey = "msim.limitHost." + deletedId + ".value";
 	firemobilesimulator.common.pref.deletePref(prefKey);
@@ -115,7 +102,7 @@ firemobilesimulator.core.deleteLimitHost = function(deletedId) {
 	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
 };
 
-firemobilesimulator.core.updateIcon = function() {
+firemobilesimulator.core.updateIcon = function () {
 	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
 			.getService(Components.interfaces.nsIWindowMediator)
 			.getEnumerator("navigator:browser");
@@ -138,7 +125,7 @@ firemobilesimulator.core.updateIcon = function() {
 	}
 };
 
-firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
+firemobilesimulator.core.parseDeviceListXML = function (filePath, postData) {
 	var request = new XMLHttpRequest();
 	var xmlDocument = null;
 
@@ -209,7 +196,7 @@ firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
 	return devices;
 };
 
-firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
+firemobilesimulator.core.LoadDevices = function (devices, overwrite) {
 	var currentId = 0;
 	if (!overwrite) {
 		currentId = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
@@ -251,7 +238,7 @@ firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
 	return true;
 };
 
-firemobilesimulator.core.getCarrierCode = function(carrierName) {
+firemobilesimulator.core.getCarrierCode = function (carrierName) {
 	var carrierCode = firemobilesimulator.common.carrier[carrierName.toUpperCase()];
 	return carrierCode || firemobilesimulator.common.carrier.OTHER;
 };
@@ -260,7 +247,7 @@ firemobilesimulator.core.isValidCarrier = function(carrierCode) {
 	return firemobilesimulator.common.carrier.carrierArray.some(function(c) { return carrierCode == c; });
 };
 
-firemobilesimulator.core.refreshRegisteredDevices = function() {
+firemobilesimulator.core.refreshRegisteredDevices = function () {
 	var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	firemobilesimulator.core.deviceIdArray = new Array();
 	for (let i = 1; i <= deviceCount; i++) {
@@ -271,7 +258,7 @@ firemobilesimulator.core.refreshRegisteredDevices = function() {
 	}
 };
 
-firemobilesimulator.core.getRegisteredDevices = function() {
+firemobilesimulator.core.getRegisteredDevices = function () {
 	if(!firemobilesimulator.core.deviceIdArray) {
 		firemobilesimulator.core.refreshRegisteredDevices();
 	}
@@ -284,7 +271,7 @@ firemobilesimulator.core.isRegistered = function(deviceId, refreshFlag) {
 	});
 };
 
-firemobilesimulator.core.clearAllDevice = function() {
+firemobilesimulator.core.clearAllDevice = function () {
 	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
 	for (let i = 1; i <= count; i++) {
 		let prefPrefix = "msim.devicelist." + i + ".";
@@ -299,8 +286,20 @@ firemobilesimulator.core.clearAllDevice = function() {
 	}
 	firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
 	firemobilesimulator.common.pref.deletePref("msim.current.carrier");
-	firemobilesimulator.common.pref.deletePref("general.useragent.override");
-	firemobilesimulator.common.pref.deletePref("msim.current.useragent");
 	firemobilesimulator.common.pref.deletePref("msim.current.id");
 	firemobilesimulator.core.resetDevice();
 };
+
+firemobilesimulator.core.isSimulate = function (hostName) {
+	var isSimulate = true;
+	var limithost_enabled = firemobilesimulator.common.pref.getBoolPref("msim.limitHost.enabled");
+	if (limithost_enabled) {
+		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+		var limitHosts = firemobilesimulator.common.pref.getListPref("msim.limitHost",new Array("value"));
+		isSimulate = limitHosts.some(function (limitHost, index, array) {
+			// dump("[msim]compare:"+limitHost.value+":"+hostName+"\n");
+			return (limitHost.value && hostName.match(limitHost.value));
+		});
+	}
+	return isSimulate;
+}

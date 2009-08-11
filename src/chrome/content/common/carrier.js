@@ -131,5 +131,3 @@ firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) 
 	dump("[msim]DC UA:" + useragent + "\n");
 	return useragent;
 };
-
-dump("carrier.js is loaded.\n");

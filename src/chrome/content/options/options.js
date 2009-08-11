@@ -243,7 +243,7 @@ firemobilesimulator.options.initializeLimitHost = function() {
 	var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
 
 	pageDocument.getElementById("msim-checkbox-limitHost-valid").checked = firemobilesimulator.common.pref
-			.getBoolPref("msim.limitHost.valid");
+			.getBoolPref("msim.limitHost.enabled");
 			
 	var listBox = pageDocument.getElementById("msim-listbox");
 
@@ -322,21 +322,6 @@ firemobilesimulator.options.storeOptions = function() {
 				.getElementById("msim-textbox-softbank-uid").value;
 		firemobilesimulator.options.optionsDataString["msim.config.SB.serial"] = pageDocument
 				.getElementById("msim-textbox-softbank-serial").value;
-		var carrier = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.current.carrier");
-		if (carrier == firemobilesimulator.common.carrier.SOFTBANK) {
-			dump("[msim]Debug : Current Carrier is SoftBank. Replace User-Agent.\n");
-			var id = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.current.id");
-			var useragent = firemobilesimulator.common.pref
-					.copyUnicharPref("msim.devicelist." + id + ".useragent");
-			var newUserAgent = firemobilesimulator.common.carrier
-					.getSoftBankUserAgent(
-							useragent,
-							firemobilesimulator.options.optionsDataString["msim.config.SB.serial"]);
-			firemobilesimulator.options.optionsDataString["general.useragent.override"] = newUserAgent;
-			firemobilesimulator.options.optionsDataString["msim.current.useragent"] = newUserAgent;
-		}
 	} else if (iFrameSrc.indexOf("devices") != -1) {
 		// Nothing to do
 	} else if (iFrameSrc.indexOf("gps") != -1) {
@@ -365,7 +350,7 @@ firemobilesimulator.options.storeOptions = function() {
 				.getElementById("msim-textbox-softbank-pictogram-enabled").checked;
 	} else if (iFrameSrc.indexOf("limitHost") != -1) {
 		dump("[msim]store limitHost.\n");
-		firemobilesimulator.options.optionsDataBoolean["msim.limitHost.valid"] = pageDocument
+		firemobilesimulator.options.optionsDataBoolean["msim.limitHost.enabled"] = pageDocument
 				.getElementById("msim-checkbox-limitHost-valid").checked;
 	}
 };

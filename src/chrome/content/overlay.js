@@ -32,7 +32,6 @@ firemobilesimulator.overlay.onInitialize = function() {
 	// initialize user agent
 	var windowContent = window.getBrowser();
 	if (windowContent) {
-		dump("set load2\n");
 		try {
 
 			window.removeEventListener("load",
@@ -46,7 +45,6 @@ firemobilesimulator.overlay.onInitialize = function() {
 		//		firemobilesimulator.overlay.BrowserOnLoad, true);
 		var appcontent = document.getElementById("appcontent");   // ブラウザ
 		if (appcontent) {
-			dump("###\n");
 			//appcontent.addEventListener("DOMContentLoaded", firemobilesimulator.overlay.BrowserOnLoad, true);
 			appcontent.addEventListener("load", firemobilesimulator.overlay.BrowserOnLoad, true);
 		} else {
@@ -186,23 +184,22 @@ firemobilesimulator.overlay.openAbout = function() {
 
 firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 	dump("[msim]BrowserOnLoad is fired.\n");
-	var carrier = firemobilesimulator.common.pref
-			.copyUnicharPref("msim.current.carrier");
+	var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.current.carrier");
 	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+	
+	var ndDocument = objEvent.originalTarget;
+	if (objEvent.originalTarget.nodeName != "#document") {
+		dump("[msim]nodeName is not #document\n");
+		return;
+	}
+	// Firefoxの埋め込み表示Content-Typeは、自動的にDOMに変換されている為、除外する。
+	if (ndDocument.contentType != "text/html") {
+		dump("document is not html\n");
+		return;
+	}
 
-	if (carrier) {
-		var ndDocument = objEvent.originalTarget;
-		if (objEvent.originalTarget.nodeName != "#document") {
-			dump("[msim]nodeName is not #document\n");
-			return;
-		}
-
-		// Firefoxの埋め込み表示Content-Typeは、自動的にDOMに変換されている為、除外する。
-		if (ndDocument.contentType != "text/html") {
-			dump("document is not html\n");
-			return;
-		}
-
+	var isSimulate = firemobilesimulator.core.isSimulate(ndDocument.location.hostname);
+	if (carrier && isSimulate) {
 		var contentHandler = firemobilesimulator.contentHandler.factory(carrier);
 		contentHandler && contentHandler.filter(ndDocument, id);
 	}

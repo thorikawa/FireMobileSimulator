@@ -148,5 +148,3 @@ firemobilesimulator.mpc.common.bits2dec = function(bits) {
 	//}
 	return r;
 };
-
-dump("common.js is loaded.\n");

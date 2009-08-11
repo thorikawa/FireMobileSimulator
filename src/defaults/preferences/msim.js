@@ -179,5 +179,5 @@ pref("msim.devicelist.8.type1", "iPhone");
 pref("msim.devicelist.8.screen-width", "320");
 pref("msim.devicelist.8.screen-height", "480");
 pref("msim.devicelist.8.device-id", "700");
-pref("msim.limitHost.valid", false);
-pref("msim.limitHost.count", 7);
+pref("msim.limitHost.enabled", false);
+pref("msim.limitHost.count", 0);
