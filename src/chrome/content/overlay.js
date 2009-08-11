@@ -197,8 +197,13 @@ firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
 		dump("document is not html\n");
 		return;
 	}
-
-	var isSimulate = firemobilesimulator.core.isSimulate(ndDocument.location.hostname);
+	var isSimulate = false;
+	try {
+		isSimulate = firemobilesimulator.core.isSimulate(ndDocument.location.hostname);
+	} catch (e) {
+		//about:blankとかだとndDocument.location.hostnameを取得するときに例外を投げるケースがある。
+		//Do nothing
+	}
 	if (carrier && isSimulate) {
 		var contentHandler = firemobilesimulator.contentHandler.factory(carrier);
 		contentHandler && contentHandler.filter(ndDocument, id);

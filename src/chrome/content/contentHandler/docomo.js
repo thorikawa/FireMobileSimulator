@@ -106,8 +106,7 @@ firemobilesimulator.contentHandler.docomo = {
 					if (key && value && key.toUpperCase() == "UID"
 							&& value.toUpperCase() == "NULLGWDOCOMO") {
 						dump("replace uid\n");
-						var uid = firemobilesimulator.common.pref
-								.copyUnicharPref("msim.config.DC.uid");
+						var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID,deviceId);
 						inputTag.value = uid;
 					}
 				}

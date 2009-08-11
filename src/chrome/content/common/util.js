@@ -190,11 +190,12 @@ firemobilesimulator.common.util.getYYYYMMDDHHmm = function() {
 	return y+m+d+h+min;
 };
 
-firemobilesimulator.common.util.getHiddenTag = function(params) {
+firemobilesimulator.common.util.getHiddenTag = function(params, deviceId) {
 	var r = "";
 	for (var i in params) {
 		if (i.toUpperCase() == "UID" && params[i].toUpperCase() == "NULLGWDOCOMO") {
-			params[i] = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.uid");
+			var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID, deviceId);
+			params[i] = uid;
 		}
 		r += '<input type="hidden" name="'+i+'" value="'+params[i]+'" />\n';
 	}

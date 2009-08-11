@@ -56,7 +56,7 @@ myHTTPListener.prototype = {
 			var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
 			var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".useragent");
 			if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
-				useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent);
+				useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent, id);
 			}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
 				useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
 			}
@@ -76,28 +76,11 @@ myHTTPListener.prototype = {
 					var as = uri.asciiSpec;
 					var qs = "";
 
-					var uid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-uid");
-					var ser = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-ser");
-					var icc = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-icc");
-					var guid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".docomo-guid");
+					var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID,id);
+					var ser = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_SER,id);
+					var icc = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_ICC,id);
+					var guid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_GUID,id);
 					
-					if(!uid){
-						var uid = firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.DC.uid");
-					}
-					if(!ser){
-						var ser = firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.DC.ser");
-					}
-					if(!icc){
-						var icc = firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.DC.icc");
-					}
-					if(!guid){
-						var guid = firemobilesimulator.common.pref
-							.copyUnicharPref("msim.config.DC.guid");
-					}
-
 					// UTN
 					var utnFlag = firemobilesimulator.common.pref
 							.getBoolPref("msim.temp.utnflag");
@@ -197,17 +180,11 @@ myHTTPListener.prototype = {
 				} else if (carrier == "SB") {
 					var type = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type");
 					if(type != "iPhone"){
-						var sbUid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".softbank-uid");
-						if(!sbUid){
-							var sbUid = firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.uid");
-						}
+						var sbUid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.SB_UID,id);
 						httpChannel.setRequestHeader("x-jphone-uid",sbUid,false);
 					}
 				} else if (carrier == "AU") {
-					var auUid = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".au-uid");
-					if(!auUid){
-						var auUid = firemobilesimulator.common.pref.copyUnicharPref("msim.config.AU.uid");
-					}
+					var auUid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.AU_UID,id);
 					httpChannel.setRequestHeader("x-up-subno",auUid,false);
 
 					if (uri.host == "movie.ezweb.ne.jp") {

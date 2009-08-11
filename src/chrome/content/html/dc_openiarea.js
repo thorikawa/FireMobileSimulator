@@ -21,6 +21,9 @@ var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
 
 firemobilesimulator.openiareaInit = function(params){
+
+	var deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+	
 	var nl = unescape(params["nl"]);
 	var posinfo = params["posinfo"];
 	var arg1 = params["arg1"];
@@ -43,8 +46,8 @@ firemobilesimulator.openiareaInit = function(params){
 <div>よろしいですか？</div>\
 <form method="POST" action='+nl+'>\
 <input type="hidden" name="AREACODE" value="'+areacode+'">';
-body += firemobilesimulator.common.util.getHiddenTag(arg1params);
-body += firemobilesimulator.common.util.getHiddenTag(arg2params);
+body += firemobilesimulator.common.util.getHiddenTag(arg1params, deviceId);
+body += firemobilesimulator.common.util.getHiddenTag(arg2params, deviceId);
 body += '\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\
 </form>\
@@ -67,8 +70,8 @@ body += '\
 <input type="hidden" name="LON" value="'+lon+'">\
 <input type="hidden" name="GEO" value="wgs84">\
 <input type="hidden" name="XACC" value="1">';
-body += firemobilesimulator.common.util.getHiddenTag(arg1params);
-body += firemobilesimulator.common.util.getHiddenTag(arg2params);
+body += firemobilesimulator.common.util.getHiddenTag(arg1params, deviceId);
+body += firemobilesimulator.common.util.getHiddenTag(arg2params, deviceId);
 body += '\
 <input type="hidden" name="POSINFO" value="'+posinfo+'">\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\

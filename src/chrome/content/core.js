@@ -66,7 +66,7 @@ firemobilesimulator.core.deleteDevice = function (deletedId) {
 		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
 			if (attribute == "extra-header") {
 				let extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
-				extraHeaders.forEach(function(extraHeader) {
+				extraHeaders.forEach(function (extraHeader) {
 					if (extraHeader.value) {
 						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
 						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".value", extraHeader.value);

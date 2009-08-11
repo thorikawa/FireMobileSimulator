@@ -63,7 +63,14 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 	"screen-width",
 	"extra-header",
 	"device-id",
-	"cache"
+	"cache",
+	"docomo-uid",
+	"docomo-icc",
+	"docomo-ser",
+	"docomo-guid",
+	"au-uid",
+	"softbank-uid",
+	"softbank-serial"
 ];
 
 firemobilesimulator.common.carrier.xmlTagName = {
@@ -105,8 +112,29 @@ firemobilesimulator.common.carrier.Type[firemobilesimulator.common.carrier.SOFTB
 	SOFTBANK_IPHONE : "iPhone"
 };
 
-firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent) {
-	var serial = firemobilesimulator.common.pref.copyUnicharPref("msim.config.SB.serial");
+firemobilesimulator.common.carrier.idType = {
+	DOCOMO_UID : "DOCOMO_UID",
+	DOCOMO_SER : "DOCOMO_SER",
+	DOCOMO_ICC : "DOCOMO_ICC",
+	DOCOMO_GUID : "DOCOMO_GUID",
+	AU_UID : "AU_UID",
+	SB_UID : "SB_UID",
+	SB_SERIAL : "SB_SERIAL"
+};
+
+firemobilesimulator.common.carrier.idPath = {
+	DOCOMO_UID :  { "general" : "DC.uid",    "individual" : "docomo-uid"},
+	DOCOMO_SER :  { "general" : "DC.ser",    "individual" : "docomo-ser"},
+	DOCOMO_ICC :  { "general" : "DC.icc",    "individual" : "docomo-icc"},
+	DOCOMO_GUID : { "general" : "DC.guid",   "individual" : "docomo-guid"},
+	AU_UID :      { "general" : "AU.uid",    "individual" : "au-uid"},
+	SB_UID :      { "general" : "SB.uid",    "individual" : "softbank-uid"},
+	SB_SERIAL :   { "general" : "SB.serial", "individual" : "softbank-serial"}
+};
+
+
+firemobilesimulator.common.carrier.getSoftBankUserAgent = function (useragent, id) {
+	var serial = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.SB_SERIAL,id);
 	var notifySerial = firemobilesimulator.common.pref.getBoolPref("msim.config.SB.notifyserial");
 	var replacement  = "";
 	if (true == notifySerial) {
@@ -117,7 +145,7 @@ firemobilesimulator.common.carrier.getSoftBankUserAgent = function(useragent) {
 	return useragent;
 };
 
-//firemobilesimulator.common.carrier.getDocomoUserAgent = function(useragent, id) {
+//firemobilesimulator.common.carrier.getDocomoUserAgent = function (useragent, id) {
 firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) {
 	var type1 = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type1");
 	var cache = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".cache") || 100;
@@ -131,3 +159,19 @@ firemobilesimulator.common.carrier.getDoCoMoUserAgent = function(useragent, id) 
 	dump("[msim]DC UA:" + useragent + "\n");
 	return useragent;
 };
+
+/**
+ * IDの情報を返す
+ * 個々の端末に設定されているIDを参照して、設定されていなければ、全体で設定されているIDを返す
+ */
+firemobilesimulator.common.carrier.getId = function (type, deviceId) {
+	var info = firemobilesimulator.common.carrier.idPath[type];
+	if (!info) {
+		throw "unknown idType:"+type;
+	}
+	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+deviceId+"."+info.individual);
+	if (!id) {
+		id = firemobilesimulator.common.pref.copyUnicharPref("msim.config."+info.general);
+	}
+	return id;
+}
