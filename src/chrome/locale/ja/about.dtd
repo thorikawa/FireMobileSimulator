@@ -1,4 +1,6 @@
 <!ENTITY about "About">
 <!ENTITY version "Version:">
 <!ENTITY createdBy "Created By:">
+<!ENTITY projectLeader "ProjectLeader and Developer:">
+<!ENTITY developer "Developer:">
 <!ENTITY homepage "Home Page:">
