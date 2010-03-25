@@ -1,5 +1,5 @@
-/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 ***** 
- * FireMobileFimulator is a Firefox add-on that simulate web browsers of 
+/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 *****
+ * FireMobileFimulator is a Firefox add-on that simulate web browsers of
  * japanese mobile phones.
  * Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
  *
@@ -43,12 +43,12 @@ myHTTPListener.prototype = {
 			os.addObserver(this, "http-on-examine-merged-response", false);
 			return;
 		}
-		
+
 		// dump("topic:"+topic+",subject="+subject+"\n");
 		var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
 		var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 		var isSimulate = firemobilesimulator.core.isSimulate(httpChannel.URI.host);
-		
+
 		if (id && isSimulate) {
 			// dump("sumulate\n");
 			var pref_prefix = "msim.devicelist." + id;
@@ -60,7 +60,7 @@ myHTTPListener.prototype = {
 			}else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
 				useragent = firemobilesimulator.common.carrier.getDoCoMoUserAgent(useragent, id);
 			}
-			
+
 			if (topic == "http-on-modify-request") {
 				var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -71,7 +71,7 @@ myHTTPListener.prototype = {
 				var uri = httpChannel.URI
 
 				if (carrier == "DC") {
-					
+
 					var rewriteFlag = false;
 					var as = uri.asciiSpec;
 					var qs = "";
@@ -80,7 +80,7 @@ myHTTPListener.prototype = {
 					var ser = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_SER,id);
 					var icc = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_ICC,id);
 					var guid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_GUID,id);
-					
+
 					// UTN
 					var utnFlag = firemobilesimulator.common.pref
 							.getBoolPref("msim.temp.utnflag");
@@ -108,7 +108,7 @@ myHTTPListener.prototype = {
 					if (parts.length == 2) {
 						var sharps = parts[1].split('#');
 						var values = sharps.shift().split("&");
-						
+
 						if (uri.scheme != "https") {
 							// HTTPSではUID送信とiモードID送信は行わない
 
@@ -159,8 +159,12 @@ myHTTPListener.prototype = {
 								"msim.temp.lcsflag", false);
 					}
 
-					// docomo端末はCookie送信を行わない
-					httpChannel.setRequestHeader("Cookie", null, false);
+					// docomo端末はCookie有効でなければ送信しない
+					var useCookie = firemobilesimulator.common.pref.getBoolPref("msim.devicelist."+id+".use-cookie");
+					if (!useCookie) {
+						dump("[msim]not to use cookie\n");
+						httpChannel.setRequestHeader("Cookie", null, false);
+					}
 
 					if (uri.host == "w1m.docomo.ne.jp") {
 						var param = qs ? "?" + qs : "";
@@ -198,7 +202,7 @@ myHTTPListener.prototype = {
 										+ parts[0]);
 					}
 				}
-				
+
 				dump("[msim]set ua:"+useragent+"\n");
 				httpChannel.setRequestHeader("User-Agent", useragent, false);
 				// set extra http headers

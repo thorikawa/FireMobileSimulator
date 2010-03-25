@@ -1,5 +1,5 @@
-/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 ***** 
- * FireMobileFimulator is a Firefox add-on that simulate web browsers of 
+/* ***** BEGIN LICENSE BLOCK Version: GPL 3.0 *****
+ * FireMobileFimulator is a Firefox add-on that simulate web browsers of
  * japanese mobile phones.
  * Copyright (C) 2008  Takahiro Horikawa <horikawa.takahiro@gmail.com>
  *
@@ -67,7 +67,7 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 		firemobilesimulator.options.dialogs.device.selectCarrier(firemobilesimulator.options.dialogs.device.carrier);
 		firemobilesimulator.options.dialogs.device.appendTypeList(firemobilesimulator.options.dialogs.device.carrier);
 		firemobilesimulator.options.dialogs.device.selectType1(firemobilesimulator.options.dialogs.device.id);
-		
+
 		document.getElementById("msim.options.device.useragent").value = firemobilesimulator.common.pref
 				.copyUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.id
@@ -80,14 +80,18 @@ firemobilesimulator.options.dialogs.device.initializeDevice = function() {
 				.copyUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.id
 						+ ".screen-height");
-		
+		document.getElementById("msim.options.device.use-cookie").checked = firemobilesimulator.common.pref
+				.getBoolPref("msim.devicelist."
+				+ firemobilesimulator.options.dialogs.device.id
+				+ ".use-cookie");
+
 		var count = firemobilesimulator.options.dialogs.device
 				.appendExtraHeaderRows(
 						document.getElementById("msim.options.device.extra-headers.rows"),
 						firemobilesimulator.options.dialogs.device.id);
 		if(count == 0) firemobilesimulator.options.dialogs.device.addExtraHeaderRow(document.getElementById("msim.options.device.extra-headers.rows"));
-		
-		
+
+
 		document.getElementById("msim-textbox-docomo-uid").value = firemobilesimulator.common.pref
 				.copyUnicharPref("msim.devicelist."
 						+ firemobilesimulator.options.dialogs.device.id
@@ -126,6 +130,12 @@ firemobilesimulator.options.dialogs.device.carrierSelected = function(obj) {
 	//firemobilesimulator.options.dialogs.device.carrier = obj.id;
 	//window.sizeToContent();
 
+	if (obj.id == 'DC') {
+		document.getElementById("msim.options.device.use-cookie").disabled = false;
+    } else {
+		document.getElementById("msim.options.device.use-cookie").checked = true;
+		document.getElementById("msim.options.device.use-cookie").disabled = true;
+	}
 };
 
 // Saves a device
@@ -142,6 +152,7 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		var type1 = si ? si.getAttribute("label") : null;
 		var screenWidth = document.getElementById("msim.options.device.screen-width").value;
 		var screenHeight = document.getElementById("msim.options.device.screen-height").value;
+		var useCookie = document.getElementById("msim.options.device.use-cookie").checked;
 
 		// 入力チェック
 		if (!deviceName || !carrier || !userAgent) {
@@ -170,6 +181,7 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".type1", type1);
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".screen-width", screenWidth);
 		firemobilesimulator.common.pref.setUnicharPref("msim.devicelist." + saveId + ".screen-height", screenHeight);
+		firemobilesimulator.common.pref.setBoolPref("msim.devicelist." + saveId + ".use-cookie", useCookie);
 
 		firemobilesimulator.options.dialogs.device.retVals.deviceName = deviceName;
 		firemobilesimulator.options.dialogs.device.retVals.id = saveId;
@@ -197,8 +209,8 @@ firemobilesimulator.options.dialogs.device.saveDevice = function() {
 		}
 		dump("set:" + "msim.devicelist." + saveId + ".extra-header.count:" + headerId + "\n");
 		firemobilesimulator.common.pref.setIntPref("msim.devicelist." + saveId + ".extra-header.count", headerId);
-		
-		
+
+
 		var docomoUid = document.getElementById("msim-textbox-docomo-uid").value;
 		var docomoSer = document.getElementById("msim-textbox-docomo-ser").value;
 		var docomoIcc = document.getElementById("msim-textbox-docomo-icc").value;

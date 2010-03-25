@@ -63,6 +63,10 @@
 					<label control="msim.options.device.screen-height" value="&msim.options.device.screen-height;"/>
 					<textbox id="msim.options.device.screen-height"/>
 				</row>
+				<row id="msim.options.device.use-cookie.row" align="center">
+					<hbox/>
+					<checkbox id="msim.options.device.use-cookie" label="&msim.options.device.use-cookie;"/>
+				</row>
 			</rows>
 		</grid>
 		

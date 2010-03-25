@@ -28,6 +28,7 @@
 <!ENTITY msim.options.device.type "Type">
 <!ENTITY msim.options.device.screen-width "スクリーン横幅(px)">
 <!ENTITY msim.options.device.screen-height "スクリーン高さ(px)">
+<!ENTITY msim.options.device.use-cookie "Cookie有効">
 <!ENTITY msim.options.export "エクスポート">
 <!ENTITY msim.options.import "インポート">
 <!ENTITY msim.options.import-export "インポート/エクスポート">
