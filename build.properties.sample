@@ -1,0 +1,5 @@
+# ant install/uninstallの対象となるFirefoxの拡張インストールパスをフルパスで記述します。
+# example for Mac OS
+#fx.dir=/Users/${user}/Library/Application Support/Firefox/Profiles/${id}/extensions/
+# example for Windows
+#fx.dir=C:/Documents and Settings/${user}/Application Data/Mozilla/Firefox/Profiles/${id}/extensions/
