@@ -70,7 +70,8 @@ firemobilesimulator.common.carrier.deviceBasicAttribute = [
 	"docomo-guid",
 	"au-uid",
 	"softbank-uid",
-	"softbank-serial"
+	"softbank-serial",
+  "use-cookie"
 ];
 
 firemobilesimulator.common.carrier.xmlTagName = {
