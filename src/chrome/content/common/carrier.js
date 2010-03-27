@@ -83,7 +83,8 @@ firemobilesimulator.common.carrier.xmlTagName = {
 	"screen-width"     : "ScreenWidth",
 	"extra-header"     : "ExtraHeader",
 	"device-id"        : "Id",
-	"cache"            : "Cache"
+  "cache"            : "Cache",
+  "use-cookie"       : "Cookie"
 };
 
 firemobilesimulator.common.carrier.Type = {};
