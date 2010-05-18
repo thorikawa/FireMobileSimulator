@@ -307,7 +307,8 @@ function rewriteURI(subject, url) {
     subject.cancel(Cr.NS_ERROR_FAILURE);
     var webNav = subject.notificationCallbacks
         .getInterface(Ci.nsIWebNavigation);
-    webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+    var uploadStream = subject.QueryInterface(Ci.nsIUploadChannel).uploadStream;
+    webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, uploadStream, null);
     //webNav.loadURI(url, subject.loadFlags, null, null, null);
   }
 }
