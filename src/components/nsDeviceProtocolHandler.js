@@ -20,94 +20,71 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
-const kSCHEME = "device";
-const kPROTOCOL_NAME = "KDDI device protocol";
-const kPROTOCOL_CONTRACTID = "@mozilla.org/network/protocol;1?name=" + kSCHEME;
-const kPROTOCOL_CID = Components.ID("79e63cb7-ba95-40c5-902d-edb918b4679c");
+const Cu = Components.utils;
 
-function Protocol(){
-}
+const SCHEME = "device";
+const NAME = "KDDI device protocol";
+const CONTRACTID = "@mozilla.org/network/protocol;1?name=" + SCHEME;
+const CID = Components.ID("{79e63cb7-ba95-40c5-902d-edb918b4679c}");
 
-Protocol.prototype = {
-	QueryInterface: function(iid){
-		if (!iid.equals(Ci.nsIProtocolHandler) &&
-				!iid.equals(Ci.nsISupports))
-			throw Cr.NS_ERROR_NO_INTERFACE;
-		return this;
-	},
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-	scheme: kSCHEME,
-	defaultPort: -1,
-	protocolFlags: Ci.nsIProtocolHandler.URI_NORELATIVE | Ci.nsIProtocolHandler.URI_NOAUTH,
+function MsimProtocolHandler() {};
+MsimProtocolHandler.prototype = {
 
-	allowPort: function(port, scheme){
-		return false;
-	},
+  // Firefox <= 3.6.*
+  classDescription: NAME,
 
-	newURI: function(spec, charset, baseURI){
-		var uri = Cc["@mozilla.org/network/simple-uri;1"].createInstance(Ci.nsIURI);
-		dump("[msim]spec:"+spec+"\n");
-		try{
-			uri.spec = spec;
-		}catch (ex){
-			dump("[msim]uri.spec error.\n")
-			var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-			uri = ios.newURI("chrome://msim/content/html/error.html", null, null);
-		}
-		return uri;
-	},
+  // Firefox <= 3.6.*
+  contractID: CONTRACTID,
 
-	newChannel: function(aURI){
-		var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-		if (aURI.asciiSpec.indexOf("device:location") == 0 || aURI.asciiSpec.indexOf("device:gpsone") == 0){
-			return ios.newChannel("chrome://msim/content/html/au_gps.html", null, null);
-		}else{
-			return ios.newChannel("chrome://msim/content/html/error.html", null, null);
-		}
-	}
+  classID: CID,
+
+  // Firefox <= 3.6.*
+  _xpcom_categories: [],
+
+  QueryInterface : XPCOMUtils.generateQI([
+  	Ci.nsIProtocolHandler,
+  	Ci.nsISupports
+  ]),
+
+  scheme: SCHEME,
+  
+  defaultPort: -1,
+  
+  protocolFlags: Ci.nsIProtocolHandler.URI_NORELATIVE | Ci.nsIProtocolHandler.URI_NOAUTH | Ci.nsIProtocolHandler.URI_LOADABLE_BY_ANYONE,
+
+  allowPort: function(port, scheme){
+    return false;
+  },
+
+  newURI: function(spec, charset, baseURI){
+    var uri = Cc["@mozilla.org/network/simple-uri;1"].createInstance(Ci.nsIURI);
+    dump("[msim]spec:"+spec+"\n");
+    try {
+      uri.spec = spec;
+    } catch (ex) {
+      dump("[msim]uri.spec error.\n")
+      var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+      uri = ios.newURI("chrome://msim/content/html/error.html", null, null);
+    }
+    return uri;
+  },
+
+  newChannel: function(aURI){
+    var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+    if (aURI.asciiSpec.indexOf("device:location") == 0 || aURI.asciiSpec.indexOf("device:gpsone") == 0) {
+      return ios.newChannel("chrome://msim/content/html/au_gps.html", null, null);
+    } else {
+      return ios.newChannel("chrome://msim/content/html/error.html", null, null);
+    }
+  }
 };
 
-var ProtocolFactory = {
-	createInstance: function(outer, iid){
-		if (outer != null)
-			throw Cr.NS_ERROR_NO_AGGREGATION;
-
-		if (!iid.equals(Ci.nsIProtocolHandler) &&
-				!iid.equals(Ci.nsISupports))
-			throw Cr.NS_ERROR_NO_INTERFACE;
-
-		return new Protocol();
-	}
-};
-
-var myModule = {
-	registerSelf: function(compMgr, fileSpec, location, type){
-		compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
-		compMgr.registerFactoryLocation(
-			kPROTOCOL_CID,
-			kPROTOCOL_NAME,
-			kPROTOCOL_CONTRACTID,
-			fileSpec,
-			location,
-			type
-		);
-	},
-
-	getClassObject: function(compMgr, cid, iid){
-		if (!cid.equals(kPROTOCOL_CID))
-			throw Cr.NS_ERROR_NO_INTERFACE;
-
-		if (!iid.equals(Ci.nsIFactory))
-			throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-
-		return ProtocolFactory;
-	},
-
-	canUnload: function(compMgr){
-		return true;
-	}
-};
-
-function NSGetModule(compMgr, fileSpec){
-	return myModule;
+if (XPCOMUtils.generateNSGetFactory) {
+  // Firefox >= 4
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([MsimProtocolHandler]);
+} else {
+  // Firefox <= 3.6.*
+  var NSGetModule = XPCOMUtils.generateNSGetModule([MsimProtocolHandler]);
 }

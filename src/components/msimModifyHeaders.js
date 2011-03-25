@@ -20,9 +20,13 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
-const kMSIM_NAME = "Mobile Simulator HTTP Listener";
+const Cu = Components.utils;
+
+const kMSIM_NAME = "FireMobileSimulator HTTP Modifier";
 const kMSIM_CONTRACTID = "@msim/myHTTPListener;1";
 const kMSIM_CID = Components.ID("{2e9983d0-2c88-11dd-bd0b-0800200c9a66}");
+
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 // Load our component JS file.
 var jsLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -35,8 +39,22 @@ jsLoader.loadSubScript("chrome://msim/content/core.js");
 function myHTTPListener() {};
 myHTTPListener.prototype = {
 
+  // Firefox <= 3.6.*
+  classDescription: kMSIM_NAME,
+
+  // Firefox <= 3.6.*
+  contractID: kMSIM_CONTRACTID,
+
+  classID: kMSIM_CID,
+
+  // Firefox <= 3.6.*
+  _xpcom_categories: [{category: "app-startup",
+                       entry: kMSIM_NAME,
+                       value: kMSIM_CONTRACTID,
+                       service: true}],
+       
   observe : function(subject, topic, data) {
-    if (topic == "app-startup") {
+    if (topic == "app-startup" || topic == "profile-after-change") {
       var os = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
       os.addObserver(this, "http-on-modify-request", false);
       os.addObserver(this, "http-on-examine-response", false);
@@ -240,64 +258,12 @@ myHTTPListener.prototype = {
     }
   },
 
-  QueryInterface : function(iid) {
-    if (iid.equals(Ci.nsIObserver) || iid.equals(Ci.nsISupports)
-        || iid.equals(Ci.nntIMsimHTTPListener)) {
-      return this;
-    }
-
-    Components.returnCode = Cr.NS_ERROR_NO_INTERFACE;
-    return null;
-  }
-
+  QueryInterface : XPCOMUtils.generateQI([
+  	Ci.nsIObserver,
+  	Ci.nsISupports,
+  	Ci.nntIMsimHTTPListener
+  ])
 };
-
-var myModule = {
-
-  registerSelf : function(compMgr, fileSpec, location, type) {
-    var compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    compMgr.registerFactoryLocation(kMSIM_CID, kMSIM_NAME,
-        kMSIM_CONTRACTID, fileSpec, location, type);
-    var catMgr = Cc["@mozilla.org/categorymanager;1"]
-        .getService(Ci.nsICategoryManager);
-    catMgr.addCategoryEntry("app-startup", kMSIM_NAME, kMSIM_CONTRACTID,
-        true, true);
-  },
-
-  getClassObject : function(compMgr, cid, iid) {
-    if (!cid.equals(kMSIM_CID))
-      throw Cr.NS_ERROR_NO_INTERFACE;
-
-    if (!iid.equals(Ci.nsIFactory))
-      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-
-    return myFactory;
-  },
-
-  canUnload : function(compMgr) {
-    return true;
-  }
-};
-
-var myFactory = {
-  QueryInterface : function(aIID) {
-    if (!aIID.equals(Ci.nsISupports) && !aIID.equals(Ci.nsIFactory))
-      throw Cr.NS_ERROR_NO_INTERFACE;
-    return this;
-  },
-
-  createInstance : function(outer, iid) {
-    if (outer != null) {
-      throw Cr.NS_ERROR_NO_AGGREGATION;
-    }
-    var component = new myHTTPListener();
-    return component.QueryInterface(iid);
-  }
-};
-
-function NSGetModule(compMgr, fileSpec) {
-  return myModule;
-}
 
 function rewriteURI(subject, url) {
   var documentLoad = subject.loadFlags & (1<<16);
@@ -310,4 +276,12 @@ function rewriteURI(subject, url) {
     webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
     //webNav.loadURI(url, subject.loadFlags, null, null, null);
   }
+}
+
+if (XPCOMUtils.generateNSGetFactory) {
+  // Firefox >= 4
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([myHTTPListener]);
+} else {
+  // Firefox <= 3.6.*
+  var NSGetModule = XPCOMUtils.generateNSGetModule([myHTTPListener]);
 }

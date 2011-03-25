@@ -17,17 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK ***** */
 
-/* components defined in this file */
+dump("[msim]load start msimStreamConverter.js\n");
 
-const MSIMSTREAM_CONVERT_CONVERSION = "?from=text/msim.html&to=*/*";
-const MSIMSTREAM_CONVERTER_CONTRACTID = "@mozilla.org/streamconv;1"
-		+ MSIMSTREAM_CONVERT_CONVERSION;
-const MSIMSTREAM_CONVERTER_CID = Components
-		.ID("{202e8afd-d3f2-4615-bde7-62afd8cd898f}");
+/* components defined in this file */
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
+const Cu = Components.utils;
+
+const NAME = "FireMobileSimulator StreamConverter";
+const CONVERSION = "?from=text/msim.html&to=*/*";
+const CONTRACTID = "@mozilla.org/streamconv;1" + CONVERSION;
+const CID = Components.ID("{202e8afd-d3f2-4615-bde7-62afd8cd898f}");
+
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 // Load our component JS file.
-var jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-		.getService(Components.interfaces.mozIJSSubScriptLoader);
+var jsLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 jsLoader.loadSubScript("chrome://msim/content/common/ecl.js");
 jsLoader.loadSubScript("chrome://msim/content/common/carrier.js");
 jsLoader.loadSubScript("chrome://msim/content/common/pref.js");
@@ -38,25 +44,31 @@ jsLoader.loadSubScript("chrome://msim/content/mpc/softbank.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc.js");
 
 /* text/msim.html -> text/html stream converter */
-function MsimStreamConverter() {
-	this.logger = Components.classes["@mozilla.org/consoleservice;1"]
-			.getService(Components.interfaces.nsIConsoleService);
-}
+function MsimStreamConverter() {};
+MsimStreamConverter.prototype = {
 
-MsimStreamConverter.prototype.QueryInterface = function(iid) {
+  // Firefox <= 3.6.*
+  classDescription: NAME,
 
-	if (iid.equals(Components.interfaces.nsISupports)
-			|| iid.equals(Components.interfaces.nsIStreamConverter)
-			|| iid.equals(Components.interfaces.nsIStreamListener)
-			|| iid.equals(Components.interfaces.nsIRequestObserver))
-		return this;
+  // Firefox <= 3.6.*
+  contractID: CONTRACTID,
 
-	throw Components.results.NS_ERROR_NO_INTERFACE;
+  classID: CID,
 
-};
+  // Firefox <= 3.6.*
+  _xpcom_categories: [{category: "@mozilla.org/streamconv;1",
+                       entry: CONVERSION,
+                       value: NAME,
+                       service: true}],
 
-// nsIRequestObserver methods
-MsimStreamConverter.prototype.onStartRequest = function(aRequest, aContext) {
+  QueryInterface : XPCOMUtils.generateQI([
+  	Ci.nsIStreamConverter,
+  	Ci.nsIStreamListener,
+  	Ci.nsIRequestObserver
+  ]),
+  
+  // nsIRequestObserver methods
+  onStartRequest : function(aRequest, aContext) {
 	dump("[msim]onStartRequest\n");
 	this.data = "";
 	this.uri = aRequest.QueryInterface(Components.interfaces.nsIChannel).URI.spec;
@@ -68,11 +80,10 @@ MsimStreamConverter.prototype.onStartRequest = function(aRequest, aContext) {
 	this.channel.contentType = "text/html";
 
 	this.listener.onStartRequest(this.channel, aContext);
-};
-
-// This is RequestObserver's method
-MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
-		aStatusCode) {
+  },
+  
+  // This is RequestObserver's method
+  onStopRequest : function(aRequest, aContext, aStatusCode) {
 	dump("[msim]onStopRequest\n");
 
 	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
@@ -122,11 +133,10 @@ MsimStreamConverter.prototype.onStopRequest = function(aRequest, aContext,
 	this.listener.onDataAvailable(this.channel, aContext, sis, 0,
 			this.data.length);
 	this.listener.onStopRequest(this.channel, aContext, aStatusCode);
+  },
 
-};
-
-// nsIStreamListener methods
-MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
+  // nsIStreamListener methods
+  onDataAvailable : function(aRequest, aContext,
 		aInputStream, aOffset, aCount) {
 	dump("[msim]onDataAvailable\n");
 	var si = Components.classes["@mozilla.org/scriptableinputstream;1"]
@@ -150,91 +160,43 @@ MsimStreamConverter.prototype.onDataAvailable = function(aRequest, aContext,
 	}
 
 	this.data += data;
-};
-
-// nsIStreamConverter methods
-// old name (before bug 242184)...
-MsimStreamConverter.prototype.AsyncConvertData = function(aFromType, aToType,
+  },
+  
+  // nsIStreamConverter methods
+  // old name (before bug 242184)...
+  AsyncConvertData : function(aFromType, aToType,
 		aListener, aCtxt) {
 	dump("[msim]AsyncConvertData\n");
 	this.asyncConvertData(aFromType, aToType, aListener, aCtxt);
-};
+  },
 
-// renamed to...
-MsimStreamConverter.prototype.asyncConvertData = function(aFromType, aToType,
+  // renamed to...
+  asyncConvertData : function(aFromType, aToType,
 		aListener, aCtxt) {
 	// Store the listener passed to us
 	this.listener = aListener;
-};
-
-// Old name (before bug 242184):
-MsimStreamConverter.prototype.Convert = function(aFromStream, aFromType,
+  },
+  
+  // Old name (before bug 242184):
+  Convert : function(aFromStream, aFromType,
 		aToType, aCtxt) {
 	return this.convert(aFromStream, aFromType, aToType, aCtxt);
-};
+  },
 
-// renamed to...
-MsimStreamConverter.prototype.convert = function(aFromStream, aFromType,
+  // renamed to...
+  convert : function(aFromStream, aFromType,
 		aToType, aCtxt) {
 	return aFromStream;
-};
-
-/* stream converter factory object (MsimStreamConverter) */
-var MsimStreamConverterFactory = new Object();
-
-MsimStreamConverterFactory.createInstance = function(outer, iid) {
-	if (outer != null)
-		throw Components.results.NS_ERROR_NO_AGGREGATION;
-
-	if (iid.equals(Components.interfaces.nsISupports)
-			|| iid.equals(Components.interfaces.nsIStreamConverter)
-			|| iid.equals(Components.interfaces.nsIStreamListener)
-			|| iid.equals(Components.interfaces.nsIRequestObserver)) {
-		return new MsimStreamConverter();
-	}
-	throw Components.results.NS_ERROR_INVALID_ARG;
+  }
 
 };
 
-var MsimBrowserModule = new Object();
-
-MsimBrowserModule.registerSelf = function(compMgr, fileSpec, location, type) {
-
-	var compMgr = compMgr
-			.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-
-	compMgr.registerFactoryLocation(MSIMSTREAM_CONVERTER_CID,
-			"FireMobileSimulator Stream Converter",
-			MSIMSTREAM_CONVERTER_CONTRACTID, fileSpec, location, type);
-
-	var catman = Components.classes["@mozilla.org/categorymanager;1"]
-			.getService(Components.interfaces.nsICategoryManager);
-	catman.addCategoryEntry("@mozilla.org/streamconv;1",
-			MSIMSTREAM_CONVERT_CONVERSION,
-			"msim.html to HTML stream converter", true, true);
-
-};
-
-MsimBrowserModule.unregisterSelf = function(compMgr, fileSpec, location) {
-};
-
-MsimBrowserModule.getClassObject = function(compMgr, cid, iid) {
-
-	if (cid.equals(MSIMSTREAM_CONVERTER_CID))
-		return MsimStreamConverterFactory;
-
-	if (!iid.equals(Components.interfaces.nsIFactory))
-		throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-	throw Components.results.NS_ERROR_NO_INTERFACE;
-
-};
-
-MsimBrowserModule.canUnload = function(compMgr) {
-	return true;
-};
-
-/* entrypoint */
-function NSGetModule(compMgr, fileSpec) {
-	return MsimBrowserModule;
+if (XPCOMUtils.generateNSGetFactory) {
+  // Firefox >= 4
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([MsimStreamConverter]);
+} else {
+  // Firefox <= 3.6.*
+  var NSGetModule = XPCOMUtils.generateNSGetModule([MsimStreamConverter]);
 }
+
+dump("[msim]load end msimStreamConverter.js\n");
