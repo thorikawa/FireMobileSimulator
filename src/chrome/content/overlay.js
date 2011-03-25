@@ -59,20 +59,7 @@ firemobilesimulator.overlay.onInitialize = function() {
 		// firemobilesimulator.common.pref.setBoolPref("msim.config.initialized",
 		// true);
 	}
-	firemobilesimulator.core.updateIcon();
-	
-	// リリースノート表示処理
-	var Em = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager);
-	var addon = Em.getItemForID("{77cc852e-6b45-11dd-929f-d30256d89593}");
-	var currentVersion = addon.version;
-	var versionLastShowed = firemobilesimulator.common.pref.copyUnicharPref("msim.data.lastversion");
-	if (versionLastShowed != currentVersion) {
-		dump("showReleaseNote\n");
-		// preferenceに記録されたバージョンと、現在のバージョンが異なるとき（＝アップデート時）
-		window.getBrowser().addTab('http://firemobilesimulator.org/?FireMobileSimulator'+currentVersion+'%A5%EA%A5%EA%A1%BC%A5%B9%A5%CE%A1%BC%A5%C8');
-		dump("showReleaseNote end\n");
-		firemobilesimulator.common.pref.setUnicharPref("msim.data.lastversion", currentVersion);
-	}
+	firemobilesimulator.core.updateIcon();	
 };
 
 firemobilesimulator.overlay.onUnload = function() {
