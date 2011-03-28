@@ -102,7 +102,7 @@ firemobilesimulator.core.deleteLimitHost = function (deletedId) {
     firemobilesimulator.common.pref.setUnicharPref(ePrefKey, firemobilesimulator.common.pref.copyUnicharPref(sPrefKey));
     firemobilesimulator.common.pref.deletePref(sPrefKey);
   }
-  firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
+  firemobilesimulator.common.pref.setIntPref("msim.limitHost.count", count-1);
 };
 
 firemobilesimulator.core.updateIcon = function () {
