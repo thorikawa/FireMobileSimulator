@@ -19,6 +19,7 @@
 
 var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
+var fms = firemobilesimulator;
 if(!firemobilesimulator.common) firemobilesimulator.common = {};
 if(!firemobilesimulator.common.util) firemobilesimulator.common.util = {};
 
@@ -42,8 +43,32 @@ firemobilesimulator.common.util.openURL = function(url) {
 	}
 };
 
+firemobilesimulator.common.util.escapeJavaScript = function (str) {
+  
+};
+
+firemobilesimulator.common.util.escapeHTML = function(_strTarget){
+    var div = document.createElement('div');
+    var text =  document.createTextNode('');
+    div.appendChild(text);
+    text.data = _strTarget;
+    return div.innerHTML;
+}
+
+	function meta_to_escape(str,flg) {
+		str = str.replace(/&/g,"&amp;");
+		str = str.replace(/"/g,"&quot;");
+		str = str.replace(/'/g,"&#039;");
+		str = str.replace(/</g,"&lt;");
+		str = str.replace(/>/g,"&gt;");
+		if(flg == true)
+		{
+			str = str.replace(/\n/g,"<br>");
+		}
+		return str;
+	}
+
 /**
- * 
  * @param {} path パス
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
@@ -197,7 +222,35 @@ firemobilesimulator.common.util.getHiddenTag = function(params, deviceId) {
 			var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID, deviceId);
 			params[i] = uid;
 		}
-		r += '<input type="hidden" name="'+i+'" value="'+params[i]+'" />\n';
+    dump("generate hidden tag key=[" + i + "] value=[" + params[i] + "]\n");
+		r += '<input type="hidden" name="' + fms.common.util.escapeAttribute(i) + '" value="' + fms.common.util.escapeAttribute(params[i]) + '" />\n';
 	}
 	return r;
 };
+
+fms.common.util.escapeUri = function (uri) {
+    if (uri.match(/^http:/i) || uri.match(/^https:/i)){
+        return uri;
+    } else {
+        uri = uri.replace(/:/g, "&#x3a;");
+        dump("replaced:" + uri+"\n");
+        return uri;
+    }
+}
+
+fms.common.util.escapeHTML = function (val) {
+  if ($) {
+    // if jQuery is loaded
+    return $("<div/>").text(val).html();
+  } else {
+    dump("jQuery is not loaded. return unescaped.\n");
+    return val;
+  }
+}
+
+fms.common.util.escapeAttribute = function (val) {
+  val = val.replace(/&/, "&amp;");
+  val = val.replace(/\"/g, "&quot;");
+  val = val.replace(/</g, "&lt;");
+  return val;
+}
