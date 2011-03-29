@@ -44,7 +44,7 @@ firemobilesimulator.openiareaInit = function(params){
 <div>あなたの現在のエリアは'+areaname+'です。</div>\
 <div>この情報を情報提供者に送信します。</div>\
 <div>よろしいですか？</div>\
-<form method="POST" action='+fms.common.util.escapeAttribute(fms.common.util.escapeUri(nl))+'>\
+<form method="POST" action="' + fms.common.util.escapeAttribute(fms.common.util.escapeUri(nl)) + '">\
 <input type="hidden" name="AREACODE" value="'+areacode+'">';
 body += fms.common.util.getHiddenTag(arg1params, deviceId);
 body += fms.common.util.getHiddenTag(arg2params, deviceId);
