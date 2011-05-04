@@ -42,6 +42,7 @@ jsLoader.loadSubScript("chrome://msim/content/mpc/ezweb.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc/docomo.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc/softbank.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc.js");
+jsLoader.loadSubScript("chrome://msim/content/common/util.js");
 
 /* text/msim.html -> text/html stream converter */
 function MsimStreamConverter() {};
@@ -86,8 +87,28 @@ MsimStreamConverter.prototype = {
   onStopRequest : function(aRequest, aContext, aStatusCode) {
 	dump("[msim]onStopRequest\n");
 
-	var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-	var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".carrier");
+    var id;
+    var carrier;
+    // タブごとに端末選択機能が有効になっている場合はタブから端末情報を取得する
+    var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+    if (tabselect_enabled) {
+      var tab = fms.common.util.getTabFromHttpChannel(this.channel);
+      if (tab) {
+        //id = tab.getAttribute("firemobilesimulator-device-id");
+        var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
+        id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+        var pref_prefix = "msim.devicelist." + id;
+        carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+      }
+    } else {
+      id = fms.common.pref.copyUnicharPref("msim.current.id");
+      var pref_prefix = "msim.devicelist." + id;
+      carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+    }
+    if (!id || !carrier) {
+      dump("[msim][streamConverter]id or carrier is null\n");
+      return;
+    }
 
 	//絵文字変換
 	dump("[msim]convert pictogram in msimStreamConverter.js\n");

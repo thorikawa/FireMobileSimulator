@@ -181,3 +181,4 @@ pref("msim.devicelist.8.screen-height", "480");
 pref("msim.devicelist.8.device-id", "700");
 pref("msim.limitHost.enabled", false);
 pref("msim.limitHost.count", 0);
+pref("msim.config.tabselect.enabled", false);

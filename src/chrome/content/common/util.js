@@ -19,28 +19,29 @@
 
 var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
-var fms = firemobilesimulator;
-if(!firemobilesimulator.common) firemobilesimulator.common = {};
-if(!firemobilesimulator.common.util) firemobilesimulator.common.util = {};
+var fms;
+if(!fms) fms = firemobilesimulator;
+if(!fms.common) fms.common = {};
+if(!fms.common.util) fms.common.util = {};
 
 // Opens the URL in a new tab
-firemobilesimulator.common.util.openURL = function(url) {
-	var parentWindow = null;
+fms.common.util.openURL = function(url) {
+  var parentWindow = null;
 
-	// If there is a parent window
-	if (window.opener) {
-		// If there is a grand parent window
-		parentWindow = window.opener.opener
-				? window.opener.opener
-				: window.opener;
-	}
+  // If there is a parent window
+  if (window.opener) {
+    // If there is a grand parent window
+    parentWindow = window.opener.opener
+        ? window.opener.opener
+        : window.opener;
+  }
 
-	// If a parent window was found
-	if (parentWindow) {
-		parentWindow.getBrowser().selectedTab = parentWindow.getBrowser()
-				.addTab(url);
-		window.close();
-	}
+  // If a parent window was found
+  if (parentWindow) {
+    parentWindow.getBrowser().selectedTab = parentWindow.getBrowser()
+        .addTab(url);
+    window.close();
+  }
 };
 
 /**
@@ -48,13 +49,13 @@ firemobilesimulator.common.util.openURL = function(url) {
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-firemobilesimulator.common.util.getParamsFromPath = function(path, func) {
-	var params = {};
-	var qindex = path.indexOf("?");
-	if (qindex >= 0) {
-		params = firemobilesimulator.common.util.getParamsFromQuery(path.substring(qindex+1), func);
-	}
-	return params;
+fms.common.util.getParamsFromPath = function(path, func) {
+  var params = {};
+  var qindex = path.indexOf("?");
+  if (qindex >= 0) {
+    params = firemobilesimulator.common.util.getParamsFromQuery(path.substring(qindex+1), func);
+  }
+  return params;
 };
 
 /**
@@ -63,28 +64,28 @@ firemobilesimulator.common.util.getParamsFromPath = function(path, func) {
  * @param {} func パラメータの値をデコードする関数(デフォルトではdecodeURIが使用される)
  * @return {}
  */
-firemobilesimulator.common.util.getParamsFromQuery = function(q, func) {
-	if (!func || !func instanceof Function) func = decodeURI;
-	//dump("##getParamsFromQuery start\n");
-	var params = {};
-	var values = q.split("&");
-	values.forEach(function(v, i) {
-		//dump("###"+i+"\n");
-		var eindex = v.indexOf("=");
-		if (eindex == -1) {
-			return;
-		}
-		//dump("decode:"+v.substring(eindex+1)+"\n");
-		var value;
-		try {
-			value = func(v.substring(eindex+1));
-		} catch (exception) {
-			dump("[msim]Warning:decodeURI:"+v.substring(eindex+1)+"\n");
-			value = v.substring(eindex+1);
-		}
-		params["" + v.substring(0,eindex)] = "" + value;
-	});
-	return params;
+fms.common.util.getParamsFromQuery = function(q, func) {
+  if (!func || !func instanceof Function) func = decodeURI;
+  //dump("##getParamsFromQuery start\n");
+  var params = {};
+  var values = q.split("&");
+  values.forEach(function(v, i) {
+    //dump("###"+i+"\n");
+    var eindex = v.indexOf("=");
+    if (eindex == -1) {
+      return;
+    }
+    //dump("decode:"+v.substring(eindex+1)+"\n");
+    var value;
+    try {
+      value = func(v.substring(eindex+1));
+    } catch (exception) {
+      dump("[msim]Warning:decodeURI:"+v.substring(eindex+1)+"\n");
+      value = v.substring(eindex+1);
+    }
+    params["" + v.substring(0,eindex)] = "" + value;
+  });
+  return params;
 };
 
 /**
@@ -92,47 +93,47 @@ firemobilesimulator.common.util.getParamsFromQuery = function(q, func) {
  * @param {} lat
  * @param {} lon
  */
-firemobilesimulator.common.util.Point = function(lat, lon) {
-	this.lat=lat;
-	this.lon=lon;
+fms.common.util.Point = function(lat, lon) {
+  this.lat=lat;
+  this.lon=lon;
 };
 
-firemobilesimulator.common.util.Point.prototype = {
-	lat : null,
-	lon : null,
-	datum : "0",
-	unit : "0",
-	DATUM_WGS : "0",
-	DATUM_TOKYO : "1",
-	UNIT_DMS : "0",
-	UNIT_DEGREE : "1",
-	toDms : function() {
-		if (this.unit == this.UNIT_DEGREE) {
-			this.lat = firemobilesimulator.common.util.degree2dms(this.lat);
-			this.lon = firemobilesimulator.common.util.degree2dms(this.lon);
-			this.unit = this.UNIT_DMS;
-		}
-	},
-	toDegree : function() {
-		if (this.unit == this.UNIT_DMS) {
-			this.lat = firemobilesimulator.common.util.dms2degree(this.lat);
-			this.lon = firemobilesimulator.common.util.dms2degree(this.lon);
-			this.unit = this.UNIT_DEGREE;
-		}
-	},
-	toWgs : function() {
-		dump("Point.toWgs() Error:Not implemented.Do nothing.\n");
-	},
-	//wgs84測地系で与えられたdegreeを、tokyo測地系に変換する
-	toTokyo : function() {
-		if (this.datum == this.DATUM_WGS) {
-			this.toDegree();
-			//cf.http://homepage3.nifty.com/Nowral/02_DATUM/02_DATUM.html#HowTo
-			this.lat = this.lat + 0.00010696*this.lat - 0.000017467*this.lon - 0.0046020;
-			this.lon = this.lon + 0.000046047*this.lat + 0.000083049*this.lon - 0.010041;
-			this.datum = this.DATUM_TOKYO;
-		}
-	}
+fms.common.util.Point.prototype = {
+  lat : null,
+  lon : null,
+  datum : "0",
+  unit : "0",
+  DATUM_WGS : "0",
+  DATUM_TOKYO : "1",
+  UNIT_DMS : "0",
+  UNIT_DEGREE : "1",
+  toDms : function() {
+    if (this.unit == this.UNIT_DEGREE) {
+      this.lat = firemobilesimulator.common.util.degree2dms(this.lat);
+      this.lon = firemobilesimulator.common.util.degree2dms(this.lon);
+      this.unit = this.UNIT_DMS;
+    }
+  },
+  toDegree : function() {
+    if (this.unit == this.UNIT_DMS) {
+      this.lat = firemobilesimulator.common.util.dms2degree(this.lat);
+      this.lon = firemobilesimulator.common.util.dms2degree(this.lon);
+      this.unit = this.UNIT_DEGREE;
+    }
+  },
+  toWgs : function() {
+    dump("Point.toWgs() Error:Not implemented.Do nothing.\n");
+  },
+  //wgs84測地系で与えられたdegreeを、tokyo測地系に変換する
+  toTokyo : function() {
+    if (this.datum == this.DATUM_WGS) {
+      this.toDegree();
+      //cf.http://homepage3.nifty.com/Nowral/02_DATUM/02_DATUM.html#HowTo
+      this.lat = this.lat + 0.00010696*this.lat - 0.000017467*this.lon - 0.0046020;
+      this.lon = this.lon + 0.000046047*this.lat + 0.000083049*this.lon - 0.010041;
+      this.datum = this.DATUM_TOKYO;
+    }
+  }
 };
 
 /**
@@ -140,15 +141,15 @@ firemobilesimulator.common.util.Point.prototype = {
  * @param {} dms
  * @return {}
  */
-firemobilesimulator.common.util.dms2degree = function(dms) {
-	if (!/[-+]?(\d+)\.(\d+)\.(\d+\.\d+)/.test(dms)) {
-		return null;
-	}
-	var dms1 = parseInt(RegExp.$1);
-	var dms2 = parseInt(RegExp.$2);
-	var dms3 = parseFloat(RegExp.$3);
-	var degree = dms1+dms2/60+dms3/3600;
-	return degree;
+fms.common.util.dms2degree = function(dms) {
+  if (!/[-+]?(\d+)\.(\d+)\.(\d+\.\d+)/.test(dms)) {
+    return null;
+  }
+  var dms1 = parseInt(RegExp.$1);
+  var dms2 = parseInt(RegExp.$2);
+  var dms3 = parseFloat(RegExp.$3);
+  var degree = dms1+dms2/60+dms3/3600;
+  return degree;
 };
 
 /**
@@ -156,14 +157,14 @@ firemobilesimulator.common.util.dms2degree = function(dms) {
  * @param {} degree
  * @return {}
  */
-firemobilesimulator.common.util.degree2dms = function(degree) {
-	var n = 1000;
-	var u = Math.floor(degree*3600*n + 0.5);
-	var s = parseInt(u/n) % 60;
-	var m = parseInt(u/60/n) % 60;
-	var d = parseInt(u/3600/n);
-	var u = u % n;
-	return d+"."+m.toString().padding("0",2)+"."+s.toString().padding("0",2)+"."+u;
+fms.common.util.degree2dms = function(degree) {
+  var n = 1000;
+  var u = Math.floor(degree*3600*n + 0.5);
+  var s = parseInt(u/n) % 60;
+  var m = parseInt(u/60/n) % 60;
+  var d = parseInt(u/3600/n);
+  var u = u % n;
+  return d+"."+m.toString().padding("0",2)+"."+s.toString().padding("0",2)+"."+u;
 };
 
 /**
@@ -173,34 +174,34 @@ firemobilesimulator.common.util.degree2dms = function(degree) {
  * @param {} len 埋める長さ
  */
 String.prototype.padding = function(pad, len) {
-	var newString = this.valueOf();
-	while (newString.length<len) {
-		newString = pad+newString;
-	}
-	return new String(newString);
+  var newString = this.valueOf();
+  while (newString.length<len) {
+    newString = pad+newString;
+  }
+  return new String(newString);
 };
 
-firemobilesimulator.common.util.getYYYYMMDDHHmm = function() {
-	var now = new Date();
-	var y = (now.getFullYear()).toString();
-	var m = (now.getMonth()+1).toString().padding("0",2);
-	var d = now.getDate().toString().padding("0",2);
-	var h = now.getHours().toString().padding("0",2);
-	var min = now.getMinutes().toString().padding("0",2);
-	return y+m+d+h+min;
+fms.common.util.getYYYYMMDDHHmm = function() {
+  var now = new Date();
+  var y = (now.getFullYear()).toString();
+  var m = (now.getMonth()+1).toString().padding("0",2);
+  var d = now.getDate().toString().padding("0",2);
+  var h = now.getHours().toString().padding("0",2);
+  var min = now.getMinutes().toString().padding("0",2);
+  return y+m+d+h+min;
 };
 
-firemobilesimulator.common.util.getHiddenTag = function(params, deviceId) {
-	var r = "";
-	for (var i in params) {
-		if (i.toUpperCase() == "UID" && params[i].toUpperCase() == "NULLGWDOCOMO") {
-			var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID, deviceId);
-			params[i] = uid;
-		}
+fms.common.util.getHiddenTag = function(params, deviceId) {
+  var r = "";
+  for (var i in params) {
+    if (i.toUpperCase() == "UID" && params[i].toUpperCase() == "NULLGWDOCOMO") {
+      var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID, deviceId);
+      params[i] = uid;
+    }
     // dump("generate hidden tag key=[" + i + "] value=[" + params[i] + "]\n");
-		r += '<input type="hidden" name="' + fms.common.util.escapeAttribute(i) + '" value="' + fms.common.util.escapeAttribute(params[i]) + '" />\n';
-	}
-	return r;
+    r += '<input type="hidden" name="' + fms.common.util.escapeAttribute(i) + '" value="' + fms.common.util.escapeAttribute(params[i]) + '" />\n';
+  }
+  return r;
 };
 
 fms.common.util.escapeUri = function (uri) {
@@ -211,7 +212,7 @@ fms.common.util.escapeUri = function (uri) {
         // dump("replaced:" + uri+"\n");
         return uri;
     }
-}
+};
 
 fms.common.util.escapeHTML = function (val) {
   if ($) {
@@ -221,11 +222,55 @@ fms.common.util.escapeHTML = function (val) {
     dump("jQuery is not loaded. return unescaped.\n");
     return val;
   }
-}
+};
 
 fms.common.util.escapeAttribute = function (val) {
   val = val.replace(/&/, "&amp;");
   val = val.replace(/\"/g, "&quot;");
   val = val.replace(/</g, "&lt;");
   return val;
-}
+};
+
+fms.common.util.getTabFromHttpChannel = function (httpChannel) {
+  var tab = null;
+  var callbacks = httpChannel.notificationCallbacks;
+  if (callbacks) {
+    if (callbacks instanceof Components.interfaces.nsIXMLHttpRequest) {
+      // XMLHTTPRequestの場合こっちを通るっぽい？
+      return null;
+    }
+
+    var interfaceRequestor = callbacks.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+    var docShell = null;
+    try {
+      docShell = interfaceRequestor.getInterface(Components.interfaces.nsIDocShell);
+      var targetDoc = interfaceRequestor
+          .getInterface(Components.interfaces.nsIDOMWindow).document;
+      //dump("docShell:"+docShell+"\n");
+      //dump("docShell's URI:"+docShell.currentURI.asciiSpec+"\n")
+    } catch (e) {
+      //fav.iconとか<link rel=prefetch>のリクエストの場合、getInterfaceできない模様
+      //dump("if:"+interfaceRequestor+"\n");
+      dump("[msim][Error]"+e+"\n");
+      dump("[msim]targetURI:"+httpChannel.URI.asciiSpec+"\n");
+      return null;
+    }
+    if (!targetDoc) {
+      dump("[msim][Error]targetDoc is undefined\n");
+      return null;
+    }
+    var webNav = httpChannel.notificationCallbacks
+        .getInterface(Components.interfaces.nsIWebNavigation);
+    var mainWindow = webNav.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+        .rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+        .getInterface(Components.interfaces.nsIDOMWindow);
+
+    var gBrowser = mainWindow.getBrowser();
+    var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(targetDoc);
+    if (targetBrowserIndex != -1) {
+      //dump("get tab info.index:"+targetBrowserIndex+"\n");
+      tab = gBrowser.tabContainer.childNodes[targetBrowserIndex];
+    }
+  }
+  return tab;
+};

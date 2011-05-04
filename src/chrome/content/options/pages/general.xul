@@ -9,7 +9,7 @@
 	<groupbox>
 		<caption label="&msim.options.general.display.label;"/>
 		<grid>
-			<rows id="msim.options.general.quit.rows">
+			<rows id="msim.options.general.display.rows">
 				<row align="center">
 					<checkbox id="msim-checkbox-general-force-screen-width" label="&msim.options.general.display.force-screen-width.label;"/>
 				</row>
@@ -28,6 +28,17 @@
 		</grid>
 	</groupbox>
 
+	<groupbox>
+		<caption label="&msim.options.deviceselect.label;"/>
+		<grid>
+			<rows id="msim.options.general.tabselect.rows">
+				<row align="center">
+					<checkbox id="msim-checkbox-general-tabselect" label="&msim.options.deviceselect.tabselect.label;"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+	
 	<separator/>
 	<hbox>
 		<spacer flex="1"/>

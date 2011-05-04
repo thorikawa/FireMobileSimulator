@@ -63,16 +63,32 @@ myHTTPListener.prototype = {
     }
 
     // dump("topic:"+topic+",subject="+subject+"\n");
-    var id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-    var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
+
+    var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);    
+    var id;
+    var carrier;
+    // タブごとに端末選択機能が有効になっている場合はタブから端末情報を取得する
+    var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+    if (tabselect_enabled) {
+      var tab = fms.common.util.getTabFromHttpChannel(httpChannel);
+      if (tab) {
+        //id = tab.getAttribute("firemobilesimulator-device-id");
+        var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
+        id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+        var pref_prefix = "msim.devicelist." + id;
+        carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+      }
+    } else {
+      id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+      var pref_prefix = "msim.devicelist." + id;
+      carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+    }
     var isSimulate = firemobilesimulator.core.isSimulate(httpChannel.URI.host);
 
     if (id && isSimulate) {
       // dump("sumulate\n");
-      var pref_prefix = "msim.devicelist." + id;
-      var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
-      var registerFlag = firemobilesimulator.common.pref.getBoolPref("msim.config.register.enabled");
-      var useragent = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".useragent");
+      var registerFlag = fms.common.pref.getBoolPref("msim.config.register.enabled");
+      var useragent = fms.common.pref.copyUnicharPref(pref_prefix + ".useragent");
       if (firemobilesimulator.common.carrier.SOFTBANK == carrier) {
         useragent = firemobilesimulator.common.carrier.getSoftBankUserAgent(useragent, id);
       }else if (firemobilesimulator.common.carrier.DOCOMO == carrier) {
@@ -80,7 +96,6 @@ myHTTPListener.prototype = {
       }
 
       if (topic == "http-on-modify-request") {
-        var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
 
         // dump("[msim]httpChennel.name:"+httpChannel.name+"\n");
         // dump("[msim]httpChannel.asciiSpec:"+httpChannel.URI.asciiSpec+"\n");

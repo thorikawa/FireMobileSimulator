@@ -39,3 +39,5 @@
 <!ENTITY msim.options.limitHost.valid.label "指定したホストだけで動作するようにする">
 <!ENTITY msim.options.limitHost.host.label "ホスト設定">
 <!ENTITY msim.options.limitHost.host "ホスト">
+<!ENTITY msim.options.deviceselect.label "端末選択">
+<!ENTITY msim.options.deviceselect.tabselect.label "タブごとに端末を選択する">

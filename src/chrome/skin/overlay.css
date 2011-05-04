@@ -9,6 +9,16 @@
     list-style-image: url("chrome://msim/skin/msim_on.png");
 }
 
+image#msim-status-image
+{
+    list-style-image: url("chrome://msim/skin/msim_off.png");
+}
+
+image#msim-status-image[device="on"]
+{
+    list-style-image: url("chrome://msim/skin/msim_on.png");
+}
+
 #msim-menu
 {
     list-style-image: url("chrome://msim/skin/msim_off.png");
