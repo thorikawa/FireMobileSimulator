@@ -208,6 +208,9 @@ fms.overlay.BrowserOnLoad = function(objEvent) {
     var carrier = fms.common.pref.copyUnicharPref("msim.current.carrier");
     var id = fms.common.pref.copyUnicharPref("msim.current.id");
   }
+  if (!carrier) {
+    return;
+  }
 
   if (objEvent.originalTarget.nodeName != "#document") {
     dump("[msim]nodeName is not #document\n");
@@ -225,7 +228,7 @@ fms.overlay.BrowserOnLoad = function(objEvent) {
     //about:blankとかだとndDocument.location.hostnameを取得するときに例外を投げるケースがある。
     //Do nothing
   }
-  if (carrier && isSimulate) {
+  if (isSimulate) {
     var contentHandler = firemobilesimulator.contentHandler.factory(carrier);
     contentHandler && contentHandler.filter(ndDocument, id);
   }

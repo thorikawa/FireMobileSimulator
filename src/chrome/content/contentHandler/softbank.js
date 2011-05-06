@@ -19,13 +19,19 @@
 
 var firemobilesimulator;
 if (!firemobilesimulator)
-	firemobilesimulator = {};
+  firemobilesimulator = {};
 if (!firemobilesimulator.contentHandler)
-	firemobilesimulator.contentHandler = {};
+  firemobilesimulator.contentHandler = {};
 
 firemobilesimulator.contentHandler.softbank = {
-	filter : function (ndDocument, deviceId) {
-		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);		
-		ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey", "directkey"]), false);
-	}
+  filter : function (ndDocument, deviceId) {
+  
+    var mpc = firemobilesimulator.mpc.factory("SB");
+    mpc.setImagePath("chrome://msim/content/emoji");
+    var parser = new fms.contentHandler.parser(ndDocument, mpc);
+    parser.parse(ndDocument);
+    
+    firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);    
+    ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey", "directkey"]), false);
+  }
 };

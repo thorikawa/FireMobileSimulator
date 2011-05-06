@@ -134,15 +134,15 @@ MsimStreamConverter.prototype = {
 
 	if (firemobilesimulator.common.carrier.AU == carrier) {
 		dump("[msim]convertPictogram for AU\n");
-		this.data = mpc.convert(this.data);
+		this.data = mpc.preConvert(this.data);
 		var mpc2 = firemobilesimulator.mpc.factory(firemobilesimulator.common.carrier.DOCOMO);
 		mpc2.setImagePath("chrome://msim/content/emoji");
 		mpc2.charset = mpccharset;
-		this.data = mpc2.convert(this.data);
+		this.data = mpc2.preConvert(this.data);
 	} else if (carrier) {
 		dump("[msim]convertPictogram for DoCoMo or SoftBank\n");
 		//dump("[msim]convertPictogram for docomo or SoftBank\n");
-		this.data = mpc.convert(this.data);
+		this.data = mpc.preConvert(this.data);
 	}
 
 	var sis = Components.classes["@mozilla.org/io/string-input-stream;1"]

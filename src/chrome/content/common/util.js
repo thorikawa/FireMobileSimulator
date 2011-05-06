@@ -274,3 +274,10 @@ fms.common.util.getTabFromHttpChannel = function (httpChannel) {
   }
   return tab;
 };
+
+/**
+ * DOMツリー上で、指定されたノードの直後に新規ノードを追加する
+ */
+fms.common.util.insertAfter = function (newNode, node) {
+  node.parentNode.insertBefore(newNode, node.nextSibling);
+}

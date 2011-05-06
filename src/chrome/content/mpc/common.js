@@ -25,6 +25,7 @@ if(!firemobilesimulator.mpc.common) firemobilesimulator.mpc.common = {};
 firemobilesimulator.mpc.common.MPC_SJIS = "SJIS";
 firemobilesimulator.mpc.common.MPC_UTF8 = "UTF-8";
 firemobilesimulator.mpc.common.MPC_EUCJP = "EUC_JP";
+firemobilesimulator.mpc.common.UNICODE = "UNICODE";
 
 firemobilesimulator.mpc.common.HexStrings = function(hexstrings, charset) {
 	this.hexstrings = hexstrings || "";
@@ -47,8 +48,9 @@ firemobilesimulator.mpc.common.HexStrings.prototype = {
 			// 1バイト文字
 			this.i += 1;
 			return [ds];
-		} else if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS) {
+		} else if (this.charset == firemobilesimulator.mpc.common.MPC_SJIS || this.charset == firemobilesimulator.mpc.common.UNICODE) {
 			// 2バイト文字
+			dump("return unicode\n");
 			var ds2 = parseInt(this.hexstrings[this.i + 1], 16);
 			this.i += 2;
 			return [ds, ds2];
@@ -63,7 +65,7 @@ firemobilesimulator.mpc.common.HexStrings.prototype = {
 				this.i += 1;
 				return [ds];
 			}
-		}else{
+		} else {
 			this.i += 1;
 			return [ds];
 		}
