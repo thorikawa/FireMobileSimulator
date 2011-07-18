@@ -30,6 +30,15 @@
 				<label control="msim.options.limitHost.label" value="&msim.options.limitHost.host;" width="50"/>
 				<textbox id="msim.options.limitHost.label" width="270"/>
 			</row>
+      <!-- 端末指定をするためのmenulist -->
+			<row align="center">
+				<label control="msim.options.limitHost.deviceMenuList" value="&msim.options.limitHost.device;" width="50"/>
+				<menulist id="msim.options.limitHost.deviceMenuList">
+					<menupopup>
+						<menuitem label="なし" value="-1"/>
+					</menupopup>
+				</menulist>
+			</row>
 		</rows>
 	</grid>
 </dialog>

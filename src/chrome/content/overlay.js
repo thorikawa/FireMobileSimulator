@@ -207,7 +207,20 @@ fms.overlay.BrowserOnLoad = function(objEvent) {
   } else {
     var carrier = fms.common.pref.copyUnicharPref("msim.current.carrier");
     var id = fms.common.pref.copyUnicharPref("msim.current.id");
+
+    //ホスト制限に指定された端末があれば、その端末を使用する
+    if (ndDocument.contentType == "text/html") {
+      if(id){
+        //ホスト制限に指定された端末を取得する
+        var deviceObj = fms.core.getDeviceByLimitHost(ndDocument.location.hostname);
+        if(deviceObj){
+          id = deviceObj.index;
+          carrier = fms.common.pref.copyUnicharPref("msim.devicelist." + id + ".carrier");
+        }
+      }
+    }
   }
+
   if (!carrier) {
     return;
   }

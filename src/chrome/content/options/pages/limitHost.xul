@@ -27,9 +27,15 @@
 			<rows>
 				<row align="top">
 					<listbox flex="1" id="msim-listbox" rows="10" onselect="parent.firemobilesimulator.options.limitHostSelected()">
+            <!-- ホストと端末を表示する2カラムのlistbox -->
 						<listhead>
 							<listheader label="&msim.options.limitHost.host.label;"/>
+              <listheader label="&msim.options.limitHost.device.label;"/>
 						</listhead>
+            <listcols>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+            </listcols>
 					</listbox>
 				</row>
 				<row align="top">

@@ -54,6 +54,33 @@ firemobilesimulator.options.dialogs.limitHost.initializeLimitHost = function() {
 						+ firemobilesimulator.options.dialogs.limitHost.id
 						+ ".value");
 	}
+
+  //ホスト制限の入力ダイアログに表示する端末リストを初期化する
+  function initDeviceMenuList(){
+    var selectedDeviceId = -1; 
+	  if (firemobilesimulator.options.dialogs.limitHost.windowType == "edit") {
+      selectedDeviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.limitHost."+ firemobilesimulator.options.dialogs.limitHost.id + ".device-id");
+      if(! selectedDeviceId){
+        selectedDeviceId = -1;
+      }
+    }
+
+    var deviceMenuList = document.getElementById("msim.options.limitHost.deviceMenuList");
+    var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
+    //deviceMenuListにはデフォルトで"なし"という項目が入っているため、iは1からでOK
+    for (var i = 1; i <= deviceCount; i++) {
+      var device = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".label");
+      if (!device) continue;
+      var carrier = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".carrier")
+      var deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id")
+      deviceMenuList.appendItem(carrier + " " + device, deviceId, "");
+
+      if(deviceId == selectedDeviceId){
+        deviceMenuList.selectedIndex = i;
+      }
+    }
+  }
+  initDeviceMenuList();
 };
 
 
@@ -84,6 +111,18 @@ firemobilesimulator.options.dialogs.limitHost.saveLimitHost = function() {
 
 		firemobilesimulator.options.dialogs.limitHost.retVals.host = hostName;
 		firemobilesimulator.options.dialogs.limitHost.retVals.id = saveId;
+
+    //ホスト制限に指定された端末を保存する
+    function saveDeviceId(){
+      var deviceMenuList = document.getElementById("msim.options.limitHost.deviceMenuList");
+      var deviceId = -1;
+      if(deviceMenuList.selectedItem && deviceMenuList.value != -1){
+        deviceId = deviceMenuList.value;
+      }
+      firemobilesimulator.common.pref.setUnicharPref("msim.limitHost." + saveId + ".device-id", deviceId);
+		  firemobilesimulator.options.dialogs.limitHost.retVals.deviceId = deviceId;
+    }
+    saveDeviceId();
 	}
 	return true;
 };

@@ -82,7 +82,19 @@ myHTTPListener.prototype = {
       id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
       var pref_prefix = "msim.devicelist." + id;
       carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+
+      //ホスト制限に端末が指定されていればそれを優先する
+      if(id){
+        //ホスト制限に設定されている端末情報を取得する
+        var deviceObj = firemobilesimulator.core.getDeviceByLimitHost(httpChannel.URI.host);
+        if(deviceObj){
+          id = deviceObj.index;
+          pref_prefix = "msim.devicelist." + id;
+          carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+        }
+      }
     }
+
     var isSimulate = firemobilesimulator.core.isSimulate(httpChannel.URI.host);
 
     if (id && isSimulate) {

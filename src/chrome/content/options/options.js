@@ -56,10 +56,11 @@ fms.options.addLimitHost = function() {
     if (retVals.id) {
       var pageDocument = document.getElementById("msim-options-iframe").contentDocument;
       var listBox = pageDocument.getElementById("msim-listbox");
-      var listItem = listBox.appendItem(retVals.host,retVals.host);
-      listItem.setAttribute("id", retVals.id);
-      listBox.ensureElementIsVisible(listItem);
-      listBox.selectItem(listItem);
+      //listitemを生成して追加する
+      var listItem = fms.options.createLimitHostListitem(retVals.id, retVals.host, retVals.deviceId);
+      listBox.appendChild(listItem);
+			listBox.ensureElementIsVisible(listItem);
+			listBox.selectItem(listItem);
     }
   } else {
     dump("canceld?\n");
@@ -137,7 +138,13 @@ fms.options.editLimitHost = function() {
                         id, retVals)) {
       
       if (retVals.id) {
-        selectedItem.setAttribute("label",retVals.host);
+        //新たにlistitemを挿入して、古いlistitemは削除する
+        var listItem = firemobilesimulator.options.createLimitHostListitem(retVals.id, retVals.host, retVals.deviceId);
+        listBox.insertBefore(listItem, selectedItem);
+        var selectedIndex = listBox.selectedIndex;
+        listBox.removeItemAt(selectedIndex);
+        listBox.ensureElementIsVisible(listItem);
+        listBox.selectItem(listItem);
       }
       }
   } else {
@@ -231,6 +238,28 @@ fms.options.initializeDevices = function() {
   fms.options.deviceSelected();
 };
 
+//ホスト制限のlistboxに使用するlistitemを生成する
+fms.options.createLimitHostListitem = function(hostId, host, deviceId){
+  var hostCell = document.createElement("listcell");
+  hostCell.setAttribute("label", host);
+
+  var deviceCell = document.createElement("listcell");
+  var deviceName = "なし";
+  var deviceObj = fms.core.getDeviceByDeviceId(deviceId);
+  if(deviceObj){
+    deviceName = deviceObj.carrier + " " + deviceObj.label;
+  }
+  deviceCell.setAttribute("label", deviceName);
+
+  var listItem = document.createElement("listitem");
+  listItem.setAttribute("value", host);
+  listItem.setAttribute("id", hostId);
+  listItem.appendChild(hostCell);
+  listItem.appendChild(deviceCell);
+
+  return listItem;
+}
+
 // Initializes the limitHost page
 fms.options.initializeLimitHost = function() {
   dump("fms.options.initializeLimitHost\n");
@@ -242,7 +271,8 @@ fms.options.initializeLimitHost = function() {
       
   var listBox = pageDocument.getElementById("msim-listbox");
 
-  while (listBox.lastChild.tagName != "listhead") {
+  //listitemのみを削除する(listhead, listcolsは削除しない)
+	while (listBox.lastChild.tagName == "listitem") {
     dump("removeList:" + listBox.lastChild.tagName + "\n");
     listBox.removeChild(listBox.lastChild);
   }
@@ -252,8 +282,10 @@ fms.options.initializeLimitHost = function() {
     var host = fms.common.pref
         .copyUnicharPref("msim.limitHost." + i + ".value");
     if (host) {
-      var listItem = listBox.appendItem(host, host);
-      listItem.setAttribute("id", i);
+      //listitemを生成してlistboxに追加する
+      var deviceId = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".device-id");
+      var listitem = fms.options.createLimitHostListitem(i, host, deviceId);
+      listBox.appendChild(listitem);
     }
   }
   

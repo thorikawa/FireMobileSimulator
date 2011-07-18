@@ -74,6 +74,9 @@ fms.core.deleteDevice = function (deletedId) {
     fms.common.pref.deletePref(prefPrefix+attribute);
   });
 
+  //ホストの端末指定も削除する
+  firemobilesimulator.core.deleteLimitHostDeviceByDeviceId(deletedDeviceId);
+
   //各端末のidを再計算
   var count = fms.common.pref.getIntPref("msim.devicelist.count");
   for (let i=deletedId+1; i<=count; i++) {
@@ -142,11 +145,22 @@ fms.core.deleteLimitHost = function (deletedId) {
   var prefKey = "msim.limitHost." + deletedId + ".value";
   fms.common.pref.deletePref(prefKey);
 
+  //ホスト制限に指定している端末IDも削除する
+  var prefKey = "msim.limitHost." + deletedId + ".device-id";
+  fms.common.pref.deletePref(prefKey);
+
   //idを再計算
   var count = fms.common.pref.getIntPref("msim.limitHost.count");
   for (let i=deletedId+1; i<=count; i++) {
     let sPrefKey = "msim.limitHost." + i + ".value";
     let ePrefKey = "msim.limitHost." + (i-1) + ".value";
+
+    fms.common.pref.setUnicharPref(ePrefKey, fms.common.pref.copyUnicharPref(sPrefKey));
+    fms.common.pref.deletePref(sPrefKey);
+
+    //ホスト制限に指定している端末IDも移動させる
+    sPrefKey = "msim.limitHost." + i + ".device-id";
+    ePrefKey = "msim.limitHost." + (i-1) + ".device-id";
 
     fms.common.pref.setUnicharPref(ePrefKey, fms.common.pref.copyUnicharPref(sPrefKey));
     fms.common.pref.deletePref(sPrefKey);
@@ -354,4 +368,60 @@ fms.core.isSimulate = function (hostName) {
     });
   }
   return isSimulate;
+}
+
+//msim.devicelist.X.device-idが一致するデバイスを返す
+fms.core.getDeviceByDeviceId = function(deviceId){
+  var deviceCount = fms.common.pref.getIntPref("msim.devicelist.count");
+  var deviceIndex = -1;
+
+  for(var i = 1; i <= deviceCount; i++){
+    var _deviceId = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
+    if(_deviceId == deviceId){
+      deviceIndex = i;
+      break;
+    }
+  }
+
+  if(deviceIndex == -1){
+    return null;
+  }
+
+  var ret = {};
+  ret.id = deviceId;
+  ret.index = deviceIndex;
+  ret.label = fms.common.pref.copyUnicharPref("msim.devicelist." + deviceIndex + ".label");
+  ret.carrier = fms.common.pref.copyUnicharPref("msim.devicelist." + deviceIndex + ".carrier");
+  return ret;
+}
+
+//msim.limithost.X.valueがhostNameに一致するものをを探して、
+//そのホスト制限に指定されている端末情報を返す
+fms.core.getDeviceByLimitHost = function(hostName){
+  var limithost_enabled = fms.common.pref.getBoolPref("msim.limitHost.enabled");
+  if(! limithost_enabled){
+    return null;
+  }
+
+  var count = fms.common.pref.getIntPref("msim.limitHost.count");
+  for(var i = 1; i <= count; i++){
+   var host = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".value");
+   if(hostName.match(host)){
+     var deviceId = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".device-id");
+     return fms.core.getDeviceByDeviceId(deviceId);
+   }
+  }
+
+  return null;
+}
+
+//ホスト制限に指定されている端末でdeviceIdと一致する物を削除する
+fms.core.deleteLimitHostDeviceByDeviceId = function(deviceId){
+  var count = fms.common.pref.getIntPref("msim.limitHost.count");
+  for(var i = 1; i <= count; i++){
+    var _deviceId = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".device-id");
+    if(_deviceId == deviceId){
+      fms.common.pref.setUnicharPref("msim.limitHost." + i + ".device-id", "-1");
+    }
+  }
 }
