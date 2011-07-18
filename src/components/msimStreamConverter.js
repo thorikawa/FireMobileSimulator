@@ -43,6 +43,7 @@ jsLoader.loadSubScript("chrome://msim/content/mpc/docomo.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc/softbank.js");
 jsLoader.loadSubScript("chrome://msim/content/mpc.js");
 jsLoader.loadSubScript("chrome://msim/content/common/util.js");
+jsLoader.loadSubScript("chrome://msim/content/core.js");
 
 /* text/msim.html -> text/html stream converter */
 function MsimStreamConverter() {};
@@ -104,6 +105,17 @@ MsimStreamConverter.prototype = {
       id = fms.common.pref.copyUnicharPref("msim.current.id");
       var pref_prefix = "msim.devicelist." + id;
       carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+      
+      //ホスト制限に端末が指定されていればそれを優先する
+      if(id){
+        //ホスト制限に設定されている端末情報を取得する
+        var deviceObj = firemobilesimulator.core.getDeviceByLimitHost(this.channel.URI.host);
+        if(deviceObj){
+          id = deviceObj.index;
+          pref_prefix = "msim.devicelist." + id;
+          carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+        }
+      }
     }
     if (!id || !carrier) {
       dump("[msim][streamConverter]id or carrier is null\n");
