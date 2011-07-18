@@ -18,266 +18,313 @@
  * ***** END LICENSE BLOCK ***** */
 
 var firemobilesimulator;
-if (!firemobilesimulator)
-	firemobilesimulator = {};
-if (!firemobilesimulator.overlay)
-	firemobilesimulator.overlay = {};
+if (!firemobilesimulator) firemobilesimulator = {};
+var fms;
+if (!fms) fms = firemobilesimulator;
+if (!fms.overlay) fms.overlay = {};
 
-firemobilesimulator.overlay.onInitialize = function() {
-	dump("[msim]onInitialize\n");
+fms.overlay.onInitialize = function() {
+  // initialization code
+  dump("[msim]onInitialize\n");
 
-	firemobilesimulator.overlay.strings = document.getElementById("msim-strings");
-	var windowContent = window.getBrowser();
-	if (windowContent) {
-		try {
-			window.removeEventListener("load",
-					firemobilesimulator.overlay.onInitialize, false);
-		} catch (exception) {
-			dump("[msim]removeEventListner error:" + exception + "\n");
-		}
-		//windowContent.addEventListener("load",
-		//		firemobilesimulator.overlay.BrowserOnLoad, true);
-		//window.addEventListener("load",
-		//		firemobilesimulator.overlay.BrowserOnLoad, true);
-		var appcontent = document.getElementById("appcontent");   // ブラウザ
-		if (appcontent) {
-			//appcontent.addEventListener("DOMContentLoaded", firemobilesimulator.overlay.BrowserOnLoad, true);
-			appcontent.addEventListener("load", firemobilesimulator.overlay.BrowserOnLoad, true);
-			gBrowser.tabContainer.addEventListener('TabSelect', function(evt) {
-				firemobilesimulator.overlay.rewrite();
-			}, false);
-		} else {
-			dump("[msim]no appcontent.\n");
-		}
+  fms.overlay.strings = document
+      .getElementById("msim-strings");
+  // initialize user agent
+  var windowContent = window.getBrowser();
+  if (windowContent) {
+    try {
+      window.removeEventListener("load", fms.overlay.onInitialize, false);
+    } catch (exception) {
+      dump("[msim]removeEventListner error:" + exception + "\n");
+    }
+    //windowContent.addEventListener("load", fms.overlay.BrowserOnLoad, true);
+    //window.addEventListener("load", fms.overlay.BrowserOnLoad, true);
+    var appcontent = document.getElementById("appcontent");   // ブラウザ
+    if (appcontent) {
+      //appcontent.addEventListener("DOMContentLoaded", fms.overlay.BrowserOnLoad, true);
+      appcontent.addEventListener("load", fms.overlay.BrowserOnLoad, true);
+      // タブごとに端末選択機能のため、タブが選択されたときのイベントハンドラを追加
+      gBrowser.tabContainer.addEventListener('TabSelect', function(evt) { fms.overlay.rewrite(); }, false);
+    } else {
+      dump("[msim]no appcontent.\n");
+    }
 
-	}
+  }
 
-	var initialized = firemobilesimulator.common.pref
-			.getBoolPref("msim.config.initialized");
-	if (!initialized) {
-		// 何か初期化処理をしたい場合はここに記載
-		// firemobilesimulator.common.pref.setBoolPref("msim.config.initialized",
-		// true);
-	}
-	firemobilesimulator.core.updateIcon();
+  var initialized = fms.common.pref
+      .getBoolPref("msim.config.initialized");
+  if (!initialized) {
+    // 何か初期化処理をしたい場合はここに記載
+    // fms.common.pref.setBoolPref("msim.config.initialized",
+    // true);
+  }
+  fms.core.updateIcon();  
 };
 
-firemobilesimulator.overlay.onUnload = function() {
-	dump("[msim]onUnload\n");
-	var windowCount = 0;
-	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-			.getService(Components.interfaces.nsIWindowMediator)
-			.getEnumerator("navigator:browser");
+fms.overlay.onUnload = function() {
+  dump("[msim]onUnload\n");
+  var windowCount = 0;
+  var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Components.interfaces.nsIWindowMediator)
+      .getEnumerator("navigator:browser");
 
-	try {
-		window.removeEventListener("load",
-				firemobilesimulator.overlay.onInitialize, false);
-	} catch (exception) {
-		dump("[msim]removeEventListner error:" + exception + "\n");
-	}
+  try {
+    window.removeEventListener("load",
+        fms.overlay.onInitialize, false);
+  } catch (exception) {
+    dump("[msim]removeEventListner error:" + exception + "\n");
+  }
 
-	while (windowEnumeration.hasMoreElements()) {
-		windowEnumeration.getNext();
-		windowCount++;
-	}
+  while (windowEnumeration.hasMoreElements()) {
+    windowEnumeration.getNext();
+    windowCount++;
+  }
 
-	dump("[msim]windowcount:" + windowCount.toString() + "\n");
-	if (windowCount == 0) {
-		//完全終了時
-		//var resetOnQuit = firemobilesimulator.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
-		//if (resetOnQuit)
-		//	firemobilesimulator.core.resetDevice();
-	}
+  dump("[msim]windowcount:" + windowCount.toString() + "\n");
+  if (windowCount == 0) {
+    var resetOnQuit = fms.common.pref.getBoolPref("msim.config.general.reset-device-onquit");
+    if (resetOnQuit)
+      fms.core.resetDevice();
+  }
 
-	try {
-		window.removeEventListener("close",
-				firemobilesimulator.overlay.onUnload, false);
-	} catch (exception) {
-		dump("[msim]removeEventListner error:" + exception + "\n");
-	}
+  try {
+    window.removeEventListener("close", fms.overlay.onUnload, false);
+  } catch (exception) {
+    dump("[msim]removeEventListner error:" + exception + "\n");
+  }
 
 };
 
-firemobilesimulator.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
-	var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
+/**
+ * 端末選択のポップアップメニューを選択したときのイベントハンドラ
+ */
+fms.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
+  var optionsSeparator = document.getElementById("msim-separator2-" + suffix);
+  //dump(optionsSeparator);
 
-	this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
-					"msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
+  this.removeGeneratedMenuItems(menu, ["msim-default-" + suffix,
+          "msim-options-" + suffix, "msim-devicedb-" + suffix, "msim-about-" + suffix]);
 
-	var deviceCount = firemobilesimulator.common.pref
-			.getIntPref("msim.devicelist.count");
-	for (var i = 1; i <= deviceCount; i++) {
-		var device = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.devicelist." + i
-						+ ".label");
-		if (!device) continue;
+  var deviceCount = fms.common.pref
+      .getIntPref("msim.devicelist.count");
+  for (var i = 1; i <= deviceCount; i++) {
+    var device = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".label");
+    if (!device) continue;
 
-		var carrier = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.devicelist." + i
-						+ ".carrier");
-		var useragent = firemobilesimulator.common.pref
-				.copyUnicharPref("msim.devicelist." + i
-						+ ".useragent");
+    var carrier = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".carrier");
+    var useragent = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".useragent");
 
-		//var menuItem = menu.appendChild(document.createElement("menuitem"));
-		var menuItem = menu.insertBefore(document.createElement("menuitem"), optionsSeparator);
-		menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
-		menuItem.setAttribute("label", carrier + " " + device);
-		menuItem.setAttribute("oncommand",
-				"firemobilesimulator.core.setDevice(" + i + ");");
-		menuItem.setAttribute("type", "radio");
-		menuItem.setAttribute("name", "devicelist");
-	}
+    var menuItem = menu.insertBefore(document.createElement("menuitem"), optionsSeparator);
+    menuItem.setAttribute("id", "msim-device-" + suffix + "-" + i);
+    menuItem.setAttribute("label", carrier + " " + device);
+    menuItem.setAttribute("oncommand", "fms.core.setDevice(" + i + ");");
+    menuItem.setAttribute("type", "radio");
+    menuItem.setAttribute("name", "devicelist");
+  }
+  
+  // 現在選択されている端末にチェックをつける
+  var currentId;
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    var tab = gBrowser.selectedTab;
+    var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+    currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
+  } else {
+    currentId = fms.common.pref.copyUnicharPref("msim.current.id");
+  }
 
-	var tab = gBrowser.selectedTab;
-	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-	var currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
-	var currentMenu = document.getElementById("msim-default-" + suffix);
-	if (currentId) {
-		currentMenu = document.getElementById("msim-device-" + suffix + "-" + currentId);
-	}
-	currentMenu.setAttribute("checked", true);
-};
-
-firemobilesimulator.overlay.removeGeneratedMenuItems = function(menu,
-		permanentMenus) {
-	var menuItem = null;
-
-	// radioMenuItems = menu.getElementsByAttribute("type", "radio");
-	var menuItems = menu.getElementsByTagName("menuitem");
-
-	while (menuItems.length > permanentMenus.length) {
-		menuItem = menuItems[3]; //注意メニューの構造が変わったら変える
-
-		if (!menuItem.hasAttribute("id")) {
-			menu.removeChild(menuItem);
-		} else {
-			var deleteFlag = true;
-			for (var i = 0; i < permanentMenus.length; i++) {
-				if (menuItem.getAttribute("id") == permanentMenus[i]) {
-					deleteFlag = false
-				}
-			}
-			deleteFlag && menu.removeChild(menuItem);
-		}
-	}
+  var currentMenu;  
+  if (currentId) {
+    currentMenu = document.getElementById("msim-device-" + suffix + "-" + currentId);
+  }
+  if (!currentMenu) {
+    currentMenu = document.getElementById("msim-default-" + suffix);
+  }  
+  currentMenu.setAttribute("checked", true);
 
 };
 
-firemobilesimulator.overlay.openOptions = function() {
-	window.openDialog("chrome://msim/content/options/options.xul",
-			"msim-options-dialog", "centerscreen,chrome,modal,resizable");
+/**
+ * 端末選択メニューのDOMをXUL上から削除する
+ */
+fms.overlay.removeGeneratedMenuItems = function(menu,
+    permanentMenus) {
+  var menuItem = null;
+
+  // radioMenuItems = menu.getElementsByAttribute("type", "radio");
+  var menuItems = menu.getElementsByTagName("menuitem");
+
+  while (menuItems.length > permanentMenus.length) {
+    menuItem = menuItems[3]; //注意メニューの構造が変わったら変える
+
+    if (!menuItem.hasAttribute("id")) {
+      menu.removeChild(menuItem);
+    } else {
+      var deleteFlag = true;
+      for (var i = 0; i < permanentMenus.length; i++) {
+        if (menuItem.getAttribute("id") == permanentMenus[i]) {
+          deleteFlag = false
+        }
+      }
+      deleteFlag && menu.removeChild(menuItem);
+    }
+  }
+
 };
 
-firemobilesimulator.overlay.openDeviceDB = function() {
-	window.getBrowser().selectedTab = window.getBrowser().addTab("chrome://msim/content/html/device_add.html");
+fms.overlay.openOptions = function() {
+  window.openDialog("chrome://msim/content/options/options.xul",
+      "msim-options-dialog", "centerscreen,chrome,modal,resizable");
 };
 
-firemobilesimulator.overlay.openAbout = function() {
-	window.openDialog("chrome://msim/content/about.xul", "msim-about-dialog",
-			"centerscreen,chrome,modal,resizable");
+fms.overlay.openDeviceDB = function() {
+  window.getBrowser().selectedTab = window.getBrowser().addTab("chrome://msim/content/html/device_add.html");
 };
 
-firemobilesimulator.overlay.BrowserOnLoad = function(objEvent) {
-	//dump("[msim]BrowserOnLoad is fired.\n");
+fms.overlay.openAbout = function() {
+  window.openDialog("chrome://msim/content/about.xul", "msim-about-dialog",
+      "centerscreen,chrome,modal,resizable");
+};
 
-	var ndDocument = objEvent.originalTarget;
-	if (ndDocument.nodeName != "#document") {
-		//dump("[msim]nodeName is not #document, but "+ndDocument.nodeName+"\n");
-		return;
-	}
+fms.overlay.BrowserOnLoad = function(objEvent) {
+  dump("[msim]BrowserOnLoad is fired.\n");
+  var ndDocument = objEvent.originalTarget;  
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    var tab = null;
+    var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(ndDocument);
+    if (targetBrowserIndex != -1) {
+      tab = gBrowser.tabContainer.childNodes[targetBrowserIndex];
+    }
+    
+    //var id = tab.getAttribute("firemobilesimulator-device-id");
+    if (tab) {
+      var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
+      id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+      var pref_prefix = "msim.devicelist." + id;
+      carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+    }
+  } else {
+    var carrier = fms.common.pref.copyUnicharPref("msim.current.carrier");
+    var id = fms.common.pref.copyUnicharPref("msim.current.id");
 
-	// Firefoxの埋め込み表示Content-Typeは、自動的にDOMに変換されている為、除外する。
-	if (ndDocument.contentType != "text/html") {
-		dump("document is not html\n");
-		return;
-	}
+    //ホスト制限に指定された端末があれば、その端末を使用する
+    if (ndDocument.contentType == "text/html") {
+      if(id){
+        //ホスト制限に指定された端末を取得する
+        var deviceObj = fms.core.getDeviceByLimitHost(ndDocument.location.hostname);
+        if(deviceObj){
+          id = deviceObj.index;
+          carrier = fms.common.pref.copyUnicharPref("msim.devicelist." + id + ".carrier");
+        }
+      }
+    }
+  }
 
-	var tab = null;
-	var targetBrowserIndex = gBrowser.getBrowserIndexForDocument(ndDocument);
-	if (targetBrowserIndex != -1) {
-		tab = gBrowser.tabContainer.childNodes[targetBrowserIndex];
-	}
+  if (!carrier) {
+    return;
+  }
 
-	//var id = tab.getAttribute("firemobilesimulator-device-id");
-	if (tab) {
-		var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
-		var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
-		var pref_prefix = "msim.devicelist." + id;
-		var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
-
-		if (carrier) {
-			var contentHandler = firemobilesimulator.contentHandler.factory(carrier);
-			contentHandler && contentHandler.filter(ndDocument, id);
-		}
-	}
+  if (objEvent.originalTarget.nodeName != "#document") {
+    dump("[msim]nodeName is not #document\n");
+    return;
+  }
+  // Firefoxの埋め込み表示Content-Typeは、自動的にDOMに変換されている為、除外する。
+  if (ndDocument.contentType != "text/html") {
+    dump("document is not html\n");
+    return;
+  }
+  var isSimulate = false;
+  try {
+    isSimulate = fms.core.isSimulate(ndDocument.location.hostname);
+  } catch (e) {
+    //about:blankとかだとndDocument.location.hostnameを取得するときに例外を投げるケースがある。
+    //Do nothing
+  }
+  if (isSimulate) {
+    var contentHandler = firemobilesimulator.contentHandler.factory(carrier);
+    contentHandler && contentHandler.filter(ndDocument, id);
+  }
 };
 
 // 他のツールバーボタンが開いていても、FireMobileSimulatorのツールバーボタンを開く
-firemobilesimulator.overlay.openToolbarButton = function(currentToolbarButton) {
-	if (currentToolbarButton && !currentToolbarButton.open) {
-		var toolbarButton = null;
-		var toolbarButtons = currentToolbarButton.parentNode
-				.getElementsByTagName("toolbarbutton");
-		var toolbarButtonsLength = toolbarButtons.length;
+fms.overlay.openToolbarButton = function(currentToolbarButton) {
+  if (currentToolbarButton && !currentToolbarButton.open) {
+    var toolbarButton = null;
+    var toolbarButtons = currentToolbarButton.parentNode
+        .getElementsByTagName("toolbarbutton");
+    var toolbarButtonsLength = toolbarButtons.length;
 
-		for (var i = 0; i < toolbarButtonsLength; i++) {
-			toolbarButton = toolbarButtons.item(i);
+    for (var i = 0; i < toolbarButtonsLength; i++) {
+      toolbarButton = toolbarButtons.item(i);
 
-			if (toolbarButton && toolbarButton != currentToolbarButton
-					&& toolbarButton.open) {
-				toolbarButton.open = false;
-				currentToolbarButton.open = true;
+      if (toolbarButton && toolbarButton != currentToolbarButton
+          && toolbarButton.open) {
+        toolbarButton.open = false;
+        currentToolbarButton.open = true;
 
-				break;
-			}
-		}
-	}
+        break;
+      }
+    }
+  }
 };
 
-firemobilesimulator.overlay.rewrite = function () {
-	var tab = gBrowser.selectedTab;
-	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-	var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
-	var pref_prefix = "msim.devicelist." + id;
-	var carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
-	var name = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".label");
-
-	var statusImage = document.getElementById("msim-status-image");
-	var statusLabel = document.getElementById("msim-status-label");
-	var msimButton = document.getElementById("msim-button");
-	var menu = document.getElementById("msim-menu");
-	var target = [msimButton, menu];
-
-	if (id) {
-		target.forEach(function(item) {
-			if (item) {
-				item.setAttribute("device", "on");
-			}
-		});
-		statusImage.setAttribute("device", "on");
-	} else {
-		target.forEach(function(item) {
-			if (item) {
-				item.removeAttribute("device");
-			}
-		});
-		statusImage.removeAttribute("device");
-	}
-	statusLabel.setAttribute("value", name);
-};
-/*
- * firemobilesimulator.overlay.onInitialize = function(e) {
- * firemobilesimulator.overlay.onInitialize(e); };
- * 
- * firemobilesimulator.overlay.onUnload = function(e) {
- * firemobilesimulator.overlay.onUnload(e); };
+/**
+ * タブごとの再描画
  */
+fms.overlay.rewrite = function () {
+  dump("[msim]rewrite tab\n");
+  var statusPanel = document.getElementById("msim-status-panel");
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (!tabselect_enabled) {
+    // タブごとに端末選択モードでない場合は、下部ステータスバーの端末選択メニューを非表示にする
+    dump("[msim]tabselect is not enabled\n");
+    statusPanel.setAttribute("style","visibility: collapse");
+    return;
+  }
+  
+  statusPanel.setAttribute("style","visibility: visible");
+  var tab = gBrowser.selectedTab;
+  var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+  var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+  var pref_prefix = "msim.devicelist." + id;
+  var carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
+  var name = fms.common.pref.copyUnicharPref(pref_prefix + ".label");
 
-window.addEventListener("load", firemobilesimulator.overlay.onInitialize, false);
-window.addEventListener("unload", firemobilesimulator.overlay.onUnload, false);
+  var statusImage = document.getElementById("msim-status-image");
+  var statusLabel = document.getElementById("msim-status-label");
+  var msimButton = document.getElementById("msim-button");
+  var menu = document.getElementById("msim-menu");
+  var target = [msimButton, menu];
+
+  if (id) {
+    target.forEach(function(item) {
+      if (item) {
+        item.setAttribute("device", "on");
+      }
+    });
+    statusImage.setAttribute("device", "on");
+  } else {
+    target.forEach(function(item) {
+      if (item) {
+        item.removeAttribute("device");
+      }
+    });
+    statusImage.removeAttribute("device");
+  }
+  statusLabel.setAttribute("value", name);
+};
+
+window.addEventListener("load", fms.overlay.onInitialize,
+        false);
+window.addEventListener("unload", fms.overlay.onUnload, false);
+
+// タブを復元したときに、タブごとに端末選択モードだった場合、再描画する
 document.addEventListener("SSTabRestoring", function (e) {
-	firemobilesimulator.overlay.rewrite();
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    fms.overlay.rewrite();
+  }
 }, false);
 
-dump("[msim]overlay.js is loaded.\n");
+// dump("[msim]overlay.js is loaded.\n");

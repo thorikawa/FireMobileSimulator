@@ -18,278 +18,410 @@
  * ***** END LICENSE BLOCK ***** */
 
 var firemobilesimulator;
-if (!firemobilesimulator)
-	firemobilesimulator = {};
-if (!firemobilesimulator.core)
-	firemobilesimulator.core = {};
+if (!firemobilesimulator) firemobilesimulator = {};
+var fms;
+if (!fms) fms = firemobilesimulator;
+if (!fms.core) fms.core = {};
 
-firemobilesimulator.core.resetDevice = function(e) {
-	var browser = gBrowser || parent.gBrowser;
-	var tab = browser.selectedTab;
-	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-	ss.setTabValue(tab, "firemobilesimulator-device-id", null);
-	firemobilesimulator.overlay.rewrite();
+fms.core.resetDevice = function (e) {
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    var browser = gBrowser || parent.gBrowser;
+    var tab = browser.selectedTab;
+    var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+    ss.setTabValue(tab, "firemobilesimulator-device-id", null);
+    firemobilesimulator.overlay.rewrite();
+  } else {
+    fms.common.pref.deletePref("msim.current.carrier");
+    fms.common.pref.deletePref("msim.current.id");
+    fms.core.updateIcon();
+  }
 };
 
-firemobilesimulator.core.setDevice = function(id) {
-	dump("[msim]setDevice:" + id + "\n");
+fms.core.setDevice = function (id) {
 
-	if (!id) {
-		dump("[msim]Error : the attribute which you have selected is insufficient.\n");
-		return;
-	}
+  //dump("[msim]setDevice:" + carrier + ",id:" + id + "\n");
 
-	var tab = gBrowser.selectedTab;
-	var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-	ss.setTabValue(tab, "firemobilesimulator-device-id", id);
+  if (!id) {
+    dump("[msim]Error : the attribute which you have selected is insufficient.\n");
+    return;
+  }
+  
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    var tab = gBrowser.selectedTab;
+    var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+    ss.setTabValue(tab, "firemobilesimulator-device-id", id);
+    
+    firemobilesimulator.overlay.rewrite();
+  } else {
+    var pref_prefix = "msim.devicelist." + id;
+    var carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
 
-	firemobilesimulator.overlay.rewrite();
-};
-
-firemobilesimulator.core.deleteDevice = function(deletedId) {
-	var prefPrefix = "msim.devicelist." + deletedId + ".";
-	var deletedDeviceId = firemobilesimulator.common.pref.copyUnicharPref(prefPrefix+"device-id");
-	firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
-		firemobilesimulator.common.pref.deletePref(prefPrefix+attribute);
-	});
-
-	// 各端末のidを再計算
-	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	for (let i=deletedId+1; i<=count; i++) {
-		let sPrefPrefix = "msim.devicelist." + i + ".";
-		let ePrefPrefix = "msim.devicelist." + (i-1) + ".";
-		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
-			if (attribute == "extra-header") {
-				let extraHeaders = firemobilesimulator.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
-				extraHeaders.forEach(function(extraHeader) {
-					if (extraHeader.value) {
-						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
-						firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".value", extraHeader.value);
-						firemobilesimulator.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".name");
-						firemobilesimulator.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".value");
-					}
-				});
-				firemobilesimulator.common.pref.setIntPref(ePrefPrefix + "extra-header.count", extraHeaders.length);
-				firemobilesimulator.common.pref.setIntPref(sPrefPrefix + "extra-header.count", 0);
-			} else {
-				firemobilesimulator.common.pref.setUnicharPref(ePrefPrefix+attribute, firemobilesimulator.common.pref.copyUnicharPref(sPrefPrefix+attribute));
-				firemobilesimulator.common.pref.deletePref(sPrefPrefix+attribute+attribute);
-			}
-		});
-	}
-	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", count-1);
-	
-	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-			.getService(Components.interfaces.nsIWindowMediator)
-			.getEnumerator("navigator:browser");
-	while (windowEnumeration.hasMoreElements()) {
-		var win = windowEnumeration.getNext();
-		var tabCount = win.getBrowser().browsers.length;
-		dump("tabCount:"+tabCount+"\n");
-		for (var i=0; i<tabCount; i++) {
-			//var tab = win.getBrowser().getBrowserAtIndex(i);
-			var tab = win.getBrowser().tabContainer.childNodes[i];
-		var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-		var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
-		dump("getId:"+id+"\n");
-		if (id > deletedId) {
-			ss.setTabValue(tab, "firemobilesimulator-device-id", id-1);
-		}else if (id == deletedId) {
-			ss.setTabValue(tab, "firemobilesimulator-device-id", null);
-		}
-	}
-	parent.firemobilesimulator.overlay.rewrite();
-}
-
+    fms.common.pref.setUnicharPref("msim.current.carrier", carrier);
+    fms.common.pref.setUnicharPref("msim.current.id", id);
+    fms.core.updateIcon();
+  }
 };
 
 /**
- * @deprecated
- * @see firemobilesimulator.overlay.rewrite
+ * 指定されたIDの端末を削除する
  */
-firemobilesimulator.core.updateIcon = function() {
-	var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-			.getService(Components.interfaces.nsIWindowMediator)
-			.getEnumerator("navigator:browser");
+fms.core.deleteDevice = function (deletedId) {
+  var prefPrefix = "msim.devicelist." + deletedId + ".";
+  var deletedDeviceId = fms.common.pref.copyUnicharPref(prefPrefix+"device-id");
+  firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
+    fms.common.pref.deletePref(prefPrefix+attribute);
+  });
 
-	while (windowEnumeration.hasMoreElements()) {
-		let windowObj = windowEnumeration.getNext();
-		let msimButton = windowObj.document.getElementById("msim-button");
-		let menu = windowObj.document.getElementById("msim-menu");
-		let target = [msimButton, menu];
-		target.forEach(function(item) {
-			if (item) {
-				let id = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
-				if (!id) {
-					item.removeAttribute("device");
-				} else {
-					item.setAttribute("device", "on");
-				}
-			}
-		});
-	}
+  //ホストの端末指定も削除する
+  firemobilesimulator.core.deleteLimitHostDeviceByDeviceId(deletedDeviceId);
+
+  //各端末のidを再計算
+  var count = fms.common.pref.getIntPref("msim.devicelist.count");
+  for (let i=deletedId+1; i<=count; i++) {
+    let sPrefPrefix = "msim.devicelist." + i + ".";
+    let ePrefPrefix = "msim.devicelist." + (i-1) + ".";
+    firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
+      if (attribute == "extra-header") {
+        let extraHeaders = fms.common.pref.getListPref(sPrefPrefix + "extra-header", ["name", "value"]);
+        extraHeaders.forEach(function (extraHeader) {
+          if (extraHeader.value) {
+            fms.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".name", extraHeader.name);
+            fms.common.pref.setUnicharPref(ePrefPrefix + "extra-header." + extraHeader.id + ".value", extraHeader.value);
+            fms.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".name");
+            fms.common.pref.deletePref(sPrefPrefix + "extra-header." + extraHeader.id + ".value");
+          }
+        });
+        fms.common.pref.setIntPref(ePrefPrefix + "extra-header.count", extraHeaders.length);
+        fms.common.pref.setIntPref(sPrefPrefix + "extra-header.count", 0);
+      } else if (attribute == "use-cookie") {
+        fms.common.pref.setBoolPref(ePrefPrefix+attribute, fms.common.pref.getBoolPref(sPrefPrefix+attribute));
+        fms.common.pref.deletePref(sPrefPrefix+attribute);
+      } else {
+        fms.common.pref.setUnicharPref(ePrefPrefix+attribute, fms.common.pref.copyUnicharPref(sPrefPrefix+attribute));
+        fms.common.pref.deletePref(sPrefPrefix+attribute);
+      }
+    });
+  }
+  fms.common.pref.setIntPref("msim.devicelist.count", count-1);
+
+  // 現在選択されている端末IDの付け替え、または既に使われている端末だったら設定をリセット  
+  var tabselect_enabled = fms.common.pref.getBoolPref("msim.config.tabselect.enabled");
+  if (tabselect_enabled) {
+    var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Components.interfaces.nsIWindowMediator)
+      .getEnumerator("navigator:browser");
+    while (windowEnumeration.hasMoreElements()) {
+      var win = windowEnumeration.getNext();
+      var tabCount = win.getBrowser().browsers.length;
+      dump("[msim]tabCount:"+tabCount+"\n");
+      for (var i=0; i<tabCount; i++) {
+        //var tab = win.getBrowser().getBrowserAtIndex(i);
+        var tab = win.getBrowser().tabContainer.childNodes[i];
+        var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
+        var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+        dump("[msim]getId:"+id+"\n");
+        if (id > deletedId) {
+          ss.setTabValue(tab, "firemobilesimulator-device-id", id-1);
+        } else if (id == deletedId) {
+          ss.setTabValue(tab, "firemobilesimulator-device-id", null);
+        }
+      }
+    }
+    parent.firemobilesimulator.overlay.rewrite();
+  } else {
+    var id = fms.common.pref.copyUnicharPref("msim.current.id");
+    if (id > deletedId) {
+      fms.common.pref.setIntPref("msim.current.id", id-1);
+    } else if (id == deletedId) {
+      fms.core.resetDevice();
+    }
+  }
 };
 
-firemobilesimulator.core.parseDeviceListXML = function(filePath, postData) {
-	var request = new XMLHttpRequest();
-	var xmlDocument = null;
+fms.core.deleteLimitHost = function (deletedId) {
 
-	if (postData) {
-		dump("try post:"+postData+"\n");
-		request.open("post", filePath, false);
-		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		request.send(postData);
-	} else {
-		dump("try get:"+filePath+"\n");
-		request.open("get", filePath, false);
-		request.send(null);
-	}
+  var prefKey = "msim.limitHost." + deletedId + ".value";
+  fms.common.pref.deletePref(prefKey);
 
-	var xmlDocumentNode = request.responseXML;
-	if (!xmlDocumentNode) return;
-	var xmlDocumentElement = xmlDocumentNode.documentElement;
-	if (xmlDocumentNode.nodeName == "parsererror") return;
+  //ホスト制限に指定している端末IDも削除する
+  var prefKey = "msim.limitHost." + deletedId + ".device-id";
+  fms.common.pref.deletePref(prefKey);
 
-	var deviceResults = null;
-	var deviceElement = null;
-	var xPathEvaluator = new XPathEvaluator();
-	var resolver = xPathEvaluator.createNSResolver(xmlDocumentElement);
-	deviceResults = xPathEvaluator.evaluate("//DeviceList/Device",
-			xmlDocumentNode, resolver, XPathResult.ORDERED_NODE_ITERATOR_TYPE,
-			null);
-	if (deviceResults.length == 0) return;
+  //idを再計算
+  var count = fms.common.pref.getIntPref("msim.limitHost.count");
+  for (let i=deletedId+1; i<=count; i++) {
+    let sPrefKey = "msim.limitHost." + i + ".value";
+    let ePrefKey = "msim.limitHost." + (i-1) + ".value";
 
-	// XMLから端末情報を順次解析
-	var devices = new Array();
-	var i = 0;
-	while ((deviceElement = deviceResults.iterateNext()) != null) {
-		devices[i] = {};
-		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key) {
-			if (key == "extra-header") {
-				let headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
-						deviceElement, resolver,
-						XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-				let headerElement = null;
+    fms.common.pref.setUnicharPref(ePrefKey, fms.common.pref.copyUnicharPref(sPrefKey));
+    fms.common.pref.deletePref(sPrefKey);
 
-				// ExtraHeaderエレメントの取得
-				let headers = new Array();
-				let j = 0;
-				while ((headerElement = headerResults.iterateNext()) != null) {
-					let name = xPathEvaluator.evaluate("Name", headerElement, resolver,
-							XPathResult.STRING_TYPE, null).stringValue;
-					let value = xPathEvaluator.evaluate("Value", headerElement,
-							resolver, XPathResult.STRING_TYPE, null).stringValue;
-					headers[j] = {
-						name : name,
-						value : value
-					};
-					j++;
-				}
-				devices[i]["headers"] = headers;
-			} else {
-				let tagName = firemobilesimulator.common.carrier.xmlTagName[key];
-				let value = xPathEvaluator.evaluate(tagName, deviceElement,
-						resolver, XPathResult.STRING_TYPE, null).stringValue;
-				if (tagName == "Carrier") {
-					value = firemobilesimulator.core.isValidCarrier(value) ? value : firemobilesimulator.core.getCarrierCode(value);
-				}
-				devices[i][key] = value;
-			}
-		});
-		i++;
-	}
-	return devices;
+    //ホスト制限に指定している端末IDも移動させる
+    sPrefKey = "msim.limitHost." + i + ".device-id";
+    ePrefKey = "msim.limitHost." + (i-1) + ".device-id";
+
+    fms.common.pref.setUnicharPref(ePrefKey, fms.common.pref.copyUnicharPref(sPrefKey));
+    fms.common.pref.deletePref(sPrefKey);
+  }
+  fms.common.pref.setIntPref("msim.limitHost.count", count-1);
 };
 
-firemobilesimulator.core.LoadDevices = function(devices, overwrite) {
-	var currentId = 0;
-	if (!overwrite) {
-		currentId = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	}
-	// update preference
-	overwrite && firemobilesimulator.options.clearAllDeviceSettings();
-	devices.forEach(function(device) {
-		var id = ++currentId;
-		var carrier = device.carrier;
-		for (let key in device) {
-			let value = device[key];
-			if (key == "headers") {
-				let i = 1;
-				value.forEach(function(header) {
-					firemobilesimulator.common.pref.setUnicharPref(
-							"msim.devicelist." + id
-									+ ".extra-header." + i + ".name",
-							header.name);
-					firemobilesimulator.common.pref.setUnicharPref(
-							"msim.devicelist." + id
-									+ ".extra-header." + i + ".value",
-							header.value);
-					i++;
-				});
-				firemobilesimulator.common.pref.setIntPref("msim.devicelist."
-								+ id + ".extra-header.count",
-						value.length);
-			} else if (key == "id") {
-			} else {
-				firemobilesimulator.common.pref.setUnicharPref(
-						"msim.devicelist." + id + "." + key,
-						value);
-			}
-		}
-	});
+fms.core.updateIcon = function () {
+  var windowEnumeration = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Components.interfaces.nsIWindowMediator)
+      .getEnumerator("navigator:browser");
 
-	// set device count
-	firemobilesimulator.common.pref.setIntPref("msim.devicelist.count", currentId);
-	return true;
+  while (windowEnumeration.hasMoreElements()) {
+    let windowObj = windowEnumeration.getNext();
+    let msimButton = windowObj.document.getElementById("msim-button");
+    let menu = windowObj.document.getElementById("msim-menu");
+    let target = [msimButton, menu];
+    target.forEach(function(item) {
+      if (item) {
+        let id = fms.common.pref.copyUnicharPref("msim.current.id");
+        if (!id) {
+          item.removeAttribute("device");
+        } else {
+          item.setAttribute("device", "on");
+        }
+      }
+    });
+  }
 };
 
-firemobilesimulator.core.getCarrierCode = function(carrierName) {
-	var carrierCode = firemobilesimulator.common.carrier[carrierName.toUpperCase()];
-	return carrierCode || firemobilesimulator.common.carrier.OTHER;
+fms.core.parseDeviceListXML = function (filePath, postData) {
+  var request = new XMLHttpRequest();
+  var xmlDocument = null;
+
+  if (postData) {
+    dump("try post:"+postData+"\n");
+    request.open("post", filePath, false);
+    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.send(postData);
+  } else {
+    dump("try get:"+filePath+"\n");
+    request.open("get", filePath, false);
+    request.send(null);
+  }
+
+  var xmlDocumentNode = request.responseXML;
+  if (!xmlDocumentNode) return;
+  var xmlDocumentElement = xmlDocumentNode.documentElement;
+  if (xmlDocumentNode.nodeName == "parsererror") return;
+
+  var deviceResults = null;
+  var deviceElement = null;
+  var xPathEvaluator = new XPathEvaluator();
+  var resolver = xPathEvaluator.createNSResolver(xmlDocumentElement);
+  deviceResults = xPathEvaluator.evaluate("//DeviceList/Device",
+      xmlDocumentNode, resolver, XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+      null);
+  if (deviceResults.length == 0) return;
+
+  //XMLから端末情報を順次解析
+  var devices = new Array();
+  var i = 0;
+  while ((deviceElement = deviceResults.iterateNext()) != null) {
+    devices[i] = {};
+    firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(key) {
+      if (key == "extra-header") {
+        let headerResults = xPathEvaluator.evaluate("ExtraHeaders/Header",
+            deviceElement, resolver,
+            XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+        let headerElement = null;
+
+        //ExtraHeaderエレメントの取得
+        let headers = new Array();
+        let j = 0;
+        while ((headerElement = headerResults.iterateNext()) != null) {
+          let name = xPathEvaluator.evaluate("Name", headerElement, resolver,
+              XPathResult.STRING_TYPE, null).stringValue;
+          let value = xPathEvaluator.evaluate("Value", headerElement,
+              resolver, XPathResult.STRING_TYPE, null).stringValue;
+          headers[j] = {
+            name : name,
+            value : value
+          };
+          j++;
+        }
+        devices[i]["headers"] = headers;
+      } else {
+        let tagName = firemobilesimulator.common.carrier.xmlTagName[key];
+        let value = xPathEvaluator.evaluate(tagName, deviceElement,
+            resolver, XPathResult.STRING_TYPE, null).stringValue;
+        if (tagName == "Carrier") {
+          value = fms.core.isValidCarrier(value) ? value : fms.core.getCarrierCode(value);
+        }
+        devices[i][key] = value;
+      }
+    });
+    i++;
+  }
+  return devices;
 };
 
-firemobilesimulator.core.isValidCarrier = function(carrierCode) {
-	return firemobilesimulator.common.carrier.carrierArray.some(function(c) { return carrierCode == c; });
+fms.core.LoadDevices = function (devices, overwrite) {
+  var currentId = 0;
+  if (!overwrite) {
+    currentId = fms.common.pref.getIntPref("msim.devicelist.count");
+  }
+  // update preference
+  overwrite && firemobilesimulator.options.clearAllDeviceSettings();
+  devices.forEach(function(device) {
+    var id = ++currentId;
+    var carrier = device.carrier;
+    for (let key in device) {
+      let value = device[key];
+      if (key == "headers") {
+        let i = 1;
+        value.forEach(function(header) {
+          fms.common.pref.setUnicharPref(
+              "msim.devicelist." + id
+                  + ".extra-header." + i + ".name",
+              header.name);
+          fms.common.pref.setUnicharPref(
+              "msim.devicelist." + id
+                  + ".extra-header." + i + ".value",
+              header.value);
+          i++;
+        });
+        fms.common.pref.setIntPref("msim.devicelist."
+                + id + ".extra-header.count",
+            value.length);
+      } else if (key == "id") {
+      } else if (key == "use-cookie") {
+        fms.common.pref.setBoolPref("msim.devicelist." + id + "." + key, value);
+      } else {
+        fms.common.pref.setUnicharPref("msim.devicelist." + id + "." + key, value);
+      }
+    }
+  });
+
+  //set device count
+  fms.common.pref.setIntPref("msim.devicelist.count", currentId);
+  return true;
 };
 
-firemobilesimulator.core.refreshRegisteredDevices = function() {
-	var deviceCount = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	firemobilesimulator.core.deviceIdArray = new Array();
-	for (let i = 1; i <= deviceCount; i++) {
-		let deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
-		if(deviceId) {
-			firemobilesimulator.core.deviceIdArray.push(deviceId);
-		}
-	}
+fms.core.getCarrierCode = function (carrierName) {
+  var carrierCode = firemobilesimulator.common.carrier[carrierName.toUpperCase()];
+  return carrierCode || firemobilesimulator.common.carrier.OTHER;
 };
 
-firemobilesimulator.core.getRegisteredDevices = function() {
-	if(!firemobilesimulator.core.deviceIdArray) {
-		firemobilesimulator.core.refreshRegisteredDevices();
-	}
-	return firemobilesimulator.core.deviceIdArray;
+fms.core.isValidCarrier = function(carrierCode) {
+  return firemobilesimulator.common.carrier.carrierArray.some(function(c) { return carrierCode == c; });
 };
 
-firemobilesimulator.core.isRegistered = function(deviceId, refreshFlag) {
-	return firemobilesimulator.core.getRegisteredDevices().some(function(_deviceId) {
-		return _deviceId == deviceId;
-	});
+fms.core.refreshRegisteredDevices = function () {
+  var deviceCount = fms.common.pref.getIntPref("msim.devicelist.count");
+  fms.core.deviceIdArray = new Array();
+  for (let i = 1; i <= deviceCount; i++) {
+    let deviceId = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
+    if(deviceId) {
+      fms.core.deviceIdArray.push(deviceId);
+    }
+  }
 };
 
-firemobilesimulator.core.clearAllDevice = function() {
-	var count = firemobilesimulator.common.pref.getIntPref("msim.devicelist.count");
-	for (let i = 1; i <= count; i++) {
-		let prefPrefix = "msim.devicelist." + i + ".";
-
-		firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
-			if (attribute == "extra-header") {
-				firemobilesimulator.common.pref.deleteListPref("msim.devicelist." + i + ".extra-header", ["name", "value"]);
-			} else {
-				firemobilesimulator.common.pref.deletePref(prefPrefix + attribute);
-			}
-		});
-	}
-	firemobilesimulator.common.pref.deletePref("msim.devicelist.count");
-	firemobilesimulator.common.pref.deletePref("general.useragent.override");
-	firemobilesimulator.core.resetDevice();
+fms.core.getRegisteredDevices = function () {
+  if(!fms.core.deviceIdArray) {
+    fms.core.refreshRegisteredDevices();
+  }
+  return fms.core.deviceIdArray;
 };
+
+fms.core.isRegistered = function(deviceId, refreshFlag) {
+  return fms.core.getRegisteredDevices().some(function(_deviceId) {
+    return _deviceId == deviceId;
+  });
+};
+
+fms.core.clearAllDevice = function () {
+  var count = fms.common.pref.getIntPref("msim.devicelist.count");
+  for (let i = 1; i <= count; i++) {
+    let prefPrefix = "msim.devicelist." + i + ".";
+
+    firemobilesimulator.common.carrier.deviceBasicAttribute.forEach(function(attribute) {
+      if (attribute == "extra-header") {
+        fms.common.pref.deleteListPref("msim.devicelist." + i + ".extra-header", ["name", "value"]);
+      } else {
+        fms.common.pref.deletePref(prefPrefix + attribute);
+      }
+    });
+  }
+  fms.common.pref.deletePref("msim.devicelist.count");
+  fms.common.pref.deletePref("msim.current.carrier");
+  fms.common.pref.deletePref("msim.current.id");
+  fms.core.resetDevice();
+};
+
+fms.core.isSimulate = function (hostName) {
+  var isSimulate = true;
+  var limithost_enabled = fms.common.pref.getBoolPref("msim.limitHost.enabled");
+  if (limithost_enabled) {
+    var id = fms.common.pref.copyUnicharPref("msim.current.id");
+    var limitHosts = fms.common.pref.getListPref("msim.limitHost",new Array("value"));
+    isSimulate = limitHosts.some(function (limitHost, index, array) {
+      // dump("[msim]compare:"+limitHost.value+":"+hostName+"\n");
+      return (limitHost.value && hostName.match(limitHost.value));
+    });
+  }
+  return isSimulate;
+}
+
+//msim.devicelist.X.device-idが一致するデバイスを返す
+fms.core.getDeviceByDeviceId = function(deviceId){
+  var deviceCount = fms.common.pref.getIntPref("msim.devicelist.count");
+  var deviceIndex = -1;
+
+  for(var i = 1; i <= deviceCount; i++){
+    var _deviceId = fms.common.pref.copyUnicharPref("msim.devicelist." + i + ".device-id");
+    if(_deviceId == deviceId){
+      deviceIndex = i;
+      break;
+    }
+  }
+
+  if(deviceIndex == -1){
+    return null;
+  }
+
+  var ret = {};
+  ret.id = deviceId;
+  ret.index = deviceIndex;
+  ret.label = fms.common.pref.copyUnicharPref("msim.devicelist." + deviceIndex + ".label");
+  ret.carrier = fms.common.pref.copyUnicharPref("msim.devicelist." + deviceIndex + ".carrier");
+  return ret;
+}
+
+//msim.limithost.X.valueがhostNameに一致するものをを探して、
+//そのホスト制限に指定されている端末情報を返す
+fms.core.getDeviceByLimitHost = function(hostName){
+  var limithost_enabled = fms.common.pref.getBoolPref("msim.limitHost.enabled");
+  if(! limithost_enabled){
+    return null;
+  }
+
+  var count = fms.common.pref.getIntPref("msim.limitHost.count");
+  for(var i = 1; i <= count; i++){
+   var host = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".value");
+   if(hostName.match(host)){
+     var deviceId = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".device-id");
+     return fms.core.getDeviceByDeviceId(deviceId);
+   }
+  }
+
+  return null;
+}
+
+//ホスト制限に指定されている端末でdeviceIdと一致する物を削除する
+fms.core.deleteLimitHostDeviceByDeviceId = function(deviceId){
+  var count = fms.common.pref.getIntPref("msim.limitHost.count");
+  for(var i = 1; i <= count; i++){
+    var _deviceId = fms.common.pref.copyUnicharPref("msim.limitHost." + i + ".device-id");
+    if(_deviceId == deviceId){
+      fms.common.pref.setUnicharPref("msim.limitHost." + i + ".device-id", "-1");
+    }
+  }
+}

@@ -4,3 +4,15 @@ locale	msim	ja	jar:chrome/msim.jar!/locale/ja/
 skin	msim	classic/1.0	jar:chrome/msim.jar!/skin/
 overlay	chrome://browser/content/browser.xul	chrome://msim/content/firefoxOverlay.xul
 style	chrome://global/content/customizeToolbar.xul	chrome://msim/skin/overlay.css
+
+# Firefox >= 4.0
+component {2e9983d0-2c88-11dd-bd0b-0800200c9a66} components/msimModifyHeaders.js
+contract @msim/myHTTPListener;1 {2e9983d0-2c88-11dd-bd0b-0800200c9a66}
+category profile-after-change MobileSimulatorHTTPListener @msim/myHTTPListener;1
+
+component {202e8afd-d3f2-4615-bde7-62afd8cd898f} components/msimStreamConverter.js
+contract @mozilla.org/streamconv;1?from=text/msim.html&to=*/* {202e8afd-d3f2-4615-bde7-62afd8cd898f}
+category @mozilla.org/streamconv;1 ?from=text/msim.html&to=*/* FireMobileSimulator_StreamConverter
+
+component {79e63cb7-ba95-40c5-902d-edb918b4679c} components/nsDeviceProtocolHandler.js
+contract @mozilla.org/network/protocol;1?name=device {79e63cb7-ba95-40c5-902d-edb918b4679c}

@@ -62,6 +62,6 @@ firemobilesimulator.auLocationInit = function(params) {
 	}
 	var okButton = document.getElementById("okbutton");
 	var ngButton = document.getElementById("ngbutton");
-	okButton.onclick = function(){location.href=okUrl};
-	ngButton.onclick = function(){location.href=ngUrl};
+	okButton.onclick = function(){ location.href = fms.common.util.escapeUri(okUrl) };
+	ngButton.onclick = function(){ location.href = fms.common.util.escapeUri(ngUrl) };
 };

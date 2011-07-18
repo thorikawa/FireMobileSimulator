@@ -19,7 +19,9 @@
 
 var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
-if(!firemobilesimulator.common) firemobilesimulator.common = {};
+var fms;
+if(!fms) fms = firemobilesimulator;
+if(!fms.common) fms.common = {};
 
 firemobilesimulator.common.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
 firemobilesimulator.common.jsLoader.loadSubScript("chrome://global/content/nsUserSettings.js");

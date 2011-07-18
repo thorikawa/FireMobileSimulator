@@ -21,13 +21,16 @@ var firemobilesimulator;
 if(!firemobilesimulator) firemobilesimulator = {};
 
 firemobilesimulator.openiareaInit = function(params){
+
+	var deviceId = firemobilesimulator.common.pref.copyUnicharPref("msim.current.id");
+	
 	var nl = unescape(params["nl"]);
 	var posinfo = params["posinfo"];
 	var arg1 = params["arg1"];
 	var arg2 = params["arg2"];
 	dump("##"+arg1+":"+arg2+"\n");
-	var arg1params = arg1 ? firemobilesimulator.common.util.getParamsFromQuery(unescape(arg1)) : null;
-	var arg2params = arg2 ? firemobilesimulator.common.util.getParamsFromQuery(unescape(arg2)) : null;
+	var arg1params = arg1 ? fms.common.util.getParamsFromQuery(unescape(arg1)) : null;
+	var arg2params = arg2 ? fms.common.util.getParamsFromQuery(unescape(arg2)) : null;
 
 	var openiareaBody = document.getElementById("firemobilesimulator-openiarea-body");
 	var areaname = firemobilesimulator.common.pref.copyUnicharPref("msim.config.DC.gps.areaname");
@@ -41,10 +44,10 @@ firemobilesimulator.openiareaInit = function(params){
 <div>あなたの現在のエリアは'+areaname+'です。</div>\
 <div>この情報を情報提供者に送信します。</div>\
 <div>よろしいですか？</div>\
-<form method="POST" action='+nl+'>\
+<form method="POST" action="' + fms.common.util.escapeAttribute(fms.common.util.escapeUri(nl)) + '">\
 <input type="hidden" name="AREACODE" value="'+areacode+'">';
-body += firemobilesimulator.common.util.getHiddenTag(arg1params);
-body += firemobilesimulator.common.util.getHiddenTag(arg2params);
+body += fms.common.util.getHiddenTag(arg1params, deviceId);
+body += fms.common.util.getHiddenTag(arg2params, deviceId);
 body += '\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\
 </form>\
@@ -60,17 +63,17 @@ if(posinfo == 1){body += '<div>'+areaname+'ｴﾘｱ</div>';}
 body += '<div>経度:'+lat+'</div>\
 <div>緯度:'+lon+'</div>\
 <div>XX付近</div>\
-<form method="POST" action="'+nl+'">';
+<form method="POST" action="' + fms.common.util.escapeAttribute(fms.common.util.escapeUri(nl)) + '">';
 if(posinfo == 1){body += '<div align="center"><input type="hidden" name="AREACODE" value="'+areacode+'"></div>';}
 body += '\
 <input type="hidden" name="LAT" value="'+lat+'">\
 <input type="hidden" name="LON" value="'+lon+'">\
 <input type="hidden" name="GEO" value="wgs84">\
 <input type="hidden" name="XACC" value="1">';
-body += firemobilesimulator.common.util.getHiddenTag(arg1params);
-body += firemobilesimulator.common.util.getHiddenTag(arg2params);
+body += fms.common.util.getHiddenTag(arg1params, deviceId);
+body += fms.common.util.getHiddenTag(arg2params, deviceId);
 body += '\
-<input type="hidden" name="POSINFO" value="'+posinfo+'">\
+<input type="hidden" name="POSINFO" value="' + fms.common.util.escapeAttribute(posinfo) + '">\
 <div align="center"><input type="submit" name="ACTN" value="OK"></div>\
 </form>\
 ';

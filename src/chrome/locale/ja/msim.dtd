@@ -28,9 +28,18 @@
 <!ENTITY msim.options.device.type "Type">
 <!ENTITY msim.options.device.screen-width "スクリーン横幅(px)">
 <!ENTITY msim.options.device.screen-height "スクリーン高さ(px)">
+<!ENTITY msim.options.device.use-cookie "Cookie有効">
 <!ENTITY msim.options.export "エクスポート">
 <!ENTITY msim.options.import "インポート">
 <!ENTITY msim.options.import-export "インポート/エクスポート">
 <!ENTITY msim.import.overwrite "既存の端末情報をクリアしてインポートする">
 <!ENTITY msim.options.device.extra-headers "HTTP Header">
 <!ENTITY msim.options.device.extra-headers.add "行を追加する">
+<!ENTITY msim.options.limitHost.label "ホスト制限設定">
+<!ENTITY msim.options.limitHost.valid.label "指定したホストだけで動作するようにする">
+<!ENTITY msim.options.limitHost.host.label "ホスト設定">
+<!ENTITY msim.options.limitHost.host "ホスト">
+<!ENTITY msim.options.limitHost.device.label "端末設定">
+<!ENTITY msim.options.limitHost.device "端末">
+<!ENTITY msim.options.deviceselect.label "端末選択">
+<!ENTITY msim.options.deviceselect.tabselect.label "タブごとに端末を選択する">

@@ -5,8 +5,8 @@
 	<property name="dist.dir" value="dist"/>
 	<property name="app.name" value="FireMobileSimulator"/>
 	<property name="app.code" value="msim"/>
-	<property name="app.id" value="{77cc852e-6b45-11dd-929f-d30256d89593}"/> <!-- extension id like: xxx@xxx.com -->
-	<property name="fx.dir" value="/Users/horikawa/Library/Application Support/Firefox/Profiles/ayzmk2q6.default/extensions/"/>
+	<property name="app.id" value="{77cc852e-6b45-11dd-929f-d30256d89593}"/>
+	<property file="build.properties"/>
 
 	<condition property="fx.present">
 		<and>
@@ -30,20 +30,6 @@
 		</zip>
 	</target>
 
-	<target name="test.chrome" depends="chrome" if="fx.present">
-		<!-- copy to chrome directory -->
-		<copy file="${dist.dir}/chrome/${app.code}.jar" todir="${fx.dir}/chrome/chrome" overwrite="true"/>
-		<copy file="${src.dir}/chrome.manifest" tofile="${fx.dir}/chrome/${app.name}.manifest" overwrite="true"/>
-	</target>
-
-	<!-- copy to extensions directory -->
-	<!--
-	<target name="test.ext" depends="chrome" if="fx.present">
-		<copy file="${dist.dir}/${app.name}.jar" todir="${fx.dir}/extensions/${app.id}/chrome" overwrite="true"/>
-		<copy file="${src.dir}/chrome.manifest" todir="${fx.dir}/extensions/${app.id}" overwrite="true"/>
-	</target>
-	-->
-
 	<target name="dist" depends="chrome">
 		<zip destfile="${dist.dir}/${app.name}.xpi">
 			<zipfileset file="${dist.dir}/chrome/${app.code}.jar" prefix="chrome"/>
@@ -57,6 +43,9 @@
 				<exclude name="**/CVS/**"/>
 			</fileset>
 		</zip>
+	</target>
+
+	<target name="install" depends="dist" if="fx.present">
 		<copy file="${dist.dir}/chrome/${app.code}.jar" todir="${fx.dir}/${app.id}/chrome"/>
 		<copy todir="${fx.dir}/${app.id}">
 			<fileset dir="${src.dir}">
@@ -75,10 +64,8 @@
 		<delete dir="${dist.dir}"/>
 	</target>
 
-	<target name="clean.ff" if="fx.present">
-		<delete dir="${fx.dir}/extensions/${app.id}" failonerror="false"/>
-		<delete file="${fx.dir}/chrome/${app.name}.manifest" failonerror="false"/>
-		<delete file="${fx.dir}/chrome/chrome/${app.name}.jar" failonerror="false"/>
+	<target name="uninstall" if="fx.present">
+		<delete dir="${fx.dir}/${app.id}" failonerror="false"/>
 	</target>
 
 </project>

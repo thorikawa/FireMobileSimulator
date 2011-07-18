@@ -27,10 +27,14 @@
 <groupbox align="center" orient="horizontal">
 <vbox>
   <label value="FireMobileSimulator" style="font-weight: bold; font-size: x-large;"/>
-  <label value="&version; 1.2.0beta2"/>
+  <label value="&version; 1.2.2"/>
   <separator class="thin"/>
-  <label value="&createdBy;" style="font-weight: bold;"/>
+  <label value="&projectLeader;" style="font-weight: bold;"/>
   <label value="Takahiro Horikawa &lt;horikawa.takahiro@gmail.com&gt;"/>
+  <label value="&developer;" style="font-weight: bold;"/>
+  <label value="Kei Nagai &lt;nagaikei@gmail.com&gt;"/>
+  <label value="weboo"/>
+  <label value="h13i32maru &lt;h13i32maru@gmail.com&gt;"/>
   <separator class="thin"/>
   <label value="&homepage;" style="font-weight: bold;"/>
   <label onclick="firemobilesimulator.common.util.openURL(this.value)" class="text-link" value="http://firemobilesimulator.org/"/>

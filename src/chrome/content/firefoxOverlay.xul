@@ -33,6 +33,7 @@
 	<script type="application/x-javascript" src="mpc/softbank.js"></script>
 	<script type="application/x-javascript" src="mpc.js"></script>
 	<script type="application/x-javascript" src="contentHandler/common.js"></script>
+	<script type="application/x-javascript" src="contentHandler/parser.js"></script>
 	<script type="application/x-javascript" src="contentHandler/docomo.js"></script>
 	<script type="application/x-javascript" src="contentHandler/au.js"></script>
 	<script type="application/x-javascript" src="contentHandler/softbank.js"></script>
@@ -68,6 +69,7 @@
 		</toolbarbutton>
 	</toolbarpalette>
 
+	<!-- タブごとに端末選択時に表示するステータスバーアイコン -->
 	<statusbar id="status-bar">
 		<statusbarpanel
 			class="msim-status-panel"
@@ -79,7 +81,7 @@
 			<label id="msim-status-label" value=""/>
 		</statusbarpanel>
 	</statusbar>
-
+	
 	<popupset>
 		<menupopup id="msim-popup-status" onpopupshowing="firemobilesimulator.overlay.displayDeviceSwitcherMenu(this, 'status');">
 			<menuitem id="msim-default-status" accesskey="&msim.menu.default.accesskey;" label="&msim.menu.default.label;" type="radio" oncommand="firemobilesimulator.core.resetDevice(event);" name="devicelist"/>
