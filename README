@@ -1,0 +1,13 @@
+FireMobileSimulator 開発者向けドキュメント
+
+最終更新日：2010/03/28
+
+1.ビルド
+antでビルドすることが可能です。
+distフォルダ以下にxpiファイルが作成されます。
+
+2.インストール
+事前準備としてbuild.properties.sampleファイルをbuild.propertiesにリネームして、自身の環境に合わせて内容を書き換えます。
+ant installでFirefoxの拡張ディレクトリフォルダに対して、直接インストールすることが可能です。
+
+__END__

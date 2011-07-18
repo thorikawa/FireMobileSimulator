@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://msim/skin/options.css" type="text/css"?>
+
+<!DOCTYPE page SYSTEM "chrome://msim/locale/msim.dtd">
+
+<page onload="parent.firemobilesimulator.options.initializeOptions()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<groupbox>
+		<caption label="&msim.options.limitHost.label;"/>
+		<grid>
+			<rows id="msim.options.limitHost.label.rows">
+				<row align="center">
+					<checkbox id="msim-checkbox-limitHost-valid" label="&msim.options.limitHost.valid.label;"/>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+	
+	<groupbox>
+		<caption label="&msim.options.limitHost.host.label;"/>
+		<grid>
+			<columns>
+				<column flex="1"/>
+				<column/>
+			</columns>
+			<rows>
+				<row align="top">
+					<listbox flex="1" id="msim-listbox" rows="10" onselect="parent.firemobilesimulator.options.limitHostSelected()">
+            <!-- ホストと端末を表示する2カラムのlistbox -->
+						<listhead>
+							<listheader label="&msim.options.limitHost.host.label;"/>
+              <listheader label="&msim.options.limitHost.device.label;"/>
+						</listhead>
+            <listcols>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+            </listcols>
+					</listbox>
+				</row>
+				<row align="top">
+					<hbox>
+						<button id="msim-add" label="&msim.options.add;" oncommand="parent.firemobilesimulator.options.addLimitHost()" accesskey="n"/>
+						<button id="msim-edit" label="&msim.options.edit;" oncommand="parent.firemobilesimulator.options.editLimitHost()" accesskey="e"/>
+						<button id="msim-delete" label="&msim.options.delete;" oncommand="parent.firemobilesimulator.options.deleteLimitHost()" accesskey="d"/>
+					</hbox>
+				</row>
+			</rows>
+		</grid>
+	</groupbox>
+</page>
