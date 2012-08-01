@@ -19,72 +19,72 @@
 
 var firemobilesimulator;
 if (!firemobilesimulator)
-	firemobilesimulator = {};
+  firemobilesimulator = {};
 if (!firemobilesimulator.contentHandler)
-	firemobilesimulator.contentHandler = {};
+  firemobilesimulator.contentHandler = {};
 
 firemobilesimulator.contentHandler.docomo = {
-	filter : function (ndDocument, deviceId) {
-		firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);		
-		var setUtnFunction = function(e) {
-			dump("[msim]click utn\n");
-			if (true == confirm(firemobilesimulator.overlay.strings
-					.getString("msim_utnConfirmation"))) {
-				firemobilesimulator.common.pref.setBoolPref("msim.temp.utnflag",
-						true);
-			}
-			return true;
-		};
-	
-		var setLcsFunction = function(e) {
-			dump("[msim]click lcs\n");
-			if (true == confirm(firemobilesimulator.overlay.strings
-					.getString("msim_lcsConfirmation"))) {
-				firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag",
-						true);
-				return true;
-			} else {
-				return false;
-			}
-		};
-	
-		firemobilesimulator.common.pref.setBoolPref("msim.temp.utnflag", false);
-		firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag", false);
-	
-		var anchorTags = ndDocument.getElementsByTagName("a");
-		for (var i = 0; i < anchorTags.length; i++) {
-			var anchorTag = anchorTags[i];
-			var utn = anchorTag.getAttribute("utn");
-			if (null != utn) {
-				anchorTag.addEventListener("click", setUtnFunction, false);
-			}
-	
-			var lcs = anchorTag.getAttribute("lcs");
-			if (null != lcs) {
-				dump("setlcs for a tag\n");
-				anchorTag.addEventListener("click", setLcsFunction, false);
-			}
-		}
-	
-		// accesskey対応
-		ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey"]), false);
-	
-		// formのUTN送信
-		var formTags = ndDocument.getElementsByTagName("form");
-		for (var i = 0; i < formTags.length; i++) {
-			var formTag = formTags[i];
-	
-			// UTNセット
-			var utn = formTag.getAttribute("utn");
-			if (null != utn) {
-				formTag.addEventListener("submit", setUtnFunction, false);
-			}
-	
-			var lcs = formTag.getAttribute("lcs");
-			if (null != lcs) {
-				dump("setlcs for form tag\n");
-				formTag.addEventListener("submit", setLcsFunction, false);
-			}
-		}
-	}
+  filter : function (ndDocument, deviceId) {
+    firemobilesimulator.contentHandler.common.filter(ndDocument, deviceId);    
+    var setUtnFunction = function(e) {
+      dump("[msim]click utn\n");
+      if (true == confirm(firemobilesimulator.overlay.strings
+          .getString("msim_utnConfirmation"))) {
+        firemobilesimulator.common.pref.setBoolPref("msim.temp.utnflag",
+            true);
+      }
+      return true;
+    };
+  
+    var setLcsFunction = function(e) {
+      dump("[msim]click lcs\n");
+      if (true == confirm(firemobilesimulator.overlay.strings
+          .getString("msim_lcsConfirmation"))) {
+        firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag",
+            true);
+        return true;
+      } else {
+        return false;
+      }
+    };
+  
+    firemobilesimulator.common.pref.setBoolPref("msim.temp.utnflag", false);
+    firemobilesimulator.common.pref.setBoolPref("msim.temp.lcsflag", false);
+  
+    var anchorTags = ndDocument.getElementsByTagName("a");
+    for (var i = 0; i < anchorTags.length; i++) {
+      var anchorTag = anchorTags[i];
+      var utn = anchorTag.getAttribute("utn");
+      if (null != utn) {
+        anchorTag.addEventListener("click", setUtnFunction, false);
+      }
+  
+      var lcs = anchorTag.getAttribute("lcs");
+      if (null != lcs) {
+        dump("setlcs for a tag\n");
+        anchorTag.addEventListener("click", setLcsFunction, false);
+      }
+    }
+  
+    // accesskey対応
+    ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey"]), false);
+  
+    // formのUTN送信
+    var formTags = ndDocument.getElementsByTagName("form");
+    for (var i = 0; i < formTags.length; i++) {
+      var formTag = formTags[i];
+  
+      // UTNセット
+      var utn = formTag.getAttribute("utn");
+      if (null != utn) {
+        formTag.addEventListener("submit", setUtnFunction, false);
+      }
+  
+      var lcs = formTag.getAttribute("lcs");
+      if (null != lcs) {
+        dump("setlcs for form tag\n");
+        formTag.addEventListener("submit", setLcsFunction, false);
+      }
+    }
+  }
 };
