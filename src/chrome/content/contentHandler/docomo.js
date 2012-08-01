@@ -78,9 +78,6 @@ firemobilesimulator.contentHandler.docomo = {
     ndDocument.addEventListener("keypress", firemobilesimulator.contentHandler.common.createAccessKeyFunction(["accesskey"]), false);
   
     // formのUTN送信
-    // uid=NULLGWDOCOMOのPOST送信
-    // オープンiエリアの場合のメソッドを強制的にGETに書き換え
-    // ##本当はhttp-on-modify-requestで書き換えたい##
     var formTags = ndDocument.getElementsByTagName("form");
     for (var i = 0; i < formTags.length; i++) {
       var formTag = formTags[i];
@@ -95,29 +92,6 @@ firemobilesimulator.contentHandler.docomo = {
       if (null != lcs) {
         dump("setlcs for form tag\n");
         formTag.addEventListener("submit", setLcsFunction, false);
-      }
-  
-      // オープンiエリアの場合のメソッドを強制的にGETに書き換え
-      var action = formTag.getAttribute("action");
-      if (action && action == "http://w1m.docomo.ne.jp/cp/iarea") {
-        formTag.setAttribute("method", "GET");
-      }
-  
-      // uid=NULLGWDOCOMOのPOST送信
-      var method = formTag.getAttribute("method");
-      if (method && method.toUpperCase() == "POST") {
-        var inputTags = formTag.getElementsByTagName("input");
-        for (var j = 0; j < inputTags.length; j++) {
-          var inputTag = inputTags[j];
-          var key = inputTag.getAttribute("name");
-          var value = inputTag.value;
-          if (key && value && key.toUpperCase() == "UID"
-              && value.toUpperCase() == "NULLGWDOCOMO") {
-            dump("replace uid\n");
-            var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID,deviceId);
-            inputTag.value = uid;
-          }
-        }
       }
     }
   }

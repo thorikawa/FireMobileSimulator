@@ -120,6 +120,7 @@ myHTTPListener.prototype = {
           var rewriteFlag = false;
           var as = uri.asciiSpec;
           var qs = "";
+          var ps = null;
 
           var uid = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_UID,id);
           var ser = firemobilesimulator.common.carrier.getId(firemobilesimulator.common.carrier.idType.DOCOMO_SER,id);
@@ -176,6 +177,53 @@ myHTTPListener.prototype = {
             as = parts[0] + "?" + qs;
           }
 
+          // POSTパラメータ解析&UID送信
+          if (httpChannel.requestMethod == "POST") {
+            var uploadChannel = subject.QueryInterface(Ci.nsIUploadChannel);
+
+            if (uploadChannel.uploadStream != null) {
+              var seekable = uploadChannel.uploadStream;
+              seekable.QueryInterface(Ci.nsISeekableStream);
+              var stream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Ci.nsIScriptableInputStream);
+              stream.init(uploadChannel.uploadStream);
+
+              var valid = false;
+              for (var line = processLine(stream); line; line = processLine(stream)) {
+                var header = line.match(/^([^:]+):\s?(.*)/);
+
+                if (header == null)
+                  continue;
+
+                if (header[1].toLowerCase() == "content-type" && header[2].toLowerCase() == "application/x-www-form-urlencoded")
+                   valid = true;
+              }
+
+              if (valid) {
+                var postParams = stream.read(stream.available());
+                //dump("[msim]POST parameter: "+postParams+"\n");
+
+                var values = postParams.split("&");
+
+                if (uri.scheme != "https") {
+                  // HTTPSではUID送信とiモードID送信は行わない
+
+                  values = values.map(function(value) {
+                    //dump("[msim]value: "+value+"\n");
+                    if (value.toUpperCase() == "UID=NULLGWDOCOMO") {
+                      dump("[msim]send uid:"+uid+" for docomo.\n");
+                      value = value.substr(0, 3) + "=" + uid;
+                      rewriteFlag = true;
+                    }
+                    return value;
+                  });
+                }
+                ps = values.join("&");
+                //dump("[msim]replace POST parameter: "+ps+"\n");
+              }
+              seekable.seek(0, 0);
+            }
+          }
+
           var lcsFlag = firemobilesimulator.common.pref
               .getBoolPref("msim.temp.lcsflag");
           if (true == lcsFlag) {
@@ -212,7 +260,12 @@ myHTTPListener.prototype = {
           }
 
           if (uri.host == "w1m.docomo.ne.jp") {
-            var param = qs ? "?" + qs : "";
+            var param = "";
+            if (httpChannel.requestMethod == "GET") {
+              param = qs ? "?" + qs : "";
+            } else if (httpChannel.requestMethod == "POST") {
+              param = ps ? "?" + ps : "";
+            }
             var path = uri.path.split("?", 2)[0];
             if (path == "/cp/iarea") {
               // オープンiエリア対応
@@ -224,7 +277,7 @@ myHTTPListener.prototype = {
           } else if (rewriteFlag) {
             dump("[msim]rewrite for DoCoMo\n");
             //dump("[msim]rewrite for docomo\n");
-            rewriteURI(subject, as);
+            rewriteURI(subject, as, ps);
           }
         } else if (carrier == "SB") {
           var type = firemobilesimulator.common.pref.copyUnicharPref("msim.devicelist."+id+".type1");
@@ -292,7 +345,7 @@ myHTTPListener.prototype = {
   ])
 };
 
-function rewriteURI(subject, url) {
+function rewriteURI(subject, url, postStr) {
   var documentLoad = subject.loadFlags & (1<<16);
   //TODO: <img src="...">の指定などでrewriteする場合に対応要
   if (documentLoad) {
@@ -300,9 +353,47 @@ function rewriteURI(subject, url) {
     subject.cancel(Cr.NS_ERROR_FAILURE);
     var webNav = subject.notificationCallbacks
         .getInterface(Ci.nsIWebNavigation);
-    webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+    var uploadChannel = subject.QueryInterface(Ci.nsIUploadChannel);
+    var uploadStream = uploadChannel.uploadStream;
+    if (postStr != null) {
+      if (uploadStream instanceof Ci.nsIMIMEInputStream){
+        //dump("[msim]uploadStream is nsIMIMEInputStream\n");
+        var inputStream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
+        inputStream.setData(postStr, postStr.length);
+
+        inputStream.QueryInterface(Ci.nsISeekableStream);
+        inputStream.seek(0, 0);
+        inputStream.QueryInterface(Ci.nsIInputStream);
+        uploadStream.setData(inputStream);
+      } else if (uploadStream instanceof Ci.nsIStringInputStream) {
+        //dump("[msim]uploadStream is nsIStringInputStream\n");
+        var contentType = "Content-Type: application/x-www-form-urlencoded\r\n";
+        var contentLength = "Content-Length: " + postStr.length + "\r\n";
+        uploadStream.setData(contentType + contentLength + "\r\n" + postStr, contentType.length + contentLength.length + 2 + postStr.length);
+      }
+      //dump("[msim]set upload stream: "+postStr+"\n");
+    }
+
+    webNav.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE, null, uploadStream, null);
     //webNav.loadURI(url, subject.loadFlags, null, null, null);
   }
+}
+
+function processLine(stream) {
+  var line = "";
+  var size = stream.available();
+
+  for (var i = 0; i < size; i++) {
+    var c = stream.read(1);
+
+    if (c == '\n')
+      break;
+
+    if (c != '\r')
+      line += c;
+  }
+
+  return line;
 }
 
 if (XPCOMUtils.generateNSGetFactory) {
