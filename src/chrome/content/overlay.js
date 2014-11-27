@@ -129,6 +129,7 @@ fms.overlay.displayDeviceSwitcherMenu = function(menu, suffix) {
     var tab = gBrowser.selectedTab;
     var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
     currentId = ss.getTabValue(tab, "firemobilesimulator-device-id");
+    currentId = (currentId === "") ? null : parseInt(currentId);
   } else {
     currentId = fms.common.pref.copyUnicharPref("msim.current.id");
   }
@@ -201,6 +202,7 @@ fms.overlay.BrowserOnLoad = function(objEvent) {
     if (tab) {
       var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
       id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+      id = (id === "") ? null : parseInt(id);
       var pref_prefix = "msim.devicelist." + id;
       carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
     }
@@ -287,6 +289,7 @@ fms.overlay.rewrite = function () {
   var tab = gBrowser.selectedTab;
   var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
   var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+  id = (id === "") ? null : parseInt(id);
   var pref_prefix = "msim.devicelist." + id;
   var carrier = fms.common.pref.copyUnicharPref(pref_prefix + ".carrier");
   var name = fms.common.pref.copyUnicharPref(pref_prefix + ".label");
