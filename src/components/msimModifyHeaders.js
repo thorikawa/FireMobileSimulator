@@ -75,6 +75,7 @@ myHTTPListener.prototype = {
         //id = tab.getAttribute("firemobilesimulator-device-id");
         var ss = Cc["@mozilla.org/browser/sessionstore;1"].getService(Ci.nsISessionStore);
         id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+        id = (id === "") ? null : parseInt(id);
         var pref_prefix = "msim.devicelist." + id;
         carrier = firemobilesimulator.common.pref.copyUnicharPref(pref_prefix + ".carrier");
       }

@@ -29,7 +29,7 @@ fms.core.resetDevice = function (e) {
     var browser = gBrowser || parent.gBrowser;
     var tab = browser.selectedTab;
     var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-    ss.setTabValue(tab, "firemobilesimulator-device-id", null);
+    ss.setTabValue(tab, "firemobilesimulator-device-id", "");
     firemobilesimulator.overlay.rewrite();
   } else {
     fms.common.pref.deletePref("msim.current.carrier");
@@ -51,7 +51,7 @@ fms.core.setDevice = function (id) {
   if (tabselect_enabled) {
     var tab = gBrowser.selectedTab;
     var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
-    ss.setTabValue(tab, "firemobilesimulator-device-id", id);
+    ss.setTabValue(tab, "firemobilesimulator-device-id", id.toString());
     
     firemobilesimulator.overlay.rewrite();
   } else {
@@ -121,11 +121,12 @@ fms.core.deleteDevice = function (deletedId) {
         var tab = win.getBrowser().tabContainer.childNodes[i];
         var ss = Components.classes["@mozilla.org/browser/sessionstore;1"].getService(Components.interfaces.nsISessionStore);
         var id = ss.getTabValue(tab, "firemobilesimulator-device-id");
+        id = (id === "") ? null : parseInt(id);
         dump("[msim]getId:"+id+"\n");
         if (id > deletedId) {
-          ss.setTabValue(tab, "firemobilesimulator-device-id", id-1);
+          ss.setTabValue(tab, "firemobilesimulator-device-id", (id-1).toString());
         } else if (id == deletedId) {
-          ss.setTabValue(tab, "firemobilesimulator-device-id", null);
+          ss.setTabValue(tab, "firemobilesimulator-device-id", "");
         }
       }
     }
