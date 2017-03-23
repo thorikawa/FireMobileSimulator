@@ -23,11 +23,35 @@ var fms;
 if(!fms) fms = firemobilesimulator;
 if(!fms.common) fms.common = {};
 
-firemobilesimulator.common.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-firemobilesimulator.common.jsLoader.loadSubScript("chrome://global/content/nsUserSettings.js");
-
 firemobilesimulator.common.pref = {
-	__proto__ : nsPreferences,
+	copyUnicharPref: function(key) {
+		return this.getPrefService2().getComplexValue(key,
+			Components.interfaces.nsISupportsString).data;
+	},
+
+	getBoolPref: function(key) {
+		return this.getPrefService2().getBoolPref(key);
+	},
+
+	getIntPref:  function(key) {
+		return this.getPrefService2().getIntPref(key);
+	},
+
+	setUnicharPref: function(key, value) {
+		var str = Components.classes["@mozilla.org/supports-string;1"]
+			.createInstance(Components.interfaces.nsISupportsString);
+		str.data = value;
+		this.getPrefService2().setComplexValue(key,
+			Components.interfaces.nsISupportsString, str);
+	},
+
+	setBoolPref: function(key, value) {
+		return this.getPrefService2().setBoolPref(key, value);
+	},
+
+	setIntPref:  function(key, value) {
+		return this.getPrefService2().setIntPref(key, value);
+	},
 
 	getPrefService2 : function(){
 		return Components.classes["@mozilla.org/preferences-service;1"].
