@@ -25,16 +25,28 @@ if(!fms.common) fms.common = {};
 
 firemobilesimulator.common.pref = {
 	copyUnicharPref: function(key) {
-		return this.getPrefService2().getComplexValue(key,
-			Components.interfaces.nsISupportsString).data;
+		try {
+			return this.getPrefService2().getComplexValue(key,
+				Components.interfaces.nsISupportsString).data;
+		} catch (ex) {
+			return undefined;
+		}
 	},
 
 	getBoolPref: function(key) {
-		return this.getPrefService2().getBoolPref(key);
+		try {
+			return this.getPrefService2().getBoolPref(key);
+		} catch (ex) {
+			return undefined;
+		}
 	},
 
 	getIntPref:  function(key) {
-		return this.getPrefService2().getIntPref(key);
+		try {
+			return this.getPrefService2().getIntPref(key);
+		} catch (ex) {
+			return undefined;
+		}
 	},
 
 	setUnicharPref: function(key, value) {
